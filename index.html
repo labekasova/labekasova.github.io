@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренажёр арабского алфавита</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .arabic-text {
+            font-family: 'Amiri', serif;
+        }
+        .fade-in {
+            animation: fadeIn 0.4s ease-in-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .hidden-info {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+        }
+        .visible-info {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            transition: all 0.3s ease-in-out;
+        }
+        .custom-checkbox:checked + div {
+            background-color: #3b82f6;
+            border-color: #3b82f6;
+        }
+        .custom-checkbox:checked + div svg {
+            display: block;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <main class="w-full max-w-md bg-white rounded-3xl shadow-xl overflow-hidden flex flex-col relative border border-slate-100">
+        <header class="bg-slate-50 px-6 py-4 border-b border-slate-100 flex justify-between items-center">
+            <h1 class="text-slate-700 font-semibold text-lg">Арабский алфавит</h1>
+            <span id="counter" class="bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1 rounded-full">
+                Осталось: 28
+            </span>
+        </header>
+
+        <div class="flex-grow flex flex-col items-center justify-center p-8 min-h-[300px]">
+            <div id="letterDisplay" class="arabic-text text-9xl text-slate-800 mb-6 transition-all duration-300">
+                ا
+            </div>
+
+            <div id="infoDisplay" class="hidden-info text-center w-full bg-slate-50 p-4 rounded-xl border border-slate-100">
+                <h2 id="letterName" class="text-2xl font-bold text-slate-800 mb-1">Алиф</h2>
+                <p id="letterSound" class="text-slate-600 font-medium">Долгое "а" (или носитель гласного)</p>
+            </div>
+        </div>
+
+        <div class="px-6 py-6 bg-white border-t border-slate-100 flex flex-col gap-4">
+            <label class="flex items-center justify-center gap-3 cursor-pointer group">
+                <div class="relative flex items-center">
+                    <input type="checkbox" id="repeatCheckbox" class="custom-checkbox sr-only">
+                    <div class="w-6 h-6 border-2 border-slate-300 rounded-md flex items-center justify-center transition-colors group-hover:border-blue-400 bg-white">
+                        <svg class="w-4 h-4 text-white hidden pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
+                </div>
+                <span class="text-slate-600 font-medium select-none group-hover:text-slate-800 transition-colors">Повторить в этой сессии</span>
+            </label>
+
+            <button id="btnCheck" onclick="checkLetter()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl text-lg transition-all transform active:scale-[0.98] shadow-md hover:shadow-lg">
+                Проверить себя
+            </button>
+
+            <button id="btnNext" onclick="nextLetter()" class="hidden w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-4 rounded-xl text-lg transition-all transform active:scale-[0.98] shadow-md hover:shadow-lg">
+                Следующая буква ➔
+            </button>
+        </div>
+    </main>
+
+    <div id="endModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden items-center justify-center z-50 p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl transform scale-95 transition-transform duration-300" id="modalContent">
+            <div class="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-5">
+                <svg class="w-10 h-10 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <h2 class="text-2xl font-bold text-slate-800 mb-2">Сессия завершена!</h2>
+            <p class="text-slate-600 mb-8">Вы просмотрели все буквы в текущей колоде. Хотите начать заново?</p>
+            <button onclick="restartSession()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition-all active:scale-[0.98]">
+                Начать новую сессию
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const arabicAlphabet = [
+            { char: 'ا', name: 'Алиф', sound: 'Долгое "а"' },
+            { char: 'ب', name: 'Ба', sound: 'б' },
+            { char: 'ت', name: 'Та', sound: 'т' },
+            { char: 'ث', name: 'Са', sound: 'Межзубный глухой "с" (как th в think)' },
+            { char: 'ج', name: 'Джим', sound: 'дж (или мягкий "г")' },
+            { char: 'ح', name: 'Ха', sound: 'Глухой гортанный "х"' },
+            { char: 'خ', name: 'Ха', sound: 'Твердый "х"' },
+            { char: 'د', name: 'Даль', sound: 'д' },
+            { char: 'ذ', name: 'Заль', sound: 'Межзубный звонкий "з" (как th в this)' },
+            { char: 'ر', name: 'Ра', sound: 'р' },
+            { char: 'ز', name: 'Зай', sound: 'з' },
+            { char: 'س', name: 'Син', sound: 'с' },
+            { char: 'ش', name: 'Шин', sound: 'ш' },
+            { char: 'ص', name: 'Сад', sound: 'Твердый "с"' },
+            { char: 'ض', name: 'Дад', sound: 'Твердый "д"' },
+            { char: 'ط', name: 'Та', sound: 'Твердый "т"' },
+            { char: 'ظ', name: 'За', sound: 'Твердый межзубный звонкий' },
+            { char: 'ع', name: 'Айн', sound: 'Специфический гортанный звук' },
+            { char: 'غ', name: 'Гайн', sound: 'Картавый "р" / звонкий "г"' },
+            { char: 'ف', name: 'Фа', sound: 'ф' },
+            { char: 'ق', name: 'Каф', sound: 'Глубокий гортанный "к"' },
+            { char: 'ك', name: 'Кяф', sound: 'Мягкий "к"' },
+            { char: 'ل', name: 'Лям', sound: 'л' },
+            { char: 'م', name: 'Мим', sound: 'м' },
+            { char: 'ن', name: 'Нун', sound: 'н' },
+            { char: 'ه', name: 'Ха', sound: 'Легкий выдох (как h в home)' },
+            { char: 'و', name: 'Вав', sound: 'Губно-губной "в" / долгое "у"' },
+            { char: 'ي', name: 'Йа', sound: 'й / долгое "и"' }
+        ];
+
+        let currentPool = [];
+        let currentLetter = null;
+
+        const els = {
+            display: document.getElementById('letterDisplay'),
+            info: document.getElementById('infoDisplay'),
+            name: document.getElementById('letterName'),
+            sound: document.getElementById('letterSound'),
+            btnCheck: document.getElementById('btnCheck'),
+            btnNext: document.getElementById('btnNext'),
+            checkbox: document.getElementById('repeatCheckbox'),
+            counter: document.getElementById('counter'),
+            modal: document.getElementById('endModal'),
+            modalContent: document.getElementById('modalContent')
+        };
+
+        function initSession() {
+            currentPool = [...arabicAlphabet];
+            loadRandomLetter();
+        }
+
+        function loadRandomLetter() {
+            if (currentPool.length === 0) {
+                showModal();
+                return;
+            }
+
+            const randomIndex = Math.floor(Math.random() * currentPool.length);
+            currentLetter = currentPool.splice(randomIndex, 1)[0];
+
+            resetUI();
+
+            els.display.textContent = currentLetter.char;
+            els.name.textContent = currentLetter.name;
+            els.sound.textContent = `Звук: ${currentLetter.sound}`;
+            els.counter.textContent = `Осталось: ${currentPool.length + 1}`;
+
+            els.display.classList.remove('fade-in');
+            void els.display.offsetWidth;
+            els.display.classList.add('fade-in');
+        }
+
+        function resetUI() {
+            els.info.classList.remove('visible-info');
+            els.info.classList.add('hidden-info');
+            els.btnCheck.classList.remove('hidden');
+            els.btnNext.classList.add('hidden');
+            els.checkbox.checked = false;
+        }
+
+        function checkLetter() {
+            els.info.classList.remove('hidden-info');
+            els.info.classList.add('visible-info');
+            els.btnCheck.classList.add('hidden');
+            els.btnNext.classList.remove('hidden');
+        }
+
+        function nextLetter() {
+            if (els.checkbox.checked) {
+                currentPool.push(currentLetter);
+            }
+
+            loadRandomLetter();
+        }
+
+        function showModal() {
+            els.modal.classList.remove('hidden');
+            els.modal.classList.add('flex');
+
+            setTimeout(() => {
+                els.modal.classList.remove('opacity-0');
+                els.modalContent.classList.remove('scale-95');
+                els.modalContent.classList.add('scale-100');
+            }, 10);
+        }
+
+        function restartSession() {
+            els.modal.classList.add('opacity-0');
+            els.modalContent.classList.remove('scale-100');
+            els.modalContent.classList.add('scale-95');
+
+            setTimeout(() => {
+                els.modal.classList.add('hidden');
+                els.modal.classList.remove('flex');
+                initSession();
+            }, 300);
+        }
+
+        window.onload = initSession;
+    </script>
+</body>
+</html>
