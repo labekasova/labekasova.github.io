@@ -283,7 +283,7 @@ export default function App() {
   const currentWord = words[currentIndex];
 
   return (
-    <div className="min-h-dvh bg-slate-50 text-slate-800 font-sans selection:bg-indigo-100">
+    <div className="min-h-dvh overflow-x-hidden bg-slate-50 px-3 text-slate-800 font-sans selection:bg-indigo-100 sm:px-0">
       
       <style dangerouslySetInnerHTML={{__html: `
         .perspective-1000 { perspective: 1000px; }
@@ -297,13 +297,13 @@ export default function App() {
         }
       `}} />
 
-      <div className="mx-auto flex min-h-dvh w-full max-w-none flex-col bg-white shadow-xl sm:max-w-md">
+      <div className="mx-auto flex min-h-dvh w-full min-w-0 max-w-none flex-col overflow-hidden bg-white shadow-xl lg:max-w-md">
         
         {/* Шапка */}
-        <header className="shrink-0 bg-indigo-600 text-white px-5 pb-6 pt-8 rounded-b-[2rem] shadow-md z-10">
+        <header className="z-10 w-full min-w-0 shrink-0 overflow-hidden rounded-b-[2rem] bg-indigo-600 px-5 pb-6 pt-8 text-white shadow-md">
           <h1 className="text-xl font-bold text-center mb-1">Арабские глаголы</h1>
           <p className="text-center text-xs text-indigo-200 mb-4">База знаний: {WORDS_DATA.length} слов</p>
-          
+          <div className="relative flex w-full min-w-0 overflow-hidden rounded-xl bg-indigo-700/50 p-1 text-xs">
           <div className="flex bg-indigo-700/50 rounded-xl p-1 relative text-xs">
             <button 
               onClick={() => setActiveTab('learn')}
@@ -333,7 +333,7 @@ export default function App() {
         </header>
 
         {/* Контент */}
-        <main className="flex-1 min-h-0 flex flex-col px-5 pt-5 pb-[max(1rem,env(safe-area-inset-bottom))] overflow-hidden">
+        <main className="flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-hidden px-5 pt-5 pb-[max(1rem,env(safe-area-inset-bottom))]">
           
           {/* ================= КАРТОЧКИ ================= */}
           {activeTab === 'learn' && words.length > 0 && (
