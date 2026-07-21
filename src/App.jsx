@@ -304,7 +304,7 @@ export default function App() {
           <h1 className="text-xl font-bold text-center mb-1">Арабские глаголы</h1>
           <p className="text-center text-xs text-indigo-200 mb-4">База знаний: {WORDS_DATA.length} слов</p>
           <div className="relative flex w-full min-w-0 overflow-hidden rounded-xl bg-indigo-700/50 p-1 text-xs">
-          <div className="flex bg-indigo-700/50 rounded-xl p-1 relative text-xs">
+
             <button 
               onClick={() => setActiveTab('learn')}
               className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg font-medium transition-all duration-300 ${activeTab === 'learn' ? 'bg-white text-indigo-600 shadow' : 'text-indigo-100 hover:text-white'}`}
