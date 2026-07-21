@@ -337,7 +337,7 @@ export default function App() {
           
           {/* ================= КАРТОЧКИ ================= */}
           {activeTab === 'learn' && words.length > 0 && (
-            <div className="flex-1 flex flex-col justify-center">
+            <div className="flex-1 flex flex-col justify-start pt-4">
               
               {isSortedLogical && currentWord.group && (
                 <div className="self-center bg-indigo-50 border border-indigo-100 text-indigo-700 text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-3">
