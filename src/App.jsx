@@ -283,7 +283,7 @@ export default function App() {
   const currentWord = words[currentIndex];
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 font-sans selection:bg-indigo-100">
+    <div className="min-h-dvh bg-slate-50 text-slate-800 font-sans selection:bg-indigo-100">
       
       <style dangerouslySetInnerHTML={{__html: `
         .perspective-1000 { perspective: 1000px; }
@@ -297,10 +297,10 @@ export default function App() {
         }
       `}} />
 
-      <div className="w-full max-w-md mx-auto min-h-dvh flex flex-col bg-white shadow-xl relative overflow-hidden">
+      <div className="mx-auto flex min-h-dvh w-full max-w-none flex-col bg-white shadow-xl sm:max-w-md">
         
         {/* Шапка */}
-        <header className="bg-indigo-600 text-white p-4 pt-6 rounded-b-3xl shadow-md z-10">
+        <header className="shrink-0 bg-indigo-600 text-white px-5 pb-6 pt-8 rounded-b-[2rem] shadow-md z-10">
           <h1 className="text-xl font-bold text-center mb-1">Арабские глаголы</h1>
           <p className="text-center text-xs text-indigo-200 mb-4">База знаний: {WORDS_DATA.length} слов</p>
           
@@ -333,7 +333,7 @@ export default function App() {
         </header>
 
         {/* Контент */}
-        <main className="flex-1 flex flex-col p-4 overflow-y-auto">
+        <main className="flex-1 min-h-0 flex flex-col px-5 pt-5 pb-[max(1rem,env(safe-area-inset-bottom))] overflow-hidden">
           
           {/* ================= КАРТОЧКИ ================= */}
           {activeTab === 'learn' && words.length > 0 && (
@@ -505,7 +505,7 @@ export default function App() {
 
           {/* ================= ПИСЬМО ================= */}
           {activeTab === 'write' && (
-            <div className="flex-1 flex flex-col justify-between">
+            <div className="flex min-h-0 flex-1 flex-col">
               {writeCompleted ? (
                 <div className="flex-1 flex flex-col items-center justify-center text-center p-6">
                   <div className="w-20 h-20 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-4 text-3xl">✍️</div>
@@ -590,7 +590,7 @@ export default function App() {
                   )}
 
                   {/* Виртуальная Клавиатура */}
-                  <div className="bg-slate-100 p-2 rounded-2xl mt-auto">
+                  <div className="mt-auto shrink-0 rounded-[1.5rem] bg-slate-100 p-2">
                     <div className="flex flex-col gap-1" dir="rtl">
                       {ARABIC_KEYS.map((row, rIdx) => (
                         <div key={rIdx} className="flex justify-center gap-1">
