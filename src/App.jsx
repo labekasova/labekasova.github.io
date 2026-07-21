@@ -297,7 +297,7 @@ export default function App() {
         }
       `}} />
 
-      <div className="max-w-md mx-auto min-h-screen flex flex-col bg-white shadow-xl relative overflow-hidden">
+      <div className="w-full max-w-md mx-auto min-h-dvh flex flex-col bg-white shadow-xl relative overflow-hidden">
         
         {/* Шапка */}
         <header className="bg-indigo-600 text-white p-4 pt-6 rounded-b-3xl shadow-md z-10">
