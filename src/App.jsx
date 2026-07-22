@@ -11,53 +11,53 @@ const WORDS_DATA = [
   { id: 103, arabic: "سَكَنَ", transcription: "sakana", russian: "жил / проживал", group: "Помещение и движение" },
 
   // --- ГРУППА 2: Отель, визиты и действия ---
-  { id: 104, arabic: "حَجَزَ", transcription: "ḥajaza", russian: "забронировал", group: "Поездка и визиты" },
-  { id: 105, arabic: "طَلَبَ", transcription: "ṭalaba", russian: "потребовал / попросил", group: "Поездка и визиты" },
-  { id: 106, arabic: "طَرَقَ", transcription: "ṭaraqa", russian: "постучался", group: "Поездка и визиты" },
-  { id: 107, arabic: "ظَهَرَ", transcription: "ẓahara", russian: "появился", group: "Поездка и визиты" },
+  { id: 104, arabic: "حَجَزَ", transcription: "Hajaza", russian: "забронировал", group: "Поездка и визиты" },
+  { id: 105, arabic: "طَلَبَ", transcription: "Talaba", russian: "потребовал / попросил", group: "Поездка и визиты" },
+  { id: 106, arabic: "طَرَقَ", transcription: "Taraqa", russian: "постучался", group: "Поездка и визиты" },
+  { id: 107, arabic: "ظَهَرَ", transcription: "DHahara", russian: "появился", group: "Поездка и визиты" },
 
   // --- ГРУППА 3: Вода и Еда ---
-  { id: 24,  arabic: "سَبَحَ", transcription: "sabaḥa", russian: "плыл", group: "Вода и Еда" },
+  { id: 24,  arabic: "سَبَحَ", transcription: "sabaHa", russian: "плыл", group: "Вода и Еда" },
   { id: 25,  arabic: "شَرِبَ", transcription: "shariba", russian: "пил", group: "Вода и Еда" },
-  { id: 108, arabic: "أَكَلَ", transcription: "'akala", russian: "покушал / ел", group: "Вода и Еда" },
+  { id: 108, arabic: "أَكَلَ", transcription: "2akala", russian: "покушал / ел", group: "Вода и Еда" },
   { id: 7,   arabic: "غَسَلَ", transcription: "ghasala", russian: "стирал / мыл", group: "Вода и Еда" },
 
   // --- ГРУППА 4: Одежда и Состояние организма ---
   { id: 109, arabic: "لَبِسَ", transcription: "labisa", russian: "одел / надел", group: "Одежда и состояние" },
-  { id: 18,  arabic: "مَرِضَ", transcription: "mariḍa", russian: "болел", group: "Одежда и состояние" },
-  { id: 110, arabic: "فَرِحَ", transcription: "fariḥa", russian: "обрадовался", group: "Одежда и состояние" },
+  { id: 18,  arabic: "مَرِضَ", transcription: "mariDa", russian: "болел", group: "Одежда и состояние" },
+  { id: 110, arabic: "فَرِحَ", transcription: "fariHa", russian: "обрадовался", group: "Одежда и состояние" },
 
   // --- ГРУППА 5: Учёба, разум и знания ---
   { id: 5,   arabic: "فَهِمَ", transcription: "fahima", russian: "понял", group: "Учёба и знания" },
-  { id: 21,  arabic: "حَفِظَ", transcription: "ḥafiẓa", russian: "запоминал", group: "Учёба и знания" },
+  { id: 21,  arabic: "حَفِظَ", transcription: "HafiDHa", russian: "запоминал", group: "Учёба и знания" },
   { id: 111, arabic: "دَرَسَ", transcription: "darasa", russian: "учил / учился", group: "Учёба и знания" },
-  { id: 112, arabic: "عَلِمَ", transcription: "'alima", russian: "знал", group: "Учёба и знания" },
-  { id: 113, arabic: "قَرَأَ", transcription: "qara'a", russian: "читал", group: "Учёба и знания" },
+  { id: 112, arabic: "عَلِمَ", transcription: "3alima", russian: "знал", group: "Учёба и знания" },
+  { id: 113, arabic: "قَرَأَ", transcription: "qara2a", russian: "читал", group: "Учёба и знания" },
   { id: 114, arabic: "كَتَبَ", transcription: "kataba", russian: "писал", group: "Учёба и знания" },
 
   // --- ГРУППА 6: Взаимодействие с предметами (руки) ---
-  { id: 20,  arabic: "أَخَذَ", transcription: "'akhaḍha", russian: "взял / забрал", group: "Действия руками" },
-  { id: 115, arabic: "وَضَعَ", transcription: "waḍa'a", russian: "положил", group: "Действия руками" },
+  { id: 20,  arabic: "أَخَذَ", transcription: "2akhadha", russian: "взял / забрал", group: "Действия руками" },
+  { id: 115, arabic: "وَضَعَ", transcription: "waDa3a", russian: "положил", group: "Действия руками" },
   { id: 116, arabic: "مَسَكَ", transcription: "masaka", russian: "держал", group: "Действия руками" },
-  { id: 17,  arabic: "حَمَلَ", transcription: "ḥamala", russian: "нёс", group: "Действия руками" },
-  { id: 15,  arabic: "دَفَعَ", transcription: "ḍafa'a", russian: "толкал", group: "Действия руками" },
-  { id: 14,  arabic: "رَبَطَ", transcription: "rabaṭa", russian: "завязал", group: "Действия руками" },
+  { id: 17,  arabic: "حَمَلَ", transcription: "Hamala", russian: "нёс", group: "Действия руками" },
+  { id: 15,  arabic: "دَفَعَ", transcription: "dafa3a", russian: "толкал", group: "Действия руками" },
+  { id: 14,  arabic: "رَبَطَ", transcription: "rabaTa", russian: "завязал", group: "Действия руками" },
   { id: 4,   arabic: "هَدَمَ", transcription: "hadama", russian: "разрушил", group: "Действия руками" },
   { id: 117, arabic: "فَقَدَ", transcription: "faqada", russian: "потерял", group: "Действия руками" },
   { id: 8,   arabic: "وَجَدَ", transcription: "wajada", russian: "нашёл", group: "Действия руками" },
-  { id: 11,  arabic: "عَمِلَ", transcription: "'amila", russian: "сделал / выполнил", group: "Действия руками" },
+  { id: 11,  arabic: "عَمِلَ", transcription: "3amila", russian: "сделал / выполнил", group: "Действия руками" },
 
   // --- ГРУППА 7: Творчество, управление и активность ---
   { id: 9,   arabic: "رَسَمَ", transcription: "rasama", russian: "рисовал", group: "Творчество и активность" },
-  { id: 13,  arabic: "نَفَخَ", transcription: "nafaḥa", russian: "надул", group: "Творчество и активность" },
+  { id: 13,  arabic: "نَفَخَ", transcription: "nafakha", russian: "надул", group: "Творчество и активность" },
   { id: 10,  arabic: "ضَرَبَ", transcription: "daraba", russian: "ударил", group: "Творчество и активность" },
-  { id: 118, arabic: "حَكَمَ", transcription: "ḥakama", russian: "управлял / судил", group: "Творчество и активность" },
-  { id: 119, arabic: "نَظَرَ", transcription: "naẓara", russian: "смотрел", group: "Творчество и активность" },
+  { id: 118, arabic: "حَكَمَ", transcription: "Hakama", russian: "управлял / судил", group: "Творчество и активность" },
+  { id: 119, arabic: "نَظَرَ", transcription: "naDHara", russian: "смотрел", group: "Творчество и активность" },
 
   // --- ГРУППА 8: Речь, общение и вера ---
   { id: 12,  arabic: "سَكَتَ", transcription: "sakata", russian: "молчал", group: "Общение и дух" },
   { id: 6,   arabic: "شَكَرَ", transcription: "shakara", russian: "поблагодарил", group: "Общение и дух" },
-  { id: 3,   arabic: "حَمِدَ", transcription: "hamida", russian: "воздал хвалу [Богу]", group: "Общение и дух" },
+  { id: 3,   arabic: "حَمِدَ", transcription: "Hamida", russian: "воздал хвалу [Богу]", group: "Общение и дух" },
   { id: 1,   arabic: "سَجَدَ", transcription: "sajada", russian: "совершил земной поклон", group: "Общение и дух" }
 ];
 
@@ -627,7 +627,7 @@ export default function App() {
                           disabled={writeChecked}
                           className="flex-1 bg-amber-200 text-amber-900 text-xs font-bold py-2 rounded-md hover:bg-amber-300 active:scale-95 flex items-center justify-center gap-0.5"
                         >
-                          ← Стереть
+                          ← стереть
                         </button>
                       </div>
                     </div>
