@@ -50,7 +50,7 @@ const WORDS_DATA = [
   // --- ГРУППА 7: Творчество, управление и активность ---
   { id: 9,   arabic: "رَسَمَ", transcription: "rasama", russian: "рисовал", group: "Творчество и активность" },
   { id: 13,  arabic: "نَفَخَ", transcription: "nafakha", russian: "надул", group: "Творчество и активность" },
-  { id: 10,  arabic: "ضَرَبَ", transcription: "daraba", russian: "ударил", group: "Творчество и активность" },
+  { id: 10,  arabic: "ضَرَبَ", transcription: "Daraba", russian: "ударил", group: "Творчество и активность" },
   { id: 118, arabic: "حَكَمَ", transcription: "Hakama", russian: "управлял / судил", group: "Творчество и активность" },
   { id: 119, arabic: "نَظَرَ", transcription: "naDHara", russian: "смотрел", group: "Творчество и активность" },
 
