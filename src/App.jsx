@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
-// Полная логическая база из 39 уникальных глаголов со всех фотографий
-const WORDS_DATA = [
+// Полная логическая база глаголов
+const WORDS_BASE = [
   // --- ГРУППА 1: Помещение, жилье и движение ---
   { id: 101, arabic: "دَخَلَ", transcription: "dakhala", russian: "вошёл", group: "Помещение и движение" },
   { id: 102, arabic: "خَرَجَ", transcription: "kharaja", russian: "вышел", group: "Помещение и движение" },
@@ -61,6 +61,11 @@ const WORDS_DATA = [
   { id: 1,   arabic: "سَجَدَ", transcription: "sajada", russian: "совершил земной поклон", group: "Общение и дух" }
 ];
 
+const WORDS_DATA = WORDS_BASE.map((word) => ({
+  ...word,
+  audio: `/audio/${word.transcription}.mp3`
+}));
+
 // Клавиатура для ввода
 const ARABIC_KEYS = [
   ["ض", "ص", "ث", "ق", "ف", "غ", "ع", "ه", "خ", "ح", "ج", "د"],
@@ -78,6 +83,7 @@ const IconArrowRight = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" 
 const IconShuffle = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22"/><path d="m18 2 4 4-4 4"/><path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2"/><path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8"/><path d="m18 14 4 4-4 4"/></svg>;
 const IconRotateCcw = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>;
 const IconEye = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>;
+const IconVolume = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>;
 const IconMoon = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3a6 6 0 1 0 9 9 9 9 0 1 1-9-9Z"/></svg>;
 const IconSun = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>;
 
@@ -96,6 +102,7 @@ export default function App() {
   const [isSortedLogical, setIsSortedLogical] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
+  const [cardDirection, setCardDirection] = useState(null);
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
 
@@ -143,16 +150,16 @@ export default function App() {
 
   const nextCard = useCallback(() => {
     setIsFlipped(false);
-    setTimeout(() => {
-      setCurrentIndex((prev) => (prev + 1) % words.length);
-    }, 150);
+    setCardDirection('next');
+    setCurrentIndex((prev) => (prev + 1) % words.length);
+    setTimeout(() => setCardDirection(null), 380);
   }, [words.length]);
 
   const prevCard = useCallback(() => {
     setIsFlipped(false);
-    setTimeout(() => {
-      setCurrentIndex((prev) => (prev - 1 + words.length) % words.length);
-    }, 150);
+    setCardDirection('prev');
+    setCurrentIndex((prev) => (prev - 1 + words.length) % words.length);
+    setTimeout(() => setCardDirection(null), 380);
   }, [words.length]);
 
   const onTouchStart = (e) => {
@@ -296,6 +303,12 @@ export default function App() {
 
   const currentWord = words[currentIndex];
 
+  const playCurrentAudio = () => {
+    if (!currentWord.audio) return;
+    const audio = new Audio(currentWord.audio);
+    audio.play().catch(() => {});
+  };
+
   return (
     <div className="min-h-dvh overflow-x-hidden bg-slate-50 px-3 text-slate-800 font-sans selection:bg-indigo-100 sm:px-0">
       
@@ -390,7 +403,8 @@ export default function App() {
 
               {/* Карточка 3D */}
               <div 
-                className="relative w-full aspect-[4/3] perspective-1000 cursor-pointer touch-pan-y"
+                key={currentWord.id}
+                className={`relative w-full aspect-[4/3] perspective-1000 cursor-pointer touch-pan-y ${cardDirection ? `card-slide-${cardDirection}` : ''}`}
                 onClick={() => setIsFlipped(!isFlipped)}
                 onTouchStart={onTouchStart}
                 onTouchMove={onTouchMove}
@@ -435,7 +449,27 @@ export default function App() {
                 >
                   <IconArrowLeft />
                 </button>
-                <span className="text-xs text-slate-400">Свайпайте влево/вправо</span>
+                <div className="relative flex h-10 w-[190px] items-center justify-center">
+                  <span
+                    aria-hidden={isFlipped}
+                    className={`absolute text-xs text-slate-400 transition-opacity duration-200 ${isFlipped ? 'opacity-0' : 'opacity-100'}`}
+                  >
+                    Свайпайте влево/вправо
+                  </span>
+                  <button
+                    type="button"
+                    disabled={!currentWord.audio}
+                    tabIndex={isFlipped && currentWord.audio ? 0 : -1}
+                    aria-hidden={!isFlipped}
+                    aria-label={currentWord.audio ? 'Прослушать произношение' : 'Аудио пока нет'}
+                    onClick={playCurrentAudio}
+                    style={{ transitionDelay: isFlipped ? '180ms' : '0ms' }}
+                    className={`audio-preview absolute inset-0 m-auto flex h-10 w-max items-center justify-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold shadow-sm transition-opacity duration-200 disabled:cursor-default ${currentWord.audio ? '' : 'audio-missing'} ${isFlipped ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
+                  >
+                    <IconVolume />
+                    {currentWord.audio ? 'Прослушать' : 'Аудио пока нет'}
+                  </button>
+                </div>
                 <button 
                   onClick={nextCard}
                   className="w-12 h-12 flex items-center justify-center bg-white border border-slate-200 text-slate-600 rounded-full shadow-sm active:scale-90 transition-all"

@@ -21,6 +21,36 @@ body {
   box-sizing: border-box;
 }
 
+@keyframes cardSlideNext {
+  from {
+    opacity: 0.35;
+    transform: translateX(2.5rem) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes cardSlidePrev {
+  from {
+    opacity: 0.35;
+    transform: translateX(-2.5rem) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+.card-slide-next {
+  animation: cardSlideNext 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.card-slide-prev {
+  animation: cardSlidePrev 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 html[data-theme="dark"] {
   color-scheme: dark;
 }
@@ -30,26 +60,105 @@ html[data-theme="dark"] :root {
   background: #020617;
 }
 
-html[data-theme="dark"] .bg-slate-50 { background-color: #020617 !important; }
-html[data-theme="dark"] .bg-white { background-color: #0f172a !important; }
-html[data-theme="dark"] .bg-slate-100 { background-color: #111827 !important; }
-html[data-theme="dark"] .bg-slate-300 { background-color: #334155 !important; }
-html[data-theme="dark"] .bg-indigo-50 { background-color: rgba(99, 102, 241, 0.14) !important; }
-html[data-theme="dark"] .bg-amber-50 { background-color: rgba(245, 158, 11, 0.16) !important; }
-html[data-theme="dark"] .bg-emerald-100 { background-color: rgba(16, 185, 129, 0.16) !important; }
-html[data-theme="dark"] .text-slate-800 { color: #e5eefb !important; }
-html[data-theme="dark"] .text-slate-700 { color: #dbe4f3 !important; }
+html[data-theme="dark"] .bg-slate-50 {
+  background-color: #020617 !important;
+}
+
+html[data-theme="dark"] .bg-white {
+  background-color: #0f172a !important;
+}
+
+html[data-theme="dark"] .bg-slate-100 {
+  background-color: #111827 !important;
+}
+
+html[data-theme="dark"] .bg-slate-300 {
+  background-color: #334155 !important;
+}
+
+html[data-theme="dark"] .bg-indigo-50 {
+  background-color: rgba(99, 102, 241, 0.14) !important;
+}
+
+html[data-theme="dark"] .bg-amber-50 {
+  background-color: rgba(245, 158, 11, 0.16) !important;
+}
+
+html[data-theme="dark"] .bg-emerald-100 {
+  background-color: rgba(16, 185, 129, 0.16) !important;
+}
+
+html[data-theme="dark"] .text-slate-800 {
+  color: #e5eefb !important;
+}
+
+html[data-theme="dark"] .text-slate-700 {
+  color: #dbe4f3 !important;
+}
+
 html[data-theme="dark"] .text-slate-600,
-html[data-theme="dark"] .text-slate-500 { color: #94a3b8 !important; }
-html[data-theme="dark"] .text-slate-400 { color: #64748b !important; }
+html[data-theme="dark"] .text-slate-500 {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .text-slate-400 {
+  color: #64748b !important;
+}
+
+html[data-theme="dark"] .text-indigo-700 {
+  color: #c7d2fe !important;
+}
+
 html[data-theme="dark"] .text-slate-800::placeholder,
-html[data-theme="dark"] input::placeholder { color: #64748b !important; }
+html[data-theme="dark"] input::placeholder {
+  color: #64748b !important;
+}
+
 html[data-theme="dark"] .border-slate-100,
-html[data-theme="dark"] .border-slate-200 { border-color: #1e293b !important; }
+html[data-theme="dark"] .border-slate-200 {
+  border-color: #1e293b !important;
+}
+
+html[data-theme="dark"] .border-indigo-100 {
+  border-color: #3730a3 !important;
+}
+
+html[data-theme="dark"] .audio-preview {
+  background-color: #172554 !important;
+  color: #c7d2fe !important;
+  border-color: #3730a3 !important;
+}
+
+.audio-preview {
+  background-color: #eef2ff;
+  color: #4f46e5;
+  border-color: #c7d2fe;
+}
+
+.audio-preview.audio-missing {
+  background-color: #f8fafc;
+  color: #94a3b8;
+  border-color: #e2e8f0;
+}
+
+html[data-theme="dark"] .audio-preview.audio-missing {
+  background-color: #111827 !important;
+  color: #64748b !important;
+  border-color: #334155 !important;
+}
+
 html[data-theme="dark"] .shadow-xl,
 html[data-theme="dark"] .shadow-lg,
 html[data-theme="dark"] .shadow-md,
 html[data-theme="dark"] .shadow-sm,
-html[data-theme="dark"] .shadow-inner { --tw-shadow-color: rgba(2, 6, 23, 0.45); }
-html[data-theme="dark"] .theme-toggle { background-color: rgba(15, 23, 42, 0.32) !important; }
-html[data-theme="dark"] .theme-toggle:hover { background-color: rgba(15, 23, 42, 0.5) !important; }
+html[data-theme="dark"] .shadow-inner {
+  --tw-shadow-color: rgba(2, 6, 23, 0.45);
+}
+
+html[data-theme="dark"] .theme-toggle {
+  background-color: rgba(15, 23, 42, 0.32) !important;
+}
+
+html[data-theme="dark"] .theme-toggle:hover {
+  background-color: rgba(15, 23, 42, 0.5) !important;
+}
