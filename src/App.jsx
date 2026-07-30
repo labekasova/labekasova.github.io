@@ -78,9 +78,18 @@ const IconArrowRight = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" 
 const IconShuffle = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22"/><path d="m18 2 4 4-4 4"/><path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2"/><path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8"/><path d="m18 14 4 4-4 4"/></svg>;
 const IconRotateCcw = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>;
 const IconEye = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>;
+const IconMoon = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3a6 6 0 1 0 9 9 9 9 0 1 1-9-9Z"/></svg>;
+const IconSun = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>;
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('learn'); // 'learn', 'quiz' или 'write'
+  const [theme, setTheme] = useState(() => {
+    if (typeof window === 'undefined') {
+      return 'light';
+    }
+
+    return window.localStorage.getItem('theme') === 'dark' ? 'dark' : 'light';
+  });
   
   // Состояния карточек
   const [words, setWords] = useState([...WORDS_DATA]);
@@ -280,6 +289,11 @@ export default function App() {
     }
   }, [activeTab, quizPool, quizQuestion, writePool, writeQuestion, generateQuizQuestion, generateWriteQuestion]);
 
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    window.localStorage.setItem('theme', theme);
+  }, [theme]);
+
   const currentWord = words[currentIndex];
 
   return (
@@ -300,7 +314,15 @@ export default function App() {
       <div className="mx-auto flex min-h-dvh w-full min-w-0 max-w-none flex-col overflow-hidden bg-white shadow-xl lg:max-w-md">
         
         {/* Шапка */}
-        <header className="z-10 w-full min-w-0 shrink-0 overflow-hidden rounded-b-[2rem] bg-indigo-600 px-5 pb-6 pt-8 text-white shadow-md">
+        <header className="relative z-10 w-full min-w-0 shrink-0 overflow-hidden rounded-b-[2rem] bg-indigo-600 px-5 pb-6 pt-8 text-white shadow-md">
+          <button
+            type="button"
+            aria-label={theme === 'dark' ? 'Переключить на светлую тему' : 'Переключить на тёмную тему'}
+            onClick={() => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))}
+            className="theme-toggle absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-white transition-colors hover:bg-white/25"
+          >
+            {theme === 'dark' ? <IconSun /> : <IconMoon />}
+          </button>
           <h1 className="text-xl font-bold text-center mb-1">Арабские глаголы</h1>
           <p className="text-center text-xs text-indigo-200 mb-4">База знаний: {WORDS_DATA.length} слов</p>
           <div className="relative flex w-full min-w-0 overflow-hidden rounded-xl bg-indigo-700/50 p-1 text-xs">
@@ -627,7 +649,7 @@ export default function App() {
                           disabled={writeChecked}
                           className="flex-1 bg-amber-200 text-amber-900 text-xs font-bold py-2 rounded-md hover:bg-amber-300 active:scale-95 flex items-center justify-center gap-0.5"
                         >
-                          ← стереть
+                          ← Стереть
                         </button>
                       </div>
                     </div>
