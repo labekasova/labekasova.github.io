@@ -103,6 +103,7 @@ export default function App() {
   const [isSortedLogical, setIsSortedLogical] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [cardDirection, setCardDirection] = useState(null);
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
@@ -303,10 +304,28 @@ export default function App() {
   }, [theme]);
 
   useEffect(() => {
+    if (!audioRef.current) {
+      audioRef.current = new Audio();
+    }
+
+    const audio = audioRef.current;
+    const handlePlay = () => {
+      setIsAudioPlaying(true);
+    };
+
+    const handlePause = () => setIsAudioPlaying(false);
+    const handleEnded = () => setIsAudioPlaying(false);
+
+    audio.addEventListener('play', handlePlay);
+    audio.addEventListener('pause', handlePause);
+    audio.addEventListener('ended', handleEnded);
+
     return () => {
-      if (!audioRef.current) return;
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
+      audio.removeEventListener('play', handlePlay);
+      audio.removeEventListener('pause', handlePause);
+      audio.removeEventListener('ended', handleEnded);
+      audio.pause();
+      audio.currentTime = 0;
     };
   }, []);
 
@@ -314,10 +333,6 @@ export default function App() {
 
   const playCurrentAudio = () => {
     if (!currentWord.audio) return;
-    if (!audioRef.current) {
-      audioRef.current = new Audio();
-    }
-
     const audio = audioRef.current;
     audio.pause();
     audio.currentTime = 0;
@@ -484,7 +499,7 @@ export default function App() {
                     aria-label={currentWord.audio ? 'Прослушать произношение' : 'Аудио пока нет'}
                     onClick={playCurrentAudio}
                     style={{ transitionDelay: isFlipped ? '180ms' : '0ms' }}
-                    className={`audio-preview absolute inset-0 m-auto flex h-10 w-max items-center justify-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold shadow-sm transition-opacity duration-200 disabled:cursor-default ${currentWord.audio ? '' : 'audio-missing'} ${isFlipped ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
+                    className={`audio-preview absolute inset-0 m-auto flex h-10 w-max items-center justify-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold shadow-sm transform-gpu transition-[transform,opacity,box-shadow,border-color] duration-150 ease-out active:scale-95 disabled:cursor-default ${currentWord.audio ? '' : 'audio-missing'} ${isAudioPlaying ? 'audio-preview-playing' : ''} ${isFlipped ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
                   >
                     <IconVolume />
                     {currentWord.audio ? 'Прослушать' : 'Аудио пока нет'}

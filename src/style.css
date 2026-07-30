@@ -135,6 +135,11 @@ html[data-theme="dark"] .audio-preview {
   border-color: #c7d2fe;
 }
 
+.audio-preview.audio-preview-playing {
+  border-color: #818cf8;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.14);
+}
+
 .audio-preview.audio-missing {
   background-color: #f8fafc;
   color: #94a3b8;
@@ -145,6 +150,11 @@ html[data-theme="dark"] .audio-preview.audio-missing {
   background-color: #111827 !important;
   color: #64748b !important;
   border-color: #334155 !important;
+}
+
+html[data-theme="dark"] .audio-preview.audio-preview-playing {
+  border-color: #818cf8 !important;
+  box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.2) !important;
 }
 
 html[data-theme="dark"] .shadow-xl,
