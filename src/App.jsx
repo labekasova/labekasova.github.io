@@ -6,9 +6,9 @@ const WORD_TYPES = {
 };
 
 const WORD_FILTERS = [
-  { id: 'all', label: 'Все слова', title: 'Арабские слова', type: null },
-  { id: 'verb', label: 'Только глаголы', title: 'Арабские глаголы', type: WORD_TYPES.verb },
-  { id: 'noun', label: 'Только существительные', title: 'Арабские существительные', type: WORD_TYPES.noun }
+  { id: 'all', label: 'Все слова', title: 'Все слова', type: null },
+  { id: 'verb', label: 'Только глаголы', title: 'Глаголы', type: WORD_TYPES.verb },
+  { id: 'noun', label: 'Только существительные', title: 'Существительные', type: WORD_TYPES.noun }
 ];
 
 // Полная логическая база слов
@@ -117,8 +117,7 @@ const IconEye = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height=
 const IconVolume = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>;
 const IconMoon = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3a6 6 0 1 0 9 9 9 9 0 1 1-9-9Z"/></svg>;
 const IconSun = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>;
-const IconChevronDown = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>;
-
+const IconChevronDown = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>;
 export default function App() {
   const audioRef = useRef(null);
   const audioRequestRef = useRef(0);
@@ -395,7 +394,7 @@ export default function App() {
       const width = Math.min(window.innerWidth - 24, 380);
       const centerX = rect.left + rect.width / 2;
       const left = Math.max(width / 2 + 12, Math.min(window.innerWidth - width / 2 - 12, centerX));
-      const top = rect.bottom - 6;
+      const top = rect.bottom + 2;
 
       setFilterMenuStyle({ top, left, width });
     };
@@ -576,20 +575,28 @@ export default function App() {
           >
             {theme === 'dark' ? <IconSun /> : <IconMoon />}
           </button>
-          <div className="relative z-20 mb-4 flex flex-col items-center">
-            <button
-              type="button"
-              ref={filterButtonRef}
-              onClick={() => setIsFilterMenuOpen((prev) => !prev)}
-              className="inline-flex items-center justify-center gap-1 rounded-full px-3 py-1 text-center text-xl font-bold text-white transition-colors hover:bg-white/10"
-              aria-haspopup="menu"
-              aria-expanded={isFilterMenuOpen}
-            >
-              <span>{activeFilterOption.title}</span>
-              <span className={`transition-transform duration-200 ${isFilterMenuOpen ? 'rotate-180' : ''}`}>
-                <IconChevronDown />
-              </span>
-            </button>
+          <div className="relative z-20 mb-4 flex w-full flex-col items-center">
+            <div className="relative flex w-full items-center justify-center">
+              <button
+                type="button"
+                ref={filterButtonRef}
+                onClick={() => setIsFilterMenuOpen((prev) => !prev)}
+                className="inline-grid grid-cols-[18px_auto_18px] items-center gap-2 px-1 py-1 text-center text-xl font-bold leading-none text-white"
+                aria-haspopup="menu"
+                aria-expanded={isFilterMenuOpen}
+              >
+                <span aria-hidden="true" className="flex h-[18px] w-[18px] items-center justify-center opacity-0">
+                  <IconChevronDown />
+                </span>
+                <span>{activeFilterOption.title}</span>
+                <span
+                  aria-hidden="true"
+                  className={`flex h-[18px] w-[18px] items-center justify-center text-white/85 transition-transform duration-200 ${isFilterMenuOpen ? 'rotate-180' : ''}`}
+                >
+                  <IconChevronDown />
+                </span>
+              </button>
+            </div>
             <p className="text-center text-xs text-indigo-200">База знаний: {filteredWords.length} слов</p>
 
             {isFilterMenuOpen && (
