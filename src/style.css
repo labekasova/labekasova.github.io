@@ -124,20 +124,32 @@ html[data-theme="dark"] .border-indigo-100 {
 }
 
 html[data-theme="dark"] .audio-preview {
-  background-color: #172554 !important;
-  color: #c7d2fe !important;
-  border-color: #3730a3 !important;
+  background-color: #1e293b !important;
+  color: #cbd5e1 !important;
+  border-color: #334155 !important;
 }
 
 .audio-preview {
-  background-color: #eef2ff;
-  color: #4f46e5;
-  border-color: #c7d2fe;
+  background-color: #f8fafc;
+  color: #475569;
+  border-color: #e2e8f0;
+}
+
+.audio-preview-front {
+  background-color: #f8fafc;
+  color: #475569;
+  border-color: #e2e8f0;
+}
+
+html[data-theme="dark"] .audio-preview-front {
+  background-color: #1e293b !important;
+  color: #cbd5e1 !important;
+  border-color: #334155 !important;
 }
 
 .audio-preview.audio-preview-playing {
-  border-color: #818cf8;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.14);
+  border-color: #cbd5e1;
+  box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.12);
 }
 
 .audio-preview.audio-missing {
@@ -153,8 +165,8 @@ html[data-theme="dark"] .audio-preview.audio-missing {
 }
 
 html[data-theme="dark"] .audio-preview.audio-preview-playing {
-  border-color: #818cf8 !important;
-  box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.2) !important;
+  border-color: #475569 !important;
+  box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.14) !important;
 }
 
 html[data-theme="dark"] .shadow-xl,

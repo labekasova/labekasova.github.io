@@ -1,69 +1,100 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useCallback, useMemo, useRef } from 'react';
 
-// Полная логическая база глаголов
+const WORD_TYPES = {
+  verb: 'verb',
+  noun: 'noun'
+};
+
+const WORD_FILTERS = [
+  { id: 'all', label: 'Все слова', title: 'Арабские слова', type: null },
+  { id: 'verb', label: 'Только глаголы', title: 'Арабские глаголы', type: WORD_TYPES.verb },
+  { id: 'noun', label: 'Только существительные', title: 'Арабские существительные', type: WORD_TYPES.noun }
+];
+
+// Полная логическая база слов
 const WORDS_BASE = [
   // --- ГРУППА 1: Помещение, жилье и движение ---
-  { id: 101, arabic: "دَخَلَ", transcription: "dakhala", russian: "вошёл", group: "Помещение и движение" },
-  { id: 102, arabic: "خَرَجَ", transcription: "kharaja", russian: "вышел", group: "Помещение и движение" },
-  { id: 19,  arabic: "وَقَفَ", transcription: "waqafa", russian: "стоял", group: "Помещение и движение" },
-  { id: 2,   arabic: "جَلَسَ", transcription: "jalasa", russian: "сидел", group: "Помещение и движение" },
-  { id: 16,  arabic: "نَزَلَ", transcription: "nazala", russian: "спускался", group: "Помещение и движение" },
-  { id: 103, arabic: "سَكَنَ", transcription: "sakana", russian: "жил / проживал", group: "Помещение и движение" },
+  { id: 101, arabic: "دَخَلَ", transcription: "dakhala", russian: "вошёл", group: "Помещение и движение", type: WORD_TYPES.verb },
+  { id: 102, arabic: "خَرَجَ", transcription: "kharaja", russian: "вышел", group: "Помещение и движение", type: WORD_TYPES.verb },
+  { id: 19,  arabic: "وَقَفَ", transcription: "waqafa", russian: "стоял", group: "Помещение и движение", type: WORD_TYPES.verb },
+  { id: 2,   arabic: "جَلَسَ", transcription: "jalasa", russian: "сидел", group: "Помещение и движение", type: WORD_TYPES.verb },
+  { id: 16,  arabic: "نَزَلَ", transcription: "nazala", russian: "спускался", group: "Помещение и движение", type: WORD_TYPES.verb },
+  { id: 103, arabic: "سَكَنَ", transcription: "sakana", russian: "жил / проживал", group: "Помещение и движение", type: WORD_TYPES.verb },
 
   // --- ГРУППА 2: Отель, визиты и действия ---
-  { id: 104, arabic: "حَجَزَ", transcription: "Hajaza", russian: "забронировал", group: "Поездка и визиты" },
-  { id: 105, arabic: "طَلَبَ", transcription: "Talaba", russian: "потребовал / попросил", group: "Поездка и визиты" },
-  { id: 106, arabic: "طَرَقَ", transcription: "Taraqa", russian: "постучался", group: "Поездка и визиты" },
-  { id: 107, arabic: "ظَهَرَ", transcription: "DHahara", russian: "появился", group: "Поездка и визиты" },
+  { id: 104, arabic: "حَجَزَ", transcription: "Hajaza", russian: "забронировал", group: "Поездка и визиты", type: WORD_TYPES.verb },
+  { id: 105, arabic: "طَلَبَ", transcription: "Talaba", russian: "потребовал / попросил", group: "Поездка и визиты", type: WORD_TYPES.verb },
+  { id: 106, arabic: "طَرَقَ", transcription: "Taraqa", russian: "постучался", group: "Поездка и визиты", type: WORD_TYPES.verb },
+  { id: 107, arabic: "ظَهَرَ", transcription: "DHahara", russian: "появился", group: "Поездка и визиты", type: WORD_TYPES.verb },
 
   // --- ГРУППА 3: Вода и Еда ---
-  { id: 24,  arabic: "سَبَحَ", transcription: "sabaHa", russian: "плыл", group: "Вода и Еда" },
-  { id: 25,  arabic: "شَرِبَ", transcription: "shariba", russian: "пил", group: "Вода и Еда" },
-  { id: 108, arabic: "أَكَلَ", transcription: "2akala", russian: "покушал / ел", group: "Вода и Еда" },
-  { id: 7,   arabic: "غَسَلَ", transcription: "ghasala", russian: "стирал / мыл", group: "Вода и Еда" },
+  { id: 24,  arabic: "سَبَحَ", transcription: "sabaHa", russian: "плыл", group: "Вода и Еда", type: WORD_TYPES.verb },
+  { id: 25,  arabic: "شَرِبَ", transcription: "shariba", russian: "пил", group: "Вода и Еда", type: WORD_TYPES.verb },
+  { id: 108, arabic: "أَكَلَ", transcription: "2akala", russian: "покушал / ел", group: "Вода и Еда", type: WORD_TYPES.verb },
+  { id: 7,   arabic: "غَسَلَ", transcription: "ghasala", russian: "стирал / мыл", group: "Вода и Еда", type: WORD_TYPES.verb },
 
   // --- ГРУППА 4: Одежда и Состояние организма ---
-  { id: 109, arabic: "لَبِسَ", transcription: "labisa", russian: "одел / надел", group: "Одежда и состояние" },
-  { id: 18,  arabic: "مَرِضَ", transcription: "mariDa", russian: "болел", group: "Одежда и состояние" },
-  { id: 110, arabic: "فَرِحَ", transcription: "fariHa", russian: "обрадовался", group: "Одежда и состояние" },
+  { id: 109, arabic: "لَبِسَ", transcription: "labisa", russian: "одел / надел", group: "Одежда и состояние", type: WORD_TYPES.verb },
+  { id: 18,  arabic: "مَرِضَ", transcription: "mariDa", russian: "болел", group: "Одежда и состояние", type: WORD_TYPES.verb },
+  { id: 110, arabic: "فَرِحَ", transcription: "fariHa", russian: "обрадовался", group: "Одежда и состояние", type: WORD_TYPES.verb },
 
   // --- ГРУППА 5: Учёба, разум и знания ---
-  { id: 5,   arabic: "فَهِمَ", transcription: "fahima", russian: "понял", group: "Учёба и знания" },
-  { id: 21,  arabic: "حَفِظَ", transcription: "HafiDHa", russian: "запоминал", group: "Учёба и знания" },
-  { id: 111, arabic: "دَرَسَ", transcription: "darasa", russian: "учил / учился", group: "Учёба и знания" },
-  { id: 112, arabic: "عَلِمَ", transcription: "3alima", russian: "знал", group: "Учёба и знания" },
-  { id: 113, arabic: "قَرَأَ", transcription: "qara2a", russian: "читал", group: "Учёба и знания" },
-  { id: 114, arabic: "كَتَبَ", transcription: "kataba", russian: "писал", group: "Учёба и знания" },
+  { id: 5,   arabic: "فَهِمَ", transcription: "fahima", russian: "понял", group: "Учёба и знания", type: WORD_TYPES.verb },
+  { id: 21,  arabic: "حَفِظَ", transcription: "HafiDHa", russian: "запоминал", group: "Учёба и знания", type: WORD_TYPES.verb },
+  { id: 111, arabic: "دَرَسَ", transcription: "darasa", russian: "учил / учился", group: "Учёба и знания", type: WORD_TYPES.verb },
+  { id: 112, arabic: "عَلِمَ", transcription: "3alima", russian: "знал", group: "Учёба и знания", type: WORD_TYPES.verb },
+  { id: 113, arabic: "قَرَأَ", transcription: "qara2a", russian: "читал", group: "Учёба и знания", type: WORD_TYPES.verb },
+  { id: 114, arabic: "كَتَبَ", transcription: "kataba", russian: "писал", group: "Учёба и знания", type: WORD_TYPES.verb },
 
   // --- ГРУППА 6: Взаимодействие с предметами (руки) ---
-  { id: 20,  arabic: "أَخَذَ", transcription: "2akhadha", russian: "взял / забрал", group: "Действия руками" },
-  { id: 115, arabic: "وَضَعَ", transcription: "waDa3a", russian: "положил", group: "Действия руками" },
-  { id: 116, arabic: "مَسَكَ", transcription: "masaka", russian: "держал", group: "Действия руками" },
-  { id: 17,  arabic: "حَمَلَ", transcription: "Hamala", russian: "нёс", group: "Действия руками" },
-  { id: 15,  arabic: "دَفَعَ", transcription: "dafa3a", russian: "толкал", group: "Действия руками" },
-  { id: 14,  arabic: "رَبَطَ", transcription: "rabaTa", russian: "завязал", group: "Действия руками" },
-  { id: 4,   arabic: "هَدَمَ", transcription: "hadama", russian: "разрушил", group: "Действия руками" },
-  { id: 117, arabic: "فَقَدَ", transcription: "faqada", russian: "потерял", group: "Действия руками" },
-  { id: 8,   arabic: "وَجَدَ", transcription: "wajada", russian: "нашёл", group: "Действия руками" },
-  { id: 11,  arabic: "عَمِلَ", transcription: "3amila", russian: "сделал / выполнил", group: "Действия руками" },
+  { id: 20,  arabic: "أَخَذَ", transcription: "2akhadha", russian: "взял / забрал", group: "Действия руками", type: WORD_TYPES.verb },
+  { id: 115, arabic: "وَضَعَ", transcription: "waDa3a", russian: "положил", group: "Действия руками", type: WORD_TYPES.verb },
+  { id: 116, arabic: "مَسَكَ", transcription: "masaka", russian: "держал", group: "Действия руками", type: WORD_TYPES.verb },
+  { id: 17,  arabic: "حَمَلَ", transcription: "Hamala", russian: "нёс", group: "Действия руками", type: WORD_TYPES.verb },
+  { id: 15,  arabic: "دَفَعَ", transcription: "dafa3a", russian: "толкал", group: "Действия руками", type: WORD_TYPES.verb },
+  { id: 14,  arabic: "رَبَطَ", transcription: "rabaTa", russian: "завязал", group: "Действия руками", type: WORD_TYPES.verb },
+  { id: 4,   arabic: "هَدَمَ", transcription: "hadama", russian: "разрушил", group: "Действия руками", type: WORD_TYPES.verb },
+  { id: 117, arabic: "فَقَدَ", transcription: "faqada", russian: "потерял", group: "Действия руками", type: WORD_TYPES.verb },
+  { id: 8,   arabic: "وَجَدَ", transcription: "wajada", russian: "нашёл", group: "Действия руками", type: WORD_TYPES.verb },
+  { id: 11,  arabic: "عَمِلَ", transcription: "3amila", russian: "сделал / выполнил", group: "Действия руками", type: WORD_TYPES.verb },
 
   // --- ГРУППА 7: Творчество, управление и активность ---
-  { id: 9,   arabic: "رَسَمَ", transcription: "rasama", russian: "рисовал", group: "Творчество и активность" },
-  { id: 13,  arabic: "نَفَخَ", transcription: "nafakha", russian: "надул", group: "Творчество и активность" },
-  { id: 10,  arabic: "ضَرَبَ", transcription: "Daraba", russian: "ударил", group: "Творчество и активность" },
-  { id: 118, arabic: "حَكَمَ", transcription: "Hakama", russian: "управлял / судил", group: "Творчество и активность" },
-  { id: 119, arabic: "نَظَرَ", transcription: "naDHara", russian: "смотрел", group: "Творчество и активность" },
+  { id: 9,   arabic: "رَسَمَ", transcription: "rasama", russian: "рисовал", group: "Творчество и активность", type: WORD_TYPES.verb },
+  { id: 13,  arabic: "نَفَخَ", transcription: "nafakha", russian: "надул", group: "Творчество и активность", type: WORD_TYPES.verb },
+  { id: 10,  arabic: "ضَرَبَ", transcription: "Daraba", russian: "ударил", group: "Творчество и активность", type: WORD_TYPES.verb },
+  { id: 118, arabic: "حَكَمَ", transcription: "Hakama", russian: "управлял / судил", group: "Творчество и активность", type: WORD_TYPES.verb },
+  { id: 119, arabic: "نَظَرَ", transcription: "naDHara", russian: "смотрел", group: "Творчество и активность", type: WORD_TYPES.verb },
 
   // --- ГРУППА 8: Речь, общение и вера ---
-  { id: 12,  arabic: "سَكَتَ", transcription: "sakata", russian: "молчал", group: "Общение и дух" },
-  { id: 6,   arabic: "شَكَرَ", transcription: "shakara", russian: "поблагодарил", group: "Общение и дух" },
-  { id: 3,   arabic: "حَمِدَ", transcription: "Hamida", russian: "воздал хвалу [Богу]", group: "Общение и дух" },
-  { id: 1,   arabic: "سَجَدَ", transcription: "sajada", russian: "совершил земной поклон", group: "Общение и дух" }
+  { id: 12,  arabic: "سَكَتَ", transcription: "sakata", russian: "молчал", group: "Общение и дух", type: WORD_TYPES.verb },
+  { id: 6,   arabic: "شَكَرَ", transcription: "shakara", russian: "поблагодарил", group: "Общение и дух", type: WORD_TYPES.verb },
+  { id: 3,   arabic: "حَمِدَ", transcription: "Hamida", russian: "воздал хвалу [Богу]", group: "Общение и дух", type: WORD_TYPES.verb },
+  { id: 1,   arabic: "سَجَدَ", transcription: "sajada", russian: "совершил земной поклон", group: "Общение и дух", type: WORD_TYPES.verb },
+
+  // --- ГРУППА 9: Новые существительные ---
+  { id: 201, arabic: "مَغْرِبُ", transcription: "maghribu", russian: "закат, вечернее время", group: "Время дня", type: WORD_TYPES.noun },
+  { id: 202, arabic: "دَفْتَرُ", transcription: "daftaru", russian: "тетрадь", group: "Учёба и знания", type: WORD_TYPES.noun },
+  { id: 203, arabic: "مَوْزُ", transcription: "mawzu", russian: "банан", group: "Вода и Еда", type: WORD_TYPES.noun },
+  { id: 204, arabic: "وَرْدَةُ", transcription: "wardatu", russian: "цветок / роза", group: "Растения", type: WORD_TYPES.noun },
+  { id: 205, arabic: "مُسْلِمُ", transcription: "muslimu", russian: "мусульманин / покорный [Богу]", group: "Люди", type: WORD_TYPES.noun },
+  { id: 206, arabic: "بِنْتُ", transcription: "bintu", russian: "девочка / дочь", group: "Люди", type: WORD_TYPES.noun }
 ];
+
+const AUDIO_READY_TRANSCRIPTIONS = new Set([
+  ...WORDS_BASE
+    .filter((word) => word.id < 200)
+    .map((word) => word.transcription),
+  'bintu',
+  'daftaru',
+  'mawzu',
+  'maghribu',
+  'muslimu',
+  'wardatu'
+]);
 
 const WORDS_DATA = WORDS_BASE.map((word) => ({
   ...word,
-  audio: `/audio/${word.transcription}.mp3`
+  audio: AUDIO_READY_TRANSCRIPTIONS.has(word.transcription) ? `/audio/${word.transcription}.mp3` : null
 }));
 
 // Клавиатура для ввода
@@ -86,10 +117,17 @@ const IconEye = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height=
 const IconVolume = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>;
 const IconMoon = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3a6 6 0 1 0 9 9 9 9 0 1 1-9-9Z"/></svg>;
 const IconSun = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>;
+const IconChevronDown = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>;
 
 export default function App() {
   const audioRef = useRef(null);
+  const audioRequestRef = useRef(0);
+  const audioSourceRef = useRef('');
+  const filterButtonRef = useRef(null);
   const [activeTab, setActiveTab] = useState('learn'); // 'learn', 'quiz' или 'write'
+  const [activeFilter, setActiveFilter] = useState('all');
+  const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
+  const [filterMenuStyle, setFilterMenuStyle] = useState({ top: 0, left: 0, width: 0 });
   const [theme, setTheme] = useState(() => {
     if (typeof window === 'undefined') {
       return 'light';
@@ -99,17 +137,19 @@ export default function App() {
   });
   
   // Состояния карточек
-  const [words, setWords] = useState([...WORDS_DATA]);
+  const initialWords = WORDS_DATA;
+  const [words, setWords] = useState(initialWords);
   const [isSortedLogical, setIsSortedLogical] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  const [isAudioLoading, setIsAudioLoading] = useState(false);
   const [cardDirection, setCardDirection] = useState(null);
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
 
   // Состояния Теста
-  const [quizPool, setQuizPool] = useState([...WORDS_DATA]); 
+  const [quizPool, setQuizPool] = useState(initialWords); 
   const [quizQuestion, setQuizQuestion] = useState(null);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [isAnswerCorrect, setIsAnswerCorrect] = useState(null);
@@ -117,7 +157,7 @@ export default function App() {
   const [correctCountQuiz, setCorrectCountQuiz] = useState(0);
 
   // Состояния Письма
-  const [writePool, setWritePool] = useState([...WORDS_DATA]); 
+  const [writePool, setWritePool] = useState(initialWords); 
   const [writeQuestion, setWriteQuestion] = useState(null);
   const [typedAnswer, setTypedAnswer] = useState("");
   const [writeChecked, setWriteChecked] = useState(false);
@@ -135,19 +175,53 @@ export default function App() {
     return newArr;
   };
 
+  const activeFilterOption = WORD_FILTERS.find((filter) => filter.id === activeFilter) ?? WORD_FILTERS[0];
+  const filteredWords = useMemo(() => (
+    WORDS_DATA.filter((word) => (
+      activeFilterOption.type ? word.type === activeFilterOption.type : true
+    ))
+  ), [activeFilterOption.type]);
+
+  const resetLearningState = useCallback((nextWords) => {
+    setWords([...nextWords]);
+    setCurrentIndex(0);
+    setIsFlipped(false);
+    setIsSortedLogical(true);
+    setCardDirection(null);
+  }, []);
+
+  const resetQuizState = useCallback((nextWords) => {
+    const freshPool = shuffleArray(nextWords);
+    setQuizPool(freshPool);
+    setQuizQuestion(null);
+    setSelectedAnswer(null);
+    setIsAnswerCorrect(null);
+    setQuizCompleted(nextWords.length === 0);
+    setCorrectCountQuiz(0);
+  }, []);
+
+  const resetWriteState = useCallback((nextWords) => {
+    const freshPool = shuffleArray(nextWords);
+    setWritePool(freshPool);
+    setWriteQuestion(null);
+    setTypedAnswer("");
+    setWriteChecked(false);
+    setIsWriteCorrect(null);
+    setWriteCompleted(nextWords.length === 0);
+    setShowHint(false);
+    setCorrectCountWrite(0);
+  }, []);
+
   // Обучение
   const handleShuffle = () => {
-    setWords(shuffleArray(WORDS_DATA));
+    setWords(shuffleArray(filteredWords));
     setCurrentIndex(0);
     setIsFlipped(false);
     setIsSortedLogical(false);
   };
 
   const handleResetToLogical = () => {
-    setWords([...WORDS_DATA]);
-    setCurrentIndex(0);
-    setIsFlipped(false);
-    setIsSortedLogical(true);
+    resetLearningState(filteredWords);
   };
 
   const nextCard = useCallback(() => {
@@ -185,17 +259,17 @@ export default function App() {
       return;
     }
     const correctWord = currentPool[Math.floor(Math.random() * currentPool.length)];
-    const wrongCandidates = WORDS_DATA.filter(w => w.arabic !== correctWord.arabic);
+    const wrongCandidates = filteredWords.filter(w => w.arabic !== correctWord.arabic);
     const shuffledWrong = shuffleArray(wrongCandidates).slice(0, 3);
     const options = shuffleArray([correctWord, ...shuffledWrong]);
 
     setQuizQuestion({ correctWord, options });
     setSelectedAnswer(null);
     setIsAnswerCorrect(null);
-  }, []);
+  }, [filteredWords]);
 
   const startQuizFromScratch = () => {
-    const freshPool = shuffleArray([...WORDS_DATA]);
+    const freshPool = shuffleArray([...filteredWords]);
     setQuizPool(freshPool);
     setQuizCompleted(false);
     setCorrectCountQuiz(0);
@@ -239,7 +313,7 @@ export default function App() {
   }, []);
 
   const startWriteFromScratch = () => {
-    const freshPool = shuffleArray([...WORDS_DATA]);
+    const freshPool = shuffleArray([...filteredWords]);
     setWritePool(freshPool);
     setWriteCompleted(false);
     setCorrectCountWrite(0);
@@ -290,62 +364,193 @@ export default function App() {
   };
 
   useEffect(() => {
-    if (activeTab === 'quiz' && quizPool.length === WORDS_DATA.length && !quizQuestion) {
+    if (activeTab === 'quiz' && quizPool.length === filteredWords.length && !quizQuestion) {
       generateQuizQuestion(quizPool);
     }
-    if (activeTab === 'write' && writePool.length === WORDS_DATA.length && !writeQuestion) {
+    if (activeTab === 'write' && writePool.length === filteredWords.length && !writeQuestion) {
       generateWriteQuestion(writePool);
     }
-  }, [activeTab, quizPool, quizQuestion, writePool, writeQuestion, generateQuizQuestion, generateWriteQuestion]);
+  }, [activeTab, quizPool, quizQuestion, writePool, writeQuestion, generateQuizQuestion, generateWriteQuestion, filteredWords.length]);
+
+  useEffect(() => {
+    resetLearningState(filteredWords);
+    resetQuizState(filteredWords);
+    resetWriteState(filteredWords);
+    setIsFilterMenuOpen(false);
+  }, [activeFilter, resetLearningState, resetQuizState, resetWriteState, filteredWords]);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     window.localStorage.setItem('theme', theme);
   }, [theme]);
 
+  useLayoutEffect(() => {
+    if (!isFilterMenuOpen) return;
+
+    const updateFilterMenuPosition = () => {
+      const button = filterButtonRef.current;
+      if (!button) return;
+
+      const rect = button.getBoundingClientRect();
+      const width = Math.min(window.innerWidth - 24, 380);
+      const centerX = rect.left + rect.width / 2;
+      const left = Math.max(width / 2 + 12, Math.min(window.innerWidth - width / 2 - 12, centerX));
+      const top = rect.bottom - 6;
+
+      setFilterMenuStyle({ top, left, width });
+    };
+
+    updateFilterMenuPosition();
+    window.addEventListener('resize', updateFilterMenuPosition);
+    window.addEventListener('scroll', updateFilterMenuPosition, true);
+
+    return () => {
+      window.removeEventListener('resize', updateFilterMenuPosition);
+      window.removeEventListener('scroll', updateFilterMenuPosition, true);
+    };
+  }, [isFilterMenuOpen, activeFilter, theme]);
+
   useEffect(() => {
     if (!audioRef.current) {
       audioRef.current = new Audio();
+      audioRef.current.preload = 'auto';
     }
 
     const audio = audioRef.current;
     const handlePlay = () => {
+      setIsAudioLoading(false);
       setIsAudioPlaying(true);
     };
 
+    const handleLoadStart = () => {
+      setIsAudioLoading(true);
+      setIsAudioPlaying(false);
+    };
+    const handleCanPlay = () => setIsAudioLoading(false);
     const handlePause = () => setIsAudioPlaying(false);
     const handleEnded = () => setIsAudioPlaying(false);
+    const handleError = () => {
+      setIsAudioLoading(false);
+      setIsAudioPlaying(false);
+    };
 
+    audio.addEventListener('loadstart', handleLoadStart);
+    audio.addEventListener('canplay', handleCanPlay);
     audio.addEventListener('play', handlePlay);
     audio.addEventListener('pause', handlePause);
     audio.addEventListener('ended', handleEnded);
+    audio.addEventListener('error', handleError);
+    audio.addEventListener('stalled', handleError);
+    audio.addEventListener('abort', handleError);
 
     return () => {
+      audio.removeEventListener('loadstart', handleLoadStart);
+      audio.removeEventListener('canplay', handleCanPlay);
       audio.removeEventListener('play', handlePlay);
       audio.removeEventListener('pause', handlePause);
       audio.removeEventListener('ended', handleEnded);
+      audio.removeEventListener('error', handleError);
+      audio.removeEventListener('stalled', handleError);
+      audio.removeEventListener('abort', handleError);
       audio.pause();
       audio.currentTime = 0;
     };
   }, []);
 
-  const currentWord = words[currentIndex];
-
-  const playCurrentAudio = () => {
-    if (!currentWord.audio) return;
+  useEffect(() => {
     const audio = audioRef.current;
+    if (!audio) return;
+
     audio.pause();
     audio.currentTime = 0;
+    setIsAudioPlaying(false);
+    setIsAudioLoading(false);
+    audioRequestRef.current += 1;
+  }, [currentIndex, activeFilter, activeTab]);
 
-    if (audio.src !== new URL(currentWord.audio, window.location.origin).href) {
+  const currentWord = words[currentIndex];
+
+  const playCurrentAudio = async () => {
+    if (!currentWord.audio) return;
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const requestId = audioRequestRef.current + 1;
+    audioRequestRef.current = requestId;
+    const nextSrc = new URL(currentWord.audio, window.location.origin).href;
+    const isSameSource = audioSourceRef.current === nextSrc;
+
+    setIsAudioLoading(true);
+    setIsAudioPlaying(false);
+
+    audio.pause();
+
+    if (!isSameSource) {
       audio.src = currentWord.audio;
+      audioSourceRef.current = nextSrc;
+      audio.load();
+    } else {
+      audio.currentTime = 0;
     }
 
-    audio.play().catch(() => {});
+    try {
+      if (!isSameSource && audio.readyState < HTMLMediaElement.HAVE_FUTURE_DATA) {
+        await new Promise((resolve, reject) => {
+          const cleanup = () => {
+            audio.removeEventListener('canplaythrough', handleReady);
+            audio.removeEventListener('canplay', handleReady);
+            audio.removeEventListener('error', handleFailure);
+            audio.removeEventListener('stalled', handleFailure);
+            audio.removeEventListener('abort', handleFailure);
+          };
+
+          const handleReady = () => {
+            cleanup();
+            resolve();
+          };
+
+          const handleFailure = () => {
+            cleanup();
+            reject(new Error('audio-load-failed'));
+          };
+
+          audio.addEventListener('canplaythrough', handleReady, { once: true });
+          audio.addEventListener('canplay', handleReady, { once: true });
+          audio.addEventListener('error', handleFailure, { once: true });
+          audio.addEventListener('stalled', handleFailure, { once: true });
+          audio.addEventListener('abort', handleFailure, { once: true });
+        });
+      }
+
+      if (audioRequestRef.current !== requestId) return;
+
+      audio.currentTime = 0;
+      await audio.play();
+    } catch {
+      if (audioRequestRef.current !== requestId) return;
+
+      setIsAudioLoading(false);
+      setIsAudioPlaying(false);
+
+      audio.pause();
+      audio.removeAttribute('src');
+      audio.load();
+      audioSourceRef.current = '';
+    }
   };
 
+  const audioButtonLabel = !currentWord?.audio
+    ? 'Аудио пока нет'
+    : 'Прослушать';
+
+  const audioButtonAriaLabel = !currentWord?.audio
+    ? 'Аудио пока нет'
+    : isAudioLoading
+      ? 'Аудио загружается'
+      : 'Прослушать произношение';
+
   return (
-    <div className="min-h-dvh overflow-x-hidden bg-slate-50 px-3 text-slate-800 font-sans selection:bg-indigo-100 sm:px-0">
+    <div className={`min-h-dvh overflow-x-hidden px-3 font-sans selection:bg-indigo-100 sm:px-0 ${theme === 'dark' ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-800'}`}>
       
       <style dangerouslySetInnerHTML={{__html: `
         .perspective-1000 { perspective: 1000px; }
@@ -359,20 +564,80 @@ export default function App() {
         }
       `}} />
 
-      <div className="mx-auto flex min-h-dvh w-full min-w-0 max-w-none flex-col overflow-hidden bg-white shadow-xl lg:max-w-md">
+      <div className={`mx-auto flex min-h-dvh w-full min-w-0 max-w-none flex-col overflow-hidden shadow-xl lg:max-w-md ${theme === 'dark' ? 'bg-slate-900' : 'bg-white'}`}>
         
         {/* Шапка */}
-        <header className="relative z-10 w-full min-w-0 shrink-0 overflow-hidden rounded-b-[2rem] bg-indigo-600 px-5 pb-6 pt-8 text-white shadow-md">
+        <header className={`relative z-10 w-full min-w-0 shrink-0 overflow-visible rounded-b-[2rem] px-5 pb-6 pt-8 text-white shadow-md ${theme === 'dark' ? 'bg-slate-800' : 'bg-indigo-600'}`}>
           <button
             type="button"
             aria-label={theme === 'dark' ? 'Переключить на светлую тему' : 'Переключить на тёмную тему'}
             onClick={() => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))}
-            className="theme-toggle absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-white transition-colors hover:bg-white/25"
+            className="theme-toggle absolute right-4 top-4 z-30 flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-white transition-colors hover:bg-white/25"
           >
             {theme === 'dark' ? <IconSun /> : <IconMoon />}
           </button>
-          <h1 className="text-xl font-bold text-center mb-1">Арабские глаголы</h1>
-          <p className="text-center text-xs text-indigo-200 mb-4">База знаний: {WORDS_DATA.length} слов</p>
+          <div className="relative z-20 mb-4 flex flex-col items-center">
+            <button
+              type="button"
+              ref={filterButtonRef}
+              onClick={() => setIsFilterMenuOpen((prev) => !prev)}
+              className="inline-flex items-center justify-center gap-1 rounded-full px-3 py-1 text-center text-xl font-bold text-white transition-colors hover:bg-white/10"
+              aria-haspopup="menu"
+              aria-expanded={isFilterMenuOpen}
+            >
+              <span>{activeFilterOption.title}</span>
+              <span className={`transition-transform duration-200 ${isFilterMenuOpen ? 'rotate-180' : ''}`}>
+                <IconChevronDown />
+              </span>
+            </button>
+            <p className="text-center text-xs text-indigo-200">База знаний: {filteredWords.length} слов</p>
+
+            {isFilterMenuOpen && (
+              <>
+                <button
+                  type="button"
+                  aria-label="Закрыть меню фильтра"
+                  onClick={() => setIsFilterMenuOpen(false)}
+                  className="fixed inset-0 z-30 cursor-default bg-transparent"
+                />
+                <div
+                  className={`fixed z-40 rounded-3xl border p-2 shadow-[0_18px_40px_rgba(15,23,42,0.14)] ${
+                    theme === 'dark'
+                      ? 'border-slate-700 bg-slate-900 shadow-[0_18px_40px_rgba(2,6,23,0.5)]'
+                      : 'border-slate-200 bg-white'
+                  }`}
+                  style={{
+                    top: `${filterMenuStyle.top}px`,
+                    left: `${filterMenuStyle.left}px`,
+                    width: `${filterMenuStyle.width}px`,
+                    transform: 'translateX(-50%)'
+                  }}
+                >
+                {WORD_FILTERS.map((filter) => (
+                  <button
+                    key={filter.id}
+                    type="button"
+                    onClick={() => setActiveFilter(filter.id)}
+                    className={`flex w-full items-center justify-between rounded-2xl px-4 py-3 text-left text-sm transition-colors ${
+                      filter.id === activeFilter
+                        ? theme === 'dark'
+                          ? 'bg-slate-800 text-white shadow-sm ring-1 ring-slate-700'
+                          : 'bg-indigo-50 text-indigo-700 shadow-sm'
+                        : theme === 'dark'
+                          ? 'text-slate-200 hover:bg-slate-800'
+                          : 'text-slate-700 hover:bg-slate-50'
+                    }`}
+                  >
+                    <span>{filter.label}</span>
+                    <span className={`text-[11px] ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
+                      {WORDS_DATA.filter((word) => (filter.type ? word.type === filter.type : true)).length}
+                    </span>
+                  </button>
+                ))}
+              </div>
+              </>
+            )}
+          </div>
           <div className="relative flex w-full min-w-0 overflow-hidden rounded-xl bg-indigo-700/50 p-1 text-xs">
 
             <button 
@@ -403,7 +668,7 @@ export default function App() {
         </header>
 
         {/* Контент */}
-        <main className="flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-hidden px-5 pt-5 pb-[max(1rem,env(safe-area-inset-bottom))]">
+        <main className={`flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-hidden px-5 pt-5 pb-[max(1rem,env(safe-area-inset-bottom))] ${theme === 'dark' ? 'text-slate-100' : 'text-slate-800'}`}>
           
           {/* ================= КАРТОЧКИ ================= */}
           {activeTab === 'learn' && words.length > 0 && (
@@ -416,7 +681,7 @@ export default function App() {
               )}
 
               <div className="flex justify-between items-center mb-3 text-xs font-semibold text-slate-500 px-1">
-                <span>Глагол {currentIndex + 1} из {words.length}</span>
+                <span>{currentWord.type === WORD_TYPES.verb ? 'Глагол' : 'Слово'} {currentIndex + 1} из {words.length}</span>
                 <div className="flex gap-1.5">
                   {isSortedLogical ? (
                     <button 
@@ -485,24 +750,15 @@ export default function App() {
                   <IconArrowLeft />
                 </button>
                 <div className="relative flex h-10 w-[190px] items-center justify-center">
-                  <span
-                    aria-hidden={isFlipped}
-                    className={`absolute text-xs text-slate-400 transition-opacity duration-200 ${isFlipped ? 'opacity-0' : 'opacity-100'}`}
-                  >
-                    Свайпайте влево/вправо
-                  </span>
                   <button
                     type="button"
-                    disabled={!currentWord.audio}
-                    tabIndex={isFlipped && currentWord.audio ? 0 : -1}
-                    aria-hidden={!isFlipped}
-                    aria-label={currentWord.audio ? 'Прослушать произношение' : 'Аудио пока нет'}
+                    disabled={!currentWord.audio || isAudioLoading}
+                    aria-label={audioButtonAriaLabel}
                     onClick={playCurrentAudio}
-                    style={{ transitionDelay: isFlipped ? '180ms' : '0ms' }}
-                    className={`audio-preview absolute inset-0 m-auto flex h-10 w-max items-center justify-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold shadow-sm transform-gpu transition-[transform,opacity,box-shadow,border-color] duration-150 ease-out active:scale-95 disabled:cursor-default ${currentWord.audio ? '' : 'audio-missing'} ${isAudioPlaying ? 'audio-preview-playing' : ''} ${isFlipped ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
+                    className={`audio-preview flex h-10 w-[176px] items-center justify-center gap-2 rounded-full border px-4 py-2 text-sm font-medium shadow-sm transition-[transform,background-color,color,border-color,box-shadow] duration-150 ease-out active:scale-95 disabled:cursor-default ${isFlipped ? '' : 'audio-preview-front'} ${currentWord.audio ? '' : 'audio-missing'} ${isAudioPlaying ? 'audio-preview-playing' : ''}`}
                   >
                     <IconVolume />
-                    {currentWord.audio ? 'Прослушать' : 'Аудио пока нет'}
+                    {audioButtonLabel}
                   </button>
                 </div>
                 <button 
@@ -523,7 +779,7 @@ export default function App() {
                 <div className="flex-1 flex flex-col items-center justify-center text-center p-6">
                   <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-4 text-3xl">🎉</div>
                   <h2 className="text-2xl font-bold text-slate-800 mb-2">Великолепно!</h2>
-                  <p className="text-slate-500 mb-6">Вы успешно выучили все {WORDS_DATA.length} слов!</p>
+                  <p className="text-slate-500 mb-6">Вы успешно выучили все {filteredWords.length} слов!</p>
                   <button 
                     onClick={startQuizFromScratch}
                     className="w-full bg-indigo-600 text-white font-semibold py-3.5 px-6 rounded-2xl shadow-md active:scale-95 transition-transform"
@@ -535,13 +791,13 @@ export default function App() {
                 <div className="flex-1 flex flex-col">
                   <div className="mb-4">
                     <div className="flex justify-between text-xs font-semibold text-slate-500 mb-1.5">
-                      <span>Изучено: {correctCountQuiz} из {WORDS_DATA.length}</span>
+                      <span>Изучено: {correctCountQuiz} из {filteredWords.length}</span>
                       <span>Осталось в пуле: {quizPool.length}</span>
                     </div>
                     <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
                       <div 
                         className="h-full bg-indigo-600 transition-all duration-300" 
-                        style={{ width: `${(correctCountQuiz / WORDS_DATA.length) * 100}%` }}
+                        style={{ width: `${filteredWords.length ? (correctCountQuiz / filteredWords.length) * 100 : 0}%` }}
                       />
                     </div>
                   </div>
@@ -601,7 +857,7 @@ export default function App() {
                 <div className="flex-1 flex flex-col items-center justify-center text-center p-6">
                   <div className="w-20 h-20 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-4 text-3xl">✍️</div>
                   <h2 className="text-2xl font-bold text-slate-800 mb-2">Отличный результат!</h2>
-                  <p className="text-slate-500 mb-6">Вы безошибочно написали все {WORDS_DATA.length} глаголов!</p>
+                  <p className="text-slate-500 mb-6">Вы безошибочно написали все {filteredWords.length} слов!</p>
                   <button 
                     onClick={startWriteFromScratch}
                     className="w-full bg-indigo-600 text-white font-semibold py-3.5 px-6 rounded-2xl shadow-md active:scale-95 transition-transform"
@@ -614,13 +870,13 @@ export default function App() {
                   <div>
                     <div className="mb-3">
                       <div className="flex justify-between text-xs font-semibold text-slate-500 mb-1">
-                        <span>Написано правильно: {correctCountWrite} из {WORDS_DATA.length}</span>
+                        <span>Написано правильно: {correctCountWrite} из {filteredWords.length}</span>
                         <span>Осталось в пуле: {writePool.length}</span>
                       </div>
                       <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
                         <div 
                           className="h-full bg-indigo-600 transition-all duration-300" 
-                          style={{ width: `${(correctCountWrite / WORDS_DATA.length) * 100}%` }}
+                          style={{ width: `${filteredWords.length ? (correctCountWrite / filteredWords.length) * 100 : 0}%` }}
                         />
                       </div>
                     </div>
