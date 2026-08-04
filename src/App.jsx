@@ -776,7 +776,6 @@ export default function App() {
             )}
           </div>
 
-          </div>
           <div className="relative flex w-full min-w-0 overflow-hidden rounded-xl bg-indigo-700/50 p-1 text-xs">
 
             <button 
