@@ -29,9 +29,9 @@ const WORD_FILTERS = [
 ];
 
 const LESSON_GROUPS = {
-  group1: 'Группа 1 · Модуль 1 · 07/2026',
-  group2: 'Группа 2 · Сукун · 30/07/2026',
-  group3: 'Группа 3 · Шадда · 04/08/2026'
+  group1: 'Глаголы с 1го модуля',
+  group2: 'Слова с урока про Сукун',
+  group3: 'Слова с урока про Шадда'
 };
 
 const getLessonGroup = (wordId) => {
