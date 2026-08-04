@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-
-const WORD_TYPES = {
-  verb: 'verb',
-  noun: 'noun',
-  particle: 'particle'
-};
+import { LESSON_FILTERS } from './data/lessons.js';
+import { WORDS_DATA, WORD_TYPES } from './data/words.js';
+import {
+  buildRepeatedRootIndex,
+  filterWords,
+  sortWordsByRussian
+} from './domain/wordSelectors.js';
 
 const WORD_FILTERS = [
   { id: 'all', label: 'Все слова', title: 'Все слова', type: null },
@@ -28,110 +29,6 @@ const WORD_FILTERS = [
   }
 ];
 
-const LESSON_GROUPS = {
-  group1: 'Глаголы с 1го модуля',
-  group2: 'Слова с урока про Сукун',
-  group3: 'Слова с урока про Шадда'
-};
-const LESSON_FILTERS = [
-  { id: 'all', label: 'Все уроки' },
-  ...Object.values(LESSON_GROUPS)
-    .reverse()
-    .map((group) => ({ id: group, label: group }))
-];
-
-const getLessonGroup = (wordId) => {
-  if (wordId >= 201 && wordId <= 206) {
-    return LESSON_GROUPS.group2;
-  }
-
-  if (wordId >= 207 && wordId <= 212) {
-    return LESSON_GROUPS.group3;
-  }
-
-  return LESSON_GROUPS.group1;
-};
-// Полная логическая база слов
-const WORDS_BASE = [
-  // --- ГРУППА 1: Глаголы с 1го модуля 07/2026 ---
-  { id: 101, arabic: "دَخَلَ", transcription: "dakhala", russian: "вошёл", group: "Помещение и движение", type: WORD_TYPES.verb },
-  { id: 102, arabic: "خَرَجَ", transcription: "kharaja", russian: "вышел", group: "Помещение и движение", type: WORD_TYPES.verb },
-  { id: 19,  arabic: "وَقَفَ", transcription: "waqafa", russian: "стоял", group: "Помещение и движение", type: WORD_TYPES.verb },
-  { id: 2,   arabic: "جَلَسَ", transcription: "jalasa", russian: "сидел", group: "Помещение и движение", type: WORD_TYPES.verb },
-  { id: 16,  arabic: "نَزَلَ", transcription: "nazala", russian: "спускался", group: "Помещение и движение", type: WORD_TYPES.verb },
-  { id: 103, arabic: "سَكَنَ", transcription: "sakana", russian: "жил / проживал", group: "Помещение и движение", type: WORD_TYPES.verb },
-  { id: 104, arabic: "حَجَزَ", transcription: "Hajaza", russian: "забронировал", group: "Поездка и визиты", type: WORD_TYPES.verb },
-  { id: 105, arabic: "طَلَبَ", transcription: "Talaba", russian: "потребовал / попросил", group: "Поездка и визиты", type: WORD_TYPES.verb },
-  { id: 106, arabic: "طَرَقَ", transcription: "Taraqa", russian: "постучался", group: "Поездка и визиты", type: WORD_TYPES.verb },
-  { id: 107, arabic: "ظَهَرَ", transcription: "DHahara", russian: "появился", group: "Поездка и визиты", type: WORD_TYPES.verb },
-  { id: 24,  arabic: "سَبَحَ", transcription: "sabaHa", russian: "плыл", group: "Вода и Еда", type: WORD_TYPES.verb },
-  { id: 25,  arabic: "شَرِبَ", transcription: "shariba", russian: "пил", group: "Вода и Еда", type: WORD_TYPES.verb },
-  { id: 108, arabic: "أَكَلَ", transcription: "2akala", russian: "покушал / ел", group: "Вода и Еда", type: WORD_TYPES.verb },
-  { id: 7,   arabic: "غَسَلَ", transcription: "ghasala", russian: "стирал / мыл", group: "Вода и Еда", type: WORD_TYPES.verb },
-  { id: 109, arabic: "لَبِسَ", transcription: "labisa", russian: "одел / надел", group: "Одежда и состояние", type: WORD_TYPES.verb },
-  { id: 18,  arabic: "مَرِضَ", transcription: "mariDa", russian: "болел", group: "Одежда и состояние", type: WORD_TYPES.verb },
-  { id: 110, arabic: "فَرِحَ", transcription: "fariHa", russian: "обрадовался", group: "Одежда и состояние", type: WORD_TYPES.verb },
-  { id: 5,   arabic: "فَهِمَ", transcription: "fahima", russian: "понял", group: "Учёба и знания", type: WORD_TYPES.verb },
-  { id: 21,  arabic: "حَفِظَ", transcription: "HafiDHa", russian: "запоминал", group: "Учёба и знания", type: WORD_TYPES.verb },
-  { id: 111, arabic: "دَرَسَ", transcription: "darasa", russian: "учил / учился", group: "Учёба и знания", type: WORD_TYPES.verb },
-  { id: 112, arabic: "عَلِمَ", transcription: "3alima", russian: "знал", group: "Учёба и знания", type: WORD_TYPES.verb },
-  { id: 113, arabic: "قَرَأَ", transcription: "qara2a", russian: "читал", group: "Учёба и знания", type: WORD_TYPES.verb },
-  { id: 114, arabic: "كَتَبَ", transcription: "kataba", russian: "писал", group: "Учёба и знания", type: WORD_TYPES.verb },
-  { id: 20,  arabic: "أَخَذَ", transcription: "2akhadha", russian: "взял / забрал", group: "Действия руками", type: WORD_TYPES.verb },
-  { id: 115, arabic: "وَضَعَ", transcription: "waDa3a", russian: "положил", group: "Действия руками", type: WORD_TYPES.verb },
-  { id: 116, arabic: "مَسَكَ", transcription: "masaka", russian: "держал", group: "Действия руками", type: WORD_TYPES.verb },
-  { id: 17,  arabic: "حَمَلَ", transcription: "Hamala", russian: "нёс", group: "Действия руками", type: WORD_TYPES.verb },
-  { id: 15,  arabic: "دَفَعَ", transcription: "dafa3a", russian: "толкал", group: "Действия руками", type: WORD_TYPES.verb },
-  { id: 14,  arabic: "رَبَطَ", transcription: "rabaTa", russian: "завязал", group: "Действия руками", type: WORD_TYPES.verb },
-  { id: 4,   arabic: "هَدَمَ", transcription: "hadama", russian: "разрушил", group: "Действия руками", type: WORD_TYPES.verb },
-  { id: 117, arabic: "فَقَدَ", transcription: "faqada", russian: "потерял", group: "Действия руками", type: WORD_TYPES.verb },
-  { id: 8,   arabic: "وَجَدَ", transcription: "wajada", russian: "нашёл", group: "Действия руками", type: WORD_TYPES.verb },
-  { id: 11,  arabic: "عَمِلَ", transcription: "3amila", russian: "сделал / выполнил", group: "Действия руками", type: WORD_TYPES.verb },
-  { id: 9,   arabic: "رَسَمَ", transcription: "rasama", russian: "рисовал", group: "Творчество и активность", type: WORD_TYPES.verb },
-  { id: 13,  arabic: "نَفَخَ", transcription: "nafakha", russian: "надул", group: "Творчество и активность", type: WORD_TYPES.verb },
-  { id: 10,  arabic: "ضَرَبَ", transcription: "Daraba", russian: "ударил", group: "Творчество и активность", type: WORD_TYPES.verb },
-  { id: 118, arabic: "حَكَمَ", transcription: "Hakama", russian: "управлял / судил", group: "Творчество и активность", type: WORD_TYPES.verb },
-  { id: 119, arabic: "نَظَرَ", transcription: "naDHara", russian: "смотрел", group: "Творчество и активность", type: WORD_TYPES.verb },
-  { id: 12,  arabic: "سَكَتَ", transcription: "sakata", russian: "молчал", group: "Общение и дух", type: WORD_TYPES.verb },
-  { id: 6,   arabic: "شَكَرَ", transcription: "shakara", russian: "поблагодарил", group: "Общение и дух", type: WORD_TYPES.verb },
-  { id: 3,   arabic: "حَمِدَ", transcription: "Hamida", russian: "воздал хвалу [Богу]", group: "Общение и дух", type: WORD_TYPES.verb },
-  { id: 1,   arabic: "سَجَدَ", transcription: "sajada", russian: "совершил земной поклон", group: "Общение и дух", type: WORD_TYPES.verb },
-
-    // --- ГРУППА 2: Новые существительные с урока про Сукун 30/07/2026 ---
-  { id: 201, arabic: "مَغْرِبُ", transcription: "maghribu", russian: "закат, вечернее время", group: "Время дня", type: WORD_TYPES.noun },
-  { id: 202, arabic: "دَفْتَرُ", transcription: "daftaru", russian: "тетрадь", group: "Учёба и знания", type: WORD_TYPES.noun },
-  { id: 203, arabic: "مَوْزُ", transcription: "mawzu", russian: "банан", group: "Вода и Еда", type: WORD_TYPES.noun },
-  { id: 204, arabic: "وَرْدَةُ", transcription: "wardatu", russian: "цветок / роза", group: "Растения", type: WORD_TYPES.noun },
-  { id: 205, arabic: "مُسْلِمُ", transcription: "muslimu", russian: "мусульманин / покорный [Богу]", group: "Люди", type: WORD_TYPES.noun },
-  { id: 206, arabic: "بِنْتُ", transcription: "bintu", russian: "девочка / дочь", group: "Люди", type: WORD_TYPES.noun },
-
-  // --- ГРУППА 3: Новые слова с урока про Шадда 04/08/2026 ---
-  { id: 207, arabic: "مُحَمَّدٌ", transcription: "muHammadu", russian: "Мухаммад / Магомед", group: "Люди", type: WORD_TYPES.noun },
-  { id: 208, arabic: "يَحُجُّ", transcription: "yaHujju", russian: "совершает хадж", group: "Вера и поклонение", type: WORD_TYPES.verb },
-  { id: 209, arabic: "سِنٌّ", transcription: "sinnu", russian: "зуб", group: "Тело", type: WORD_TYPES.noun },
-  { id: 210, arabic: "صَدَّقَ", transcription: "Saddaqa", russian: "поверил / сказал правду", group: "Общение и дух", type: WORD_TYPES.verb },
-  { id: 211, arabic: "جَنَّةٌ", transcription: "jannatun", russian: "рай / сад", group: "Вера и поклонение", type: WORD_TYPES.noun },
-  { id: 212, arabic: "كَذَّبَ", transcription: "kadhdhaba", russian: "отрицал / счёл ложью", group: "Общение и дух", type: WORD_TYPES.verb }
-];
-
-const AUDIO_READY_TRANSCRIPTIONS = new Set([
-  ...WORDS_BASE
-    .filter((word) => word.id < 200)
-    .map((word) => word.transcription),
-  'bintu',
-  'daftaru',
-  'mawzu',
-  'maghribu',
-  'muslimu',
-  'wardatu'
-]);
-
-const WORDS_DATA = WORDS_BASE.map((word) => ({
-  ...word,
-  group: getLessonGroup(word.id),
-  audio: AUDIO_READY_TRANSCRIPTIONS.has(word.transcription) ? `/audio/${word.transcription}.mp3` : null
-}));
-
 // Клавиатура для ввода
 const ARABIC_LETTER_KEYS = [
   "ض", "ص", "ث", "ق", "ف", "غ", "ع", "ه", "خ", "ح", "ج", "د",
@@ -154,16 +51,47 @@ const IconVolume = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" heig
 const IconMoon = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3a6 6 0 1 0 9 9 9 9 0 1 1-9-9Z"/></svg>;
 const IconSun = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>;
 const IconChevronDown = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>;
+const IconDictionary = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 5.5A2.5 2.5 0 0 1 5.5 3H11v17H5.5A2.5 2.5 0 0 0 3 22Z"/><path d="M21 5.5A2.5 2.5 0 0 0 18.5 3H13v17h5.5A2.5 2.5 0 0 1 21 22Z"/></svg>;
+const IconSearch = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>;
+const IconSliders = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 21v-7"/><path d="M4 10V3"/><path d="M12 21v-9"/><path d="M12 8V3"/><path d="M20 21v-5"/><path d="M20 12V3"/><path d="M1 14h6"/><path d="M9 8h6"/><path d="M17 16h6"/></svg>;
+
+const getWordTypeLabel = (type) => {
+  if (type === WORD_TYPES.verb) return 'Глагол';
+  if (type === WORD_TYPES.noun) return 'Имя';
+  return 'Частица';
+};
+
+const formatWordCount = (count) => {
+  const lastTwoDigits = count % 100;
+  const lastDigit = count % 10;
+  const form = lastTwoDigits >= 11 && lastTwoDigits <= 14
+    ? 'слов'
+    : lastDigit === 1
+      ? 'слово'
+      : lastDigit >= 2 && lastDigit <= 4
+        ? 'слова'
+        : 'слов';
+
+  return `${count} ${form}`;
+};
+
 export default function App() {
   const audioRef = useRef(null);
   const audioRequestRef = useRef(0);
   const audioSourceRef = useRef('');
-  const [activeTab, setActiveTab] = useState('learn'); // 'learn', 'quiz' или 'write'
+  const [activeTab, setActiveTab] = useState('dictionary');
   const [activeFilter, setActiveFilter] = useState('all');
   const [activeLessonGroup, setActiveLessonGroup] = useState('all');
   const [draftFilter, setDraftFilter] = useState('all');
   const [draftLessonGroup, setDraftLessonGroup] = useState('all');
   const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
+  const [dictionaryQuery, setDictionaryQuery] = useState('');
+  const [dictionaryFilter, setDictionaryFilter] = useState('all');
+  const [dictionaryLessonGroup, setDictionaryLessonGroup] = useState('all');
+  const [dictionaryDraftFilter, setDictionaryDraftFilter] = useState('all');
+  const [dictionaryDraftLessonGroup, setDictionaryDraftLessonGroup] = useState('all');
+  const [isDictionaryFilterOpen, setIsDictionaryFilterOpen] = useState(false);
+  const [expandedRoot, setExpandedRoot] = useState(null);
   const [theme, setTheme] = useState(() => {
     if (typeof window === 'undefined') {
       return 'light';
@@ -214,18 +142,29 @@ export default function App() {
   const activeFilterOption = WORD_FILTERS.find((filter) => filter.id === activeFilter) ?? WORD_FILTERS[0];
   const activeLessonOption = LESSON_FILTERS.find((lesson) => lesson.id === activeLessonGroup) ?? LESSON_FILTERS[0];
   const draftFilterOption = WORD_FILTERS.find((filter) => filter.id === draftFilter) ?? WORD_FILTERS[0];
-  const filteredWords = useMemo(() => (
-    WORDS_DATA.filter((word) => (
-      (activeFilterOption.type ? word.type === activeFilterOption.type : true) &&
-      (activeLessonGroup === 'all' ? true : word.group === activeLessonGroup)
-    ))
-  ), [activeFilterOption.type, activeLessonGroup]);
-  const draftFilteredWords = useMemo(() => (
-    WORDS_DATA.filter((word) => (
-      (draftFilterOption.type ? word.type === draftFilterOption.type : true) &&
-      (draftLessonGroup === 'all' ? true : word.group === draftLessonGroup)
-    ))
-  ), [draftFilterOption.type, draftLessonGroup]);
+  const filteredWords = useMemo(() => filterWords(WORDS_DATA, {
+    type: activeFilterOption.type,
+    lessonId: activeLessonGroup
+  }), [activeFilterOption.type, activeLessonGroup]);
+  const draftFilteredWords = useMemo(() => filterWords(WORDS_DATA, {
+    type: draftFilterOption.type,
+    lessonId: draftLessonGroup
+  }), [draftFilterOption.type, draftLessonGroup]);
+  const dictionaryFilterOption = WORD_FILTERS.find((filter) => filter.id === dictionaryFilter) ?? WORD_FILTERS[0];
+  const dictionaryLessonOption = LESSON_FILTERS.find((lesson) => lesson.id === dictionaryLessonGroup) ?? LESSON_FILTERS[0];
+  const dictionaryDraftFilterOption = WORD_FILTERS.find((filter) => filter.id === dictionaryDraftFilter) ?? WORD_FILTERS[0];
+  const dictionaryWords = useMemo(() => sortWordsByRussian(filterWords(WORDS_DATA, {
+    type: dictionaryFilterOption.type,
+    lessonId: dictionaryLessonGroup,
+    query: dictionaryQuery
+  })), [dictionaryFilterOption.type, dictionaryLessonGroup, dictionaryQuery]);
+  const dictionaryDraftWords = useMemo(() => filterWords(WORDS_DATA, {
+    type: dictionaryDraftFilterOption.type,
+    lessonId: dictionaryDraftLessonGroup,
+    query: dictionaryQuery
+  }), [dictionaryDraftFilterOption.type, dictionaryDraftLessonGroup, dictionaryQuery]);
+  const repeatedRootIndex = useMemo(() => buildRepeatedRootIndex(WORDS_DATA), []);
+  const dictionaryActiveFilterCount = Number(dictionaryFilter !== 'all') + Number(dictionaryLessonGroup !== 'all');
 
   const resetLearningState = useCallback((nextWords) => {
     setWords([...nextWords]);
@@ -425,6 +364,11 @@ export default function App() {
   }, [activeFilter, activeLessonGroup, resetLearningState, resetQuizState, resetWriteState, filteredWords]);
 
   useEffect(() => {
+    setIsFilterMenuOpen(false);
+    setIsDictionaryFilterOpen(false);
+  }, [activeTab]);
+
+  useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     window.localStorage.setItem('theme', theme);
   }, [theme]);
@@ -584,15 +528,54 @@ export default function App() {
     setDraftLessonGroup('all');
   };
 
-  const countWordsForType = (filter) => WORDS_DATA.filter((word) => (
-    (filter.type ? word.type === filter.type : true) &&
-    (draftLessonGroup === 'all' ? true : word.group === draftLessonGroup)
-  )).length;
+  const countWordsForType = (filter) => filterWords(WORDS_DATA, {
+    type: filter.type,
+    lessonId: draftLessonGroup
+  }).length;
 
-  const countWordsForLesson = (lesson) => WORDS_DATA.filter((word) => (
-    (draftFilterOption.type ? word.type === draftFilterOption.type : true) &&
-    (lesson.id === 'all' ? true : word.group === lesson.id)
-  )).length;
+  const countWordsForLesson = (lesson) => filterWords(WORDS_DATA, {
+    type: draftFilterOption.type,
+    lessonId: lesson.id
+  }).length;
+
+  const openDictionaryFilterMenu = () => {
+    setDictionaryDraftFilter(dictionaryFilter);
+    setDictionaryDraftLessonGroup(dictionaryLessonGroup);
+    setIsDictionaryFilterOpen(true);
+  };
+
+  const applyDictionaryFilters = () => {
+    setDictionaryFilter(dictionaryDraftFilter);
+    setDictionaryLessonGroup(dictionaryDraftLessonGroup);
+    setExpandedRoot(null);
+    setIsDictionaryFilterOpen(false);
+  };
+
+  const resetDictionaryDraftFilters = () => {
+    setDictionaryDraftFilter('all');
+    setDictionaryDraftLessonGroup('all');
+  };
+
+  const resetDictionaryView = () => {
+    setDictionaryQuery('');
+    setDictionaryFilter('all');
+    setDictionaryLessonGroup('all');
+    setDictionaryDraftFilter('all');
+    setDictionaryDraftLessonGroup('all');
+    setExpandedRoot(null);
+  };
+
+  const countDictionaryWordsForType = (filter) => filterWords(WORDS_DATA, {
+    type: filter.type,
+    lessonId: dictionaryDraftLessonGroup,
+    query: dictionaryQuery
+  }).length;
+
+  const countDictionaryWordsForLesson = (lesson) => filterWords(WORDS_DATA, {
+    type: dictionaryDraftFilterOption.type,
+    lessonId: lesson.id,
+    query: dictionaryQuery
+  }).length;
 
   return (
     <div className={`min-h-dvh overflow-x-hidden px-3 font-sans selection:bg-indigo-100 sm:px-0 ${theme === 'dark' ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-800'}`}>
@@ -625,28 +608,31 @@ export default function App() {
             <div className="relative flex w-full items-center justify-center">
               <button
                 type="button"
-                onClick={openFilterMenu}
+                onClick={activeTab === 'dictionary' ? undefined : openFilterMenu}
+                disabled={activeTab === 'dictionary'}
                 className="inline-grid grid-cols-[18px_auto_18px] items-center gap-2 px-1 py-1 text-center text-xl font-bold leading-none text-white"
-                aria-haspopup="dialog"
-                aria-expanded={isFilterMenuOpen}
+                aria-haspopup={activeTab === 'dictionary' ? undefined : 'dialog'}
+                aria-expanded={activeTab === 'dictionary' ? undefined : isFilterMenuOpen}
               >
                 <span aria-hidden="true" className="flex h-[18px] w-[18px] items-center justify-center opacity-0">
                   <IconChevronDown />
                 </span>
-                <span>{activeFilterOption.title}</span>
+                <span>{activeTab === 'dictionary' ? 'Словарь' : activeFilterOption.title}</span>
                 <span
                   aria-hidden="true"
-                  className={`flex h-[18px] w-[18px] items-center justify-center text-white/85 transition-transform duration-200 ${isFilterMenuOpen ? 'rotate-180' : ''}`}
+                  className={`flex h-[18px] w-[18px] items-center justify-center text-white/85 transition-transform duration-200 ${activeTab === 'dictionary' ? 'opacity-0' : ''} ${isFilterMenuOpen ? 'rotate-180' : ''}`}
                 >
                   <IconChevronDown />
                 </span>
               </button>
             </div>
             <p className="mt-1 max-w-full px-8 text-center text-xs leading-4 text-white/70">
-              {activeLessonOption.label} · {filteredWords.length} слов
+              {activeTab === 'dictionary'
+                ? `${formatWordCount(dictionaryWords.length)} из ${WORDS_DATA.length}`
+                : `${activeLessonOption.label} · ${formatWordCount(filteredWords.length)}`}
             </p>
 
-            {isFilterMenuOpen && (
+            {isFilterMenuOpen && activeTab !== 'dictionary' && (
               <>
                 <button
                   type="button"
@@ -777,38 +763,44 @@ export default function App() {
             )}
           </div>
 
-          <div className="relative flex w-full min-w-0 overflow-hidden rounded-xl bg-indigo-700/50 p-1 text-xs">
+          <div className="relative grid min-h-12 w-full min-w-0 grid-cols-4 overflow-hidden rounded-xl bg-indigo-700/50 p-1 text-[11px] min-[390px]:text-xs">
 
+            <button
+              onClick={() => setActiveTab('dictionary')}
+              className={`flex min-w-0 flex-col items-center justify-center gap-0.5 rounded-lg py-1.5 font-medium transition-all duration-300 min-[390px]:flex-row min-[390px]:gap-1.5 ${activeTab === 'dictionary' ? 'bg-white text-indigo-600 shadow' : 'text-indigo-100 hover:text-white'}`}
+            >
+              <IconDictionary /> <span>Словарь</span>
+            </button>
             <button 
               onClick={() => setActiveTab('learn')}
-              className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg font-medium transition-all duration-300 ${activeTab === 'learn' ? 'bg-white text-indigo-600 shadow' : 'text-indigo-100 hover:text-white'}`}
+              className={`flex min-w-0 flex-col items-center justify-center gap-0.5 rounded-lg py-1.5 font-medium transition-all duration-300 min-[390px]:flex-row min-[390px]:gap-1.5 ${activeTab === 'learn' ? 'bg-white text-indigo-600 shadow' : 'text-indigo-100 hover:text-white'}`}
             >
-              <IconBook /> Учить
+              <IconBook /> <span>Учить</span>
             </button>
             <button 
               onClick={() => {
                 setActiveTab('quiz');
                 if (quizCompleted || !quizQuestion) startQuizFromScratch();
               }}
-              className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg font-medium transition-all duration-300 ${activeTab === 'quiz' ? 'bg-white text-indigo-600 shadow' : 'text-indigo-100 hover:text-white'}`}
+              className={`flex min-w-0 flex-col items-center justify-center gap-0.5 rounded-lg py-1.5 font-medium transition-all duration-300 min-[390px]:flex-row min-[390px]:gap-1.5 ${activeTab === 'quiz' ? 'bg-white text-indigo-600 shadow' : 'text-indigo-100 hover:text-white'}`}
             >
-              <IconBrain /> Тест
+              <IconBrain /> <span>Тест</span>
             </button>
             <button 
               onClick={() => {
                 setActiveTab('write');
                 if (writeCompleted || !writeQuestion) startWriteFromScratch();
               }}
-              className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg font-medium transition-all duration-300 ${activeTab === 'write' ? 'bg-white text-indigo-600 shadow' : 'text-indigo-100 hover:text-white'}`}
+              className={`flex min-w-0 flex-col items-center justify-center gap-0.5 rounded-lg py-1.5 font-medium transition-all duration-300 min-[390px]:flex-row min-[390px]:gap-1.5 ${activeTab === 'write' ? 'bg-white text-indigo-600 shadow' : 'text-indigo-100 hover:text-white'}`}
             >
-              <IconPen /> Письмо
+              <IconPen /> <span>Письмо</span>
             </button>
           </div>
         </header>
 
         {/* Контент */}
         <main className={`flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-y-auto overflow-x-hidden px-5 pt-5 pb-[max(1rem,env(safe-area-inset-bottom))] ${theme === 'dark' ? 'text-slate-100' : 'text-slate-800'}`}>
-          {filteredWords.length === 0 && (
+          {activeTab !== 'dictionary' && filteredWords.length === 0 && (
             <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
               <h2 className="mb-2 text-xl font-bold">Для этого выбора пока нет слов</h2>
               <p className="text-sm text-slate-500">
@@ -1155,6 +1147,306 @@ export default function App() {
                 </div>
               ) : null}
             </div>
+          )}
+
+          {/* ================= СЛОВАРЬ ================= */}
+          {activeTab === 'dictionary' && (
+            <section className="flex w-full flex-col">
+              <div className={`sticky top-0 z-[5] -mx-5 -mt-5 border-b px-5 pb-3 pt-5 ${
+                theme === 'dark'
+                  ? 'border-slate-800 bg-slate-900'
+                  : 'border-slate-100 bg-white'
+              }`}>
+                <label className="relative block">
+                  <span className={`pointer-events-none absolute left-3 top-1/2 flex -translate-y-1/2 ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
+                    <IconSearch />
+                  </span>
+                  <input
+                    type="search"
+                    value={dictionaryQuery}
+                    onChange={(event) => {
+                      setDictionaryQuery(event.target.value);
+                      setExpandedRoot(null);
+                    }}
+                    placeholder="Перевод, арабское слово или транскрипция"
+                    autoComplete="off"
+                    aria-label="Поиск по словарю"
+                    className={`min-h-12 w-full rounded-xl border py-2 pl-11 pr-11 text-base outline-none transition-colors ${
+                      theme === 'dark'
+                        ? 'border-slate-700 bg-slate-800 text-slate-100 focus:border-indigo-400'
+                        : 'border-slate-200 bg-slate-50 text-slate-800 focus:border-indigo-500'
+                    }`}
+                  />
+                  {dictionaryQuery && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setDictionaryQuery('');
+                        setExpandedRoot(null);
+                      }}
+                      aria-label="Очистить поиск"
+                      className={`absolute right-1 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-lg text-2xl leading-none ${
+                        theme === 'dark' ? 'text-slate-300' : 'text-slate-500'
+                      }`}
+                    >
+                      ×
+                    </button>
+                  )}
+                </label>
+
+                <div className="mt-3 flex min-w-0 items-center justify-between gap-3">
+                  <button
+                    type="button"
+                    onClick={openDictionaryFilterMenu}
+                    aria-haspopup="dialog"
+                    aria-expanded={isDictionaryFilterOpen}
+                    className={`flex min-h-11 shrink-0 items-center gap-2 rounded-lg border px-3 text-sm font-semibold ${
+                      theme === 'dark'
+                        ? 'border-slate-700 bg-slate-800 text-slate-100'
+                        : 'border-slate-200 bg-white text-slate-700'
+                    }`}
+                  >
+                    <IconSliders />
+                    <span>Фильтры</span>
+                    {dictionaryActiveFilterCount > 0 && (
+                      <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-indigo-600 px-1.5 text-xs text-white">
+                        {dictionaryActiveFilterCount}
+                      </span>
+                    )}
+                  </button>
+                  <span className={`min-w-0 text-right text-sm ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`} aria-live="polite">
+                    Найдено: {formatWordCount(dictionaryWords.length)}
+                  </span>
+                </div>
+
+                {dictionaryActiveFilterCount > 0 && (
+                  <div className="mt-3 flex min-w-0 flex-wrap gap-2">
+                    {dictionaryFilter !== 'all' && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setDictionaryFilter('all');
+                          setExpandedRoot(null);
+                        }}
+                        aria-label={`Убрать фильтр ${dictionaryFilterOption.title}`}
+                        className={`flex min-h-9 max-w-full items-center gap-2 rounded-lg px-3 text-left text-xs font-semibold ${
+                          theme === 'dark' ? 'bg-slate-800 text-indigo-200' : 'bg-indigo-50 text-indigo-700'
+                        }`}
+                      >
+                        <span className="min-w-0 truncate">{dictionaryFilterOption.title}</span>
+                        <span aria-hidden="true" className="shrink-0 text-lg leading-none">×</span>
+                      </button>
+                    )}
+                    {dictionaryLessonGroup !== 'all' && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setDictionaryLessonGroup('all');
+                          setExpandedRoot(null);
+                        }}
+                        aria-label={`Убрать фильтр ${dictionaryLessonOption.label}`}
+                        className={`flex min-h-9 max-w-full items-center gap-2 rounded-lg px-3 text-left text-xs font-semibold ${
+                          theme === 'dark' ? 'bg-slate-800 text-indigo-200' : 'bg-indigo-50 text-indigo-700'
+                        }`}
+                      >
+                        <span className="min-w-0 truncate">{dictionaryLessonOption.label}</span>
+                        <span aria-hidden="true" className="shrink-0 text-lg leading-none">×</span>
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {dictionaryWords.length > 0 ? (
+                <ul className={`divide-y ${theme === 'dark' ? 'divide-slate-800' : 'divide-slate-200'}`}>
+                  {dictionaryWords.map((word) => {
+                    const rootWords = word.root ? repeatedRootIndex[word.root] ?? [] : [];
+                    const relatedWords = rootWords.filter((rootWord) => rootWord.id !== word.id);
+                    const isRootExpanded = expandedRoot === word.root && relatedWords.length > 0;
+
+                    return (
+                      <li key={word.id} className="py-4">
+                        <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_minmax(92px,auto)] items-start gap-3">
+                          <div className="min-w-0">
+                            <p className={`break-words text-base font-bold leading-6 ${theme === 'dark' ? 'text-slate-100' : 'text-slate-800'}`}>
+                              {word.russian}
+                            </p>
+                            <p className={`mt-0.5 break-words text-sm ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
+                              [{word.transcription}]
+                            </p>
+                            <p className={`mt-2 break-words text-xs leading-5 ${theme === 'dark' ? 'text-slate-500' : 'text-slate-400'}`}>
+                              {getWordTypeLabel(word.type)} · {word.group}
+                            </p>
+                          </div>
+                          <div className="min-w-0 text-right" dir="rtl">
+                            <span className={`arabic-text block break-words text-[2rem] font-bold leading-[1.7] ${theme === 'dark' ? 'text-indigo-100' : 'text-slate-800'}`}>
+                              {word.arabic}
+                            </span>
+                          </div>
+                        </div>
+
+                        {relatedWords.length > 0 && (
+                          <div className="mt-3">
+                            <button
+                              type="button"
+                              onClick={() => setExpandedRoot((currentRoot) => currentRoot === word.root ? null : word.root)}
+                              aria-expanded={isRootExpanded}
+                              className={`min-h-9 text-left text-sm font-semibold ${theme === 'dark' ? 'text-indigo-300' : 'text-indigo-600'}`}
+                            >
+                              {isRootExpanded ? (
+                                'Скрыть однокоренные'
+                              ) : (
+                                <>
+                                  Показать однокоренные · корень{' '}
+                                  <bdi dir="rtl" className="arabic-text">{word.root}</bdi>
+                                </>
+                              )}
+                            </button>
+
+                            {isRootExpanded && (
+                              <div className={`border-l-2 py-1 pl-3 ${theme === 'dark' ? 'border-indigo-500/50' : 'border-indigo-200'}`}>
+                                {relatedWords.map((relatedWord) => (
+                                  <div key={relatedWord.id} className="flex min-w-0 items-baseline justify-between gap-3 py-1.5">
+                                    <span className={`min-w-0 break-words text-sm ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
+                                      {relatedWord.russian}
+                                    </span>
+                                    <span className={`arabic-text shrink-0 text-2xl font-bold ${theme === 'dark' ? 'text-indigo-100' : 'text-slate-800'}`} dir="rtl">
+                                      {relatedWord.arabic}
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
+              ) : (
+                <div className="flex min-h-[45dvh] flex-col items-center justify-center px-5 text-center">
+                  <h2 className="text-xl font-bold">
+                    {dictionaryQuery ? 'Ничего не найдено' : 'Для этих фильтров пока нет слов'}
+                  </h2>
+                  <p className={`mt-2 max-w-xs text-sm leading-6 ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
+                    Измените запрос или сбросьте фильтры словаря.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={resetDictionaryView}
+                    className="mt-5 min-h-11 rounded-lg bg-indigo-600 px-5 text-sm font-semibold text-white"
+                  >
+                    Сбросить поиск и фильтры
+                  </button>
+                </div>
+              )}
+
+              {isDictionaryFilterOpen && (
+                <>
+                  <button
+                    type="button"
+                    aria-label="Закрыть фильтры словаря"
+                    onClick={() => setIsDictionaryFilterOpen(false)}
+                    className="fixed inset-0 z-30 cursor-default bg-slate-950/45 backdrop-blur-[1px]"
+                  />
+                  <section
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="dictionary-filter-title"
+                    className={`fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-md overflow-hidden rounded-t-[1.75rem] border-x border-t shadow-[0_-18px_50px_rgba(15,23,42,0.2)] ${
+                      theme === 'dark'
+                        ? 'border-slate-700 bg-slate-900 text-slate-100'
+                        : 'border-slate-200 bg-white text-slate-800'
+                    }`}
+                  >
+                    <div className="flex justify-center py-2">
+                      <span className={`h-1.5 w-12 rounded-full ${theme === 'dark' ? 'bg-slate-600' : 'bg-slate-300'}`} />
+                    </div>
+                    <div className={`flex items-center justify-between border-b px-4 pb-3 ${theme === 'dark' ? 'border-slate-700' : 'border-slate-200'}`}>
+                      <div>
+                        <h2 id="dictionary-filter-title" className="text-lg font-bold">Фильтры словаря</h2>
+                        <p className={`text-xs ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
+                          Часть речи и урок
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        aria-label="Закрыть фильтры словаря"
+                        onClick={() => setIsDictionaryFilterOpen(false)}
+                        className={`flex h-11 w-11 items-center justify-center rounded-full text-2xl leading-none ${theme === 'dark' ? 'bg-slate-800 text-slate-200' : 'bg-slate-100 text-slate-600'}`}
+                      >
+                        ×
+                      </button>
+                    </div>
+
+                    <div className="space-y-5 px-4 py-5">
+                      <label className="block">
+                        <span className={`mb-2 block text-xs font-bold ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
+                          Часть речи
+                        </span>
+                        <select
+                          value={dictionaryDraftFilter}
+                          onChange={(event) => setDictionaryDraftFilter(event.target.value)}
+                          className={`min-h-12 w-full rounded-xl border px-3 text-base outline-none ${
+                            theme === 'dark'
+                              ? 'border-slate-700 bg-slate-800 text-slate-100'
+                              : 'border-slate-200 bg-white text-slate-800'
+                          }`}
+                        >
+                          {WORD_FILTERS.map((filter) => (
+                            <option key={filter.id} value={filter.id}>
+                              {filter.title} · {formatWordCount(countDictionaryWordsForType(filter))}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+
+                      <label className="block">
+                        <span className={`mb-2 block text-xs font-bold ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
+                          Урок
+                        </span>
+                        <select
+                          value={dictionaryDraftLessonGroup}
+                          onChange={(event) => setDictionaryDraftLessonGroup(event.target.value)}
+                          className={`min-h-12 w-full rounded-xl border px-3 text-base outline-none ${
+                            theme === 'dark'
+                              ? 'border-slate-700 bg-slate-800 text-slate-100'
+                              : 'border-slate-200 bg-white text-slate-800'
+                          }`}
+                        >
+                          {LESSON_FILTERS.map((lesson) => (
+                            <option key={lesson.id} value={lesson.id}>
+                              {lesson.label} · {formatWordCount(countDictionaryWordsForLesson(lesson))}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+
+                      <p className={`text-center text-sm ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`} aria-live="polite">
+                        Будет показано: {formatWordCount(dictionaryDraftWords.length)}
+                      </p>
+                    </div>
+
+                    <div className={`grid grid-cols-[auto_1fr] gap-3 border-t p-4 pb-[max(1rem,env(safe-area-inset-bottom))] ${theme === 'dark' ? 'border-slate-700 bg-slate-900' : 'border-slate-200 bg-white'}`}>
+                      <button
+                        type="button"
+                        onClick={resetDictionaryDraftFilters}
+                        className={`min-h-12 rounded-xl px-4 text-sm font-semibold ${theme === 'dark' ? 'bg-slate-800 text-slate-200' : 'bg-slate-100 text-slate-700'}`}
+                      >
+                        Сбросить
+                      </button>
+                      <button
+                        type="button"
+                        onClick={applyDictionaryFilters}
+                        className="min-h-12 rounded-xl bg-indigo-600 px-4 text-sm font-semibold text-white shadow-sm"
+                      >
+                        Показать {formatWordCount(dictionaryDraftWords.length)}
+                      </button>
+                    </div>
+                  </section>
+                </>
+              )}
+            </section>
           )}
 
         </main>
