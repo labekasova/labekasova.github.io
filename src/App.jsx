@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect, useCallback, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 
 const WORD_TYPES = {
   verb: 'verb',
@@ -33,6 +33,12 @@ const LESSON_GROUPS = {
   group2: 'Слова с урока про Сукун',
   group3: 'Слова с урока про Шадда'
 };
+const LESSON_FILTERS = [
+  { id: 'all', label: 'Все уроки' },
+  ...Object.values(LESSON_GROUPS)
+    .reverse()
+    .map((group) => ({ id: group, label: group }))
+];
 
 const getLessonGroup = (wordId) => {
   if (wordId >= 201 && wordId <= 206) {
@@ -151,11 +157,12 @@ export default function App() {
   const audioRef = useRef(null);
   const audioRequestRef = useRef(0);
   const audioSourceRef = useRef('');
-  const filterButtonRef = useRef(null);
   const [activeTab, setActiveTab] = useState('learn'); // 'learn', 'quiz' или 'write'
   const [activeFilter, setActiveFilter] = useState('all');
+  const [activeLessonGroup, setActiveLessonGroup] = useState('all');
+  const [draftFilter, setDraftFilter] = useState('all');
+  const [draftLessonGroup, setDraftLessonGroup] = useState('all');
   const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
-  const [filterMenuStyle, setFilterMenuStyle] = useState({ top: 0, left: 0, width: 0 });
   const [theme, setTheme] = useState(() => {
     if (typeof window === 'undefined') {
       return 'light';
@@ -204,11 +211,20 @@ export default function App() {
   };
 
   const activeFilterOption = WORD_FILTERS.find((filter) => filter.id === activeFilter) ?? WORD_FILTERS[0];
+  const activeLessonOption = LESSON_FILTERS.find((lesson) => lesson.id === activeLessonGroup) ?? LESSON_FILTERS[0];
+  const draftFilterOption = WORD_FILTERS.find((filter) => filter.id === draftFilter) ?? WORD_FILTERS[0];
   const filteredWords = useMemo(() => (
     WORDS_DATA.filter((word) => (
-      activeFilterOption.type ? word.type === activeFilterOption.type : true
+      (activeFilterOption.type ? word.type === activeFilterOption.type : true) &&
+      (activeLessonGroup === 'all' ? true : word.group === activeLessonGroup)
     ))
-  ), [activeFilterOption.type]);
+  ), [activeFilterOption.type, activeLessonGroup]);
+  const draftFilteredWords = useMemo(() => (
+    WORDS_DATA.filter((word) => (
+      (draftFilterOption.type ? word.type === draftFilterOption.type : true) &&
+      (draftLessonGroup === 'all' ? true : word.group === draftLessonGroup)
+    ))
+  ), [draftFilterOption.type, draftLessonGroup]);
 
   const resetLearningState = useCallback((nextWords) => {
     setWords([...nextWords]);
@@ -405,38 +421,12 @@ export default function App() {
     resetQuizState(filteredWords);
     resetWriteState(filteredWords);
     setIsFilterMenuOpen(false);
-  }, [activeFilter, resetLearningState, resetQuizState, resetWriteState, filteredWords]);
+  }, [activeFilter, activeLessonGroup, resetLearningState, resetQuizState, resetWriteState, filteredWords]);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     window.localStorage.setItem('theme', theme);
   }, [theme]);
-
-  useLayoutEffect(() => {
-    if (!isFilterMenuOpen) return;
-
-    const updateFilterMenuPosition = () => {
-      const button = filterButtonRef.current;
-      if (!button) return;
-
-      const rect = button.getBoundingClientRect();
-      const width = Math.min(window.innerWidth - 24, 380);
-      const centerX = rect.left + rect.width / 2;
-      const left = Math.max(width / 2 + 12, Math.min(window.innerWidth - width / 2 - 12, centerX));
-      const top = rect.bottom + 2;
-
-      setFilterMenuStyle({ top, left, width });
-    };
-
-    updateFilterMenuPosition();
-    window.addEventListener('resize', updateFilterMenuPosition);
-    window.addEventListener('scroll', updateFilterMenuPosition, true);
-
-    return () => {
-      window.removeEventListener('resize', updateFilterMenuPosition);
-      window.removeEventListener('scroll', updateFilterMenuPosition, true);
-    };
-  }, [isFilterMenuOpen, activeFilter, theme]);
 
   useEffect(() => {
     if (!audioRef.current) {
@@ -494,7 +484,7 @@ export default function App() {
     setIsAudioPlaying(false);
     setIsAudioLoading(false);
     audioRequestRef.current += 1;
-  }, [currentIndex, activeFilter, activeTab]);
+  }, [currentIndex, activeFilter, activeLessonGroup, activeTab]);
 
   const currentWord = words[currentIndex];
 
@@ -576,6 +566,32 @@ export default function App() {
     : isAudioLoading
       ? 'Аудио загружается'
       : 'Прослушать произношение';
+  const openFilterMenu = () => {
+    setDraftFilter(activeFilter);
+    setDraftLessonGroup(activeLessonGroup);
+    setIsFilterMenuOpen(true);
+  };
+
+  const applyFilters = () => {
+    setActiveFilter(draftFilter);
+    setActiveLessonGroup(draftLessonGroup);
+    setIsFilterMenuOpen(false);
+  };
+
+  const resetDraftFilters = () => {
+    setDraftFilter('all');
+    setDraftLessonGroup('all');
+  };
+
+  const countWordsForType = (filter) => WORDS_DATA.filter((word) => (
+    (filter.type ? word.type === filter.type : true) &&
+    (draftLessonGroup === 'all' ? true : word.group === draftLessonGroup)
+  )).length;
+
+  const countWordsForLesson = (lesson) => WORDS_DATA.filter((word) => (
+    (draftFilterOption.type ? word.type === draftFilterOption.type : true) &&
+    (lesson.id === 'all' ? true : word.group === lesson.id)
+  )).length;
 
   return (
     <div className={`min-h-dvh overflow-x-hidden px-3 font-sans selection:bg-indigo-100 sm:px-0 ${theme === 'dark' ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-800'}`}>
@@ -608,10 +624,9 @@ export default function App() {
             <div className="relative flex w-full items-center justify-center">
               <button
                 type="button"
-                ref={filterButtonRef}
-                onClick={() => setIsFilterMenuOpen((prev) => !prev)}
+                onClick={openFilterMenu}
                 className="inline-grid grid-cols-[18px_auto_18px] items-center gap-2 px-1 py-1 text-center text-xl font-bold leading-none text-white"
-                aria-haspopup="menu"
+                aria-haspopup="dialog"
                 aria-expanded={isFilterMenuOpen}
               >
                 <span aria-hidden="true" className="flex h-[18px] w-[18px] items-center justify-center opacity-0">
@@ -626,53 +641,141 @@ export default function App() {
                 </span>
               </button>
             </div>
-            <p className="text-center text-xs text-indigo-200">База знаний: {filteredWords.length} слов</p>
+            <p className="mt-1 max-w-full px-8 text-center text-xs leading-4 text-white/70">
+              {activeLessonOption.label} · {filteredWords.length} слов
+            </p>
 
             {isFilterMenuOpen && (
               <>
                 <button
                   type="button"
-                  aria-label="Закрыть меню фильтра"
+                  aria-label="Закрыть фильтры"
                   onClick={() => setIsFilterMenuOpen(false)}
-                  className="fixed inset-0 z-30 cursor-default bg-transparent"
+                  className="fixed inset-0 z-30 cursor-default bg-slate-950/45 backdrop-blur-[1px]"
                 />
-                <div
-                  className={`fixed z-40 rounded-3xl border p-2 shadow-[0_18px_40px_rgba(15,23,42,0.14)] ${
+                <section
+                  role="dialog"
+                  aria-modal="true"
+                  aria-labelledby="filter-sheet-title"
+                  className={`fixed inset-x-0 bottom-0 z-40 mx-auto flex max-h-[85dvh] w-full max-w-md flex-col overflow-hidden rounded-t-[1.75rem] border-x border-t shadow-[0_-18px_50px_rgba(15,23,42,0.2)] ${
                     theme === 'dark'
-                      ? 'border-slate-700 bg-slate-900 shadow-[0_18px_40px_rgba(2,6,23,0.5)]'
+                      ? 'border-slate-700 bg-slate-900 text-slate-100'
                       : 'border-slate-200 bg-white'
                   }`}
-                  style={{
-                    top: `${filterMenuStyle.top}px`,
-                    left: `${filterMenuStyle.left}px`,
-                    width: `${filterMenuStyle.width}px`,
-                    transform: 'translateX(-50%)'
-                  }}
                 >
-                {WORD_FILTERS.map((filter) => (
-                  <button
-                    key={filter.id}
-                    type="button"
-                    onClick={() => setActiveFilter(filter.id)}
-                    className={`flex w-full items-center justify-between rounded-2xl px-4 py-3 text-left text-sm transition-colors ${
-                      filter.id === activeFilter
-                        ? theme === 'dark'
-                          ? 'bg-slate-800 text-white shadow-sm ring-1 ring-slate-700'
-                          : 'bg-indigo-50 text-indigo-700 shadow-sm'
-                        : theme === 'dark'
-                          ? 'text-slate-200 hover:bg-slate-800'
-                          : 'text-slate-700 hover:bg-slate-50'
-                    }`}
-                  >
-                    <span>{filter.label}</span>
-                    <span className={`text-[11px] ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
-                      {WORDS_DATA.filter((word) => (filter.type ? word.type === filter.type : true)).length}
-                    </span>
-                  </button>
-                ))}
-              </div>
+                  <div className="flex justify-center py-2">
+                    <span className={`h-1.5 w-12 rounded-full ${theme === 'dark' ? 'bg-slate-600' : 'bg-slate-300'}`} />
+                  </div>
+
+                  <div className={`flex items-center justify-between border-b px-4 pb-3 ${theme === 'dark' ? 'border-slate-700' : 'border-slate-200'}`}>
+                    <div>
+                      <h2 id="filter-sheet-title" className="text-lg font-bold">Выбор слов</h2>
+                      <p className={`text-xs ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
+                        Выберите часть речи и урок
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      aria-label="Закрыть фильтры"
+                      onClick={() => setIsFilterMenuOpen(false)}
+                      className={`flex h-11 w-11 items-center justify-center rounded-full text-2xl leading-none ${theme === 'dark' ? 'bg-slate-800 text-slate-200' : 'bg-slate-100 text-slate-600'}`}
+                    >
+                      ×
+                    </button>
+                  </div>
+
+                  <div className="overflow-y-auto px-4 py-4">
+                    <h3 className={`mb-2 text-xs font-bold uppercase ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
+                      Часть речи
+                    </h3>
+                    <div className="space-y-1">
+                      {WORD_FILTERS.map((filter) => (
+                        <button
+                          key={filter.id}
+                          type="button"
+                          aria-pressed={draftFilter === filter.id}
+                          onClick={() => setDraftFilter(filter.id)}
+                          className={`flex min-h-12 w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-sm transition-colors ${
+                            draftFilter === filter.id
+                              ? theme === 'dark'
+                                ? 'bg-slate-800 text-white'
+                                : 'bg-indigo-50 text-indigo-700'
+                              : theme === 'dark'
+                                ? 'text-slate-200 hover:bg-slate-800/70'
+                                : 'text-slate-700 hover:bg-slate-50'
+                          }`}
+                        >
+                          <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 ${
+                            draftFilter === filter.id ? 'border-indigo-500' : theme === 'dark' ? 'border-slate-500' : 'border-slate-300'
+                          }`}>
+                            {draftFilter === filter.id && <span className="h-2.5 w-2.5 rounded-full bg-indigo-500" />}
+                          </span>
+                          <span className="min-w-0 flex-1">{filter.label}</span>
+                          <span className={`shrink-0 text-xs ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
+                            {countWordsForType(filter)}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+
+                    <h3 className={`mb-2 mt-5 text-xs font-bold uppercase ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
+                      Урок
+                    </h3>
+                    <div className="space-y-1">
+                      {LESSON_FILTERS.map((lesson) => (
+                        <button
+                          key={lesson.id}
+                          type="button"
+                          aria-pressed={draftLessonGroup === lesson.id}
+                          onClick={() => setDraftLessonGroup(lesson.id)}
+                          className={`flex min-h-12 w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-sm transition-colors ${
+                            draftLessonGroup === lesson.id
+                              ? theme === 'dark'
+                                ? 'bg-slate-800 text-white'
+                                : 'bg-indigo-50 text-indigo-700'
+                              : theme === 'dark'
+                                ? 'text-slate-200 hover:bg-slate-800/70'
+                                : 'text-slate-700 hover:bg-slate-50'
+                          }`}
+                        >
+                          <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 ${
+                            draftLessonGroup === lesson.id ? 'border-indigo-500' : theme === 'dark' ? 'border-slate-500' : 'border-slate-300'
+                          }`}>
+                            {draftLessonGroup === lesson.id && <span className="h-2.5 w-2.5 rounded-full bg-indigo-500" />}
+                          </span>
+                          <span className="min-w-0 flex-1 leading-5">{lesson.label}</span>
+                          <span className={`shrink-0 text-xs ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
+                            {countWordsForLesson(lesson)}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className={`grid grid-cols-[auto_1fr] gap-3 border-t p-4 pb-[max(1rem,env(safe-area-inset-bottom))] ${theme === 'dark' ? 'border-slate-700 bg-slate-900' : 'border-slate-200 bg-white'}`}>
+                    <button
+                      type="button"
+                      onClick={resetDraftFilters}
+                      className={`min-h-12 rounded-xl px-4 text-sm font-semibold ${theme === 'dark' ? 'bg-slate-800 text-slate-200' : 'bg-slate-100 text-slate-700'}`}
+                    >
+                      Сбросить
+                    </button>
+                    <button
+                      type="button"
+                      onClick={applyFilters}
+                      disabled={draftFilteredWords.length === 0}
+                      className="min-h-12 rounded-xl bg-indigo-600 px-4 text-sm font-semibold text-white shadow-sm disabled:bg-slate-300 disabled:text-slate-500"
+                    >
+                      {draftFilteredWords.length > 0
+                        ? `Показать ${draftFilteredWords.length} слов`
+                        : 'Нет слов'}
+                    </button>
+                  </div>
+                </section>
               </>
             )}
+          </div>
+
           </div>
           <div className="relative flex w-full min-w-0 overflow-hidden rounded-xl bg-indigo-700/50 p-1 text-xs">
 
@@ -706,15 +809,14 @@ export default function App() {
         {/* Контент */}
         <main className={`flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-hidden px-5 pt-5 pb-[max(1rem,env(safe-area-inset-bottom))] ${theme === 'dark' ? 'text-slate-100' : 'text-slate-800'}`}>
           {filteredWords.length === 0 && (
-  <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
-    <h2 className="mb-2 text-xl font-bold">
-      В этой категории пока нет слов
-    </h2>
-    <p className="text-sm text-slate-500">
-      Частицы будут добавлены позже.
-    </p>
-  </div>
-)}
+            <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
+              <h2 className="mb-2 text-xl font-bold">Для этого выбора пока нет слов</h2>
+              <p className="text-sm text-slate-500">
+                Выберите другую часть речи или другой урок.
+              </p>
+            </div>
+          )}
+
           {/* ================= КАРТОЧКИ ================= */}
           {activeTab === 'learn' && words.length > 0 && (
             <div className="flex-1 flex flex-col justify-start pt-4">
