@@ -30,40 +30,30 @@ const WORD_FILTERS = [
 
 // Полная логическая база слов
 const WORDS_BASE = [
-  // --- ГРУППА 1: Помещение, жилье и движение ---
+  // --- ГРУППА 1: Глаголы с 1го модуля 07/2026 ---
   { id: 101, arabic: "دَخَلَ", transcription: "dakhala", russian: "вошёл", group: "Помещение и движение", type: WORD_TYPES.verb },
   { id: 102, arabic: "خَرَجَ", transcription: "kharaja", russian: "вышел", group: "Помещение и движение", type: WORD_TYPES.verb },
   { id: 19,  arabic: "وَقَفَ", transcription: "waqafa", russian: "стоял", group: "Помещение и движение", type: WORD_TYPES.verb },
   { id: 2,   arabic: "جَلَسَ", transcription: "jalasa", russian: "сидел", group: "Помещение и движение", type: WORD_TYPES.verb },
   { id: 16,  arabic: "نَزَلَ", transcription: "nazala", russian: "спускался", group: "Помещение и движение", type: WORD_TYPES.verb },
   { id: 103, arabic: "سَكَنَ", transcription: "sakana", russian: "жил / проживал", group: "Помещение и движение", type: WORD_TYPES.verb },
-
-  // --- ГРУППА 2: Отель, визиты и действия ---
   { id: 104, arabic: "حَجَزَ", transcription: "Hajaza", russian: "забронировал", group: "Поездка и визиты", type: WORD_TYPES.verb },
   { id: 105, arabic: "طَلَبَ", transcription: "Talaba", russian: "потребовал / попросил", group: "Поездка и визиты", type: WORD_TYPES.verb },
   { id: 106, arabic: "طَرَقَ", transcription: "Taraqa", russian: "постучался", group: "Поездка и визиты", type: WORD_TYPES.verb },
   { id: 107, arabic: "ظَهَرَ", transcription: "DHahara", russian: "появился", group: "Поездка и визиты", type: WORD_TYPES.verb },
-
-  // --- ГРУППА 3: Вода и Еда ---
   { id: 24,  arabic: "سَبَحَ", transcription: "sabaHa", russian: "плыл", group: "Вода и Еда", type: WORD_TYPES.verb },
   { id: 25,  arabic: "شَرِبَ", transcription: "shariba", russian: "пил", group: "Вода и Еда", type: WORD_TYPES.verb },
   { id: 108, arabic: "أَكَلَ", transcription: "2akala", russian: "покушал / ел", group: "Вода и Еда", type: WORD_TYPES.verb },
   { id: 7,   arabic: "غَسَلَ", transcription: "ghasala", russian: "стирал / мыл", group: "Вода и Еда", type: WORD_TYPES.verb },
-
-  // --- ГРУППА 4: Одежда и Состояние организма ---
   { id: 109, arabic: "لَبِسَ", transcription: "labisa", russian: "одел / надел", group: "Одежда и состояние", type: WORD_TYPES.verb },
   { id: 18,  arabic: "مَرِضَ", transcription: "mariDa", russian: "болел", group: "Одежда и состояние", type: WORD_TYPES.verb },
   { id: 110, arabic: "فَرِحَ", transcription: "fariHa", russian: "обрадовался", group: "Одежда и состояние", type: WORD_TYPES.verb },
-
-  // --- ГРУППА 5: Учёба, разум и знания ---
   { id: 5,   arabic: "فَهِمَ", transcription: "fahima", russian: "понял", group: "Учёба и знания", type: WORD_TYPES.verb },
   { id: 21,  arabic: "حَفِظَ", transcription: "HafiDHa", russian: "запоминал", group: "Учёба и знания", type: WORD_TYPES.verb },
   { id: 111, arabic: "دَرَسَ", transcription: "darasa", russian: "учил / учился", group: "Учёба и знания", type: WORD_TYPES.verb },
   { id: 112, arabic: "عَلِمَ", transcription: "3alima", russian: "знал", group: "Учёба и знания", type: WORD_TYPES.verb },
   { id: 113, arabic: "قَرَأَ", transcription: "qara2a", russian: "читал", group: "Учёба и знания", type: WORD_TYPES.verb },
   { id: 114, arabic: "كَتَبَ", transcription: "kataba", russian: "писал", group: "Учёба и знания", type: WORD_TYPES.verb },
-
-  // --- ГРУППА 6: Взаимодействие с предметами (руки) ---
   { id: 20,  arabic: "أَخَذَ", transcription: "2akhadha", russian: "взял / забрал", group: "Действия руками", type: WORD_TYPES.verb },
   { id: 115, arabic: "وَضَعَ", transcription: "waDa3a", russian: "положил", group: "Действия руками", type: WORD_TYPES.verb },
   { id: 116, arabic: "مَسَكَ", transcription: "masaka", russian: "держал", group: "Действия руками", type: WORD_TYPES.verb },
@@ -74,21 +64,17 @@ const WORDS_BASE = [
   { id: 117, arabic: "فَقَدَ", transcription: "faqada", russian: "потерял", group: "Действия руками", type: WORD_TYPES.verb },
   { id: 8,   arabic: "وَجَدَ", transcription: "wajada", russian: "нашёл", group: "Действия руками", type: WORD_TYPES.verb },
   { id: 11,  arabic: "عَمِلَ", transcription: "3amila", russian: "сделал / выполнил", group: "Действия руками", type: WORD_TYPES.verb },
-
-  // --- ГРУППА 7: Творчество, управление и активность ---
   { id: 9,   arabic: "رَسَمَ", transcription: "rasama", russian: "рисовал", group: "Творчество и активность", type: WORD_TYPES.verb },
   { id: 13,  arabic: "نَفَخَ", transcription: "nafakha", russian: "надул", group: "Творчество и активность", type: WORD_TYPES.verb },
   { id: 10,  arabic: "ضَرَبَ", transcription: "Daraba", russian: "ударил", group: "Творчество и активность", type: WORD_TYPES.verb },
   { id: 118, arabic: "حَكَمَ", transcription: "Hakama", russian: "управлял / судил", group: "Творчество и активность", type: WORD_TYPES.verb },
   { id: 119, arabic: "نَظَرَ", transcription: "naDHara", russian: "смотрел", group: "Творчество и активность", type: WORD_TYPES.verb },
-
-  // --- ГРУППА 8: Речь, общение и вера ---
   { id: 12,  arabic: "سَكَتَ", transcription: "sakata", russian: "молчал", group: "Общение и дух", type: WORD_TYPES.verb },
   { id: 6,   arabic: "شَكَرَ", transcription: "shakara", russian: "поблагодарил", group: "Общение и дух", type: WORD_TYPES.verb },
   { id: 3,   arabic: "حَمِدَ", transcription: "Hamida", russian: "воздал хвалу [Богу]", group: "Общение и дух", type: WORD_TYPES.verb },
   { id: 1,   arabic: "سَجَدَ", transcription: "sajada", russian: "совершил земной поклон", group: "Общение и дух", type: WORD_TYPES.verb },
 
-    // --- ГРУППА 9: Новые существительные с урока про Сукун 30/07/2026 ---
+    // --- ГРУППА 2: Новые существительные с урока про Сукун 30/07/2026 ---
   { id: 201, arabic: "مَغْرِبُ", transcription: "maghribu", russian: "закат, вечернее время", group: "Время дня", type: WORD_TYPES.noun },
   { id: 202, arabic: "دَفْتَرُ", transcription: "daftaru", russian: "тетрадь", group: "Учёба и знания", type: WORD_TYPES.noun },
   { id: 203, arabic: "مَوْزُ", transcription: "mawzu", russian: "банан", group: "Вода и Еда", type: WORD_TYPES.noun },
@@ -96,7 +82,7 @@ const WORDS_BASE = [
   { id: 205, arabic: "مُسْلِمُ", transcription: "muslimu", russian: "мусульманин / покорный [Богу]", group: "Люди", type: WORD_TYPES.noun },
   { id: 206, arabic: "بِنْتُ", transcription: "bintu", russian: "девочка / дочь", group: "Люди", type: WORD_TYPES.noun },
 
-  // --- ГРУППА 10: Новые слова с урока про Шадда 04/08/2026 ---
+  // --- ГРУППА 3: Новые слова с урока про Шадда 04/08/2026 ---
   { id: 207, arabic: "مُحَمَّدٌ", transcription: "muHammadu", russian: "Мухаммад / Магомед", group: "Люди", type: WORD_TYPES.noun },
   { id: 208, arabic: "يَحُجُّ", transcription: "yaHujju", russian: "совершает хадж", group: "Вера и поклонение", type: WORD_TYPES.verb },
   { id: 209, arabic: "سِنٌّ", transcription: "sinnu", russian: "зуб", group: "Тело", type: WORD_TYPES.noun },
