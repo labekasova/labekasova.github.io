@@ -2,13 +2,30 @@ import React, { useState, useEffect, useLayoutEffect, useCallback, useMemo, useR
 
 const WORD_TYPES = {
   verb: 'verb',
-  noun: 'noun'
+  noun: 'noun',
+  particle: 'particle'
 };
 
 const WORD_FILTERS = [
   { id: 'all', label: 'Все слова', title: 'Все слова', type: null },
-  { id: 'verb', label: 'Только глаголы', title: 'Глаголы', type: WORD_TYPES.verb },
-  { id: 'noun', label: 'Только существительные', title: 'Существительные', type: WORD_TYPES.noun }
+  {
+    id: 'verb',
+    label: 'Только глаголы ( فِعْلٌ )',
+    title: 'Глаголы ( فِعْلٌ )',
+    type: WORD_TYPES.verb
+  },
+  {
+    id: 'noun',
+    label: 'Только имена ( اِسْمٌ )',
+    title: 'Имена ( اِسْمٌ )',
+    type: WORD_TYPES.noun
+  },
+  {
+    id: 'particle',
+    label: 'Только частицы ( حَرْفٌ )',
+    title: 'Частицы ( حَرْفٌ )',
+    type: WORD_TYPES.particle
+  }
 ];
 
 // Полная логическая база слов
@@ -676,7 +693,16 @@ export default function App() {
 
         {/* Контент */}
         <main className={`flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-hidden px-5 pt-5 pb-[max(1rem,env(safe-area-inset-bottom))] ${theme === 'dark' ? 'text-slate-100' : 'text-slate-800'}`}>
-          
+          {filteredWords.length === 0 && (
+  <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
+    <h2 className="mb-2 text-xl font-bold">
+      В этой категории пока нет слов
+    </h2>
+    <p className="text-sm text-slate-500">
+      Частицы будут добавлены позже.
+    </p>
+  </div>
+)}
           {/* ================= КАРТОЧКИ ================= */}
           {activeTab === 'learn' && words.length > 0 && (
             <div className="flex-1 flex flex-col justify-start pt-4">
@@ -688,7 +714,14 @@ export default function App() {
               )}
 
               <div className="flex justify-between items-center mb-3 text-xs font-semibold text-slate-500 px-1">
-                <span>{currentWord.type === WORD_TYPES.verb ? 'Глагол' : 'Слово'} {currentIndex + 1} из {words.length}</span>
+                <span>
+  {currentWord.type === WORD_TYPES.verb
+    ? 'Глагол'
+    : currentWord.type === WORD_TYPES.noun
+      ? 'Имя'
+      : 'Частица'}{' '}
+  {currentIndex + 1} из {words.length}
+</span>
                 <div className="flex gap-1.5">
                   {isSortedLogical ? (
                     <button 
@@ -780,7 +813,7 @@ export default function App() {
           )}
 
           {/* ================= ТЕСТ ================= */}
-          {activeTab === 'quiz' && (
+          {activeTab === 'quiz' && filteredWords.length > 0 && (
             <div className="flex-1 flex flex-col justify-between">
               {quizCompleted ? (
                 <div className="flex-1 flex flex-col items-center justify-center text-center p-6">
@@ -858,7 +891,7 @@ export default function App() {
           )}
 
           {/* ================= ПИСЬМО ================= */}
-          {activeTab === 'write' && (
+          {activeTab === 'write' && filteredWords.length > 0 && (
             <div className="flex min-h-0 flex-1 flex-col">
               {writeCompleted ? (
                 <div className="flex-1 flex flex-col items-center justify-center text-center p-6">
