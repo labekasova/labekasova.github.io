@@ -28,6 +28,23 @@ const WORD_FILTERS = [
   }
 ];
 
+const LESSON_GROUPS = {
+  group1: 'Группа 1 · Модуль 1 · 07/2026',
+  group2: 'Группа 2 · Сукун · 30/07/2026',
+  group3: 'Группа 3 · Шадда · 04/08/2026'
+};
+
+const getLessonGroup = (wordId) => {
+  if (wordId >= 201 && wordId <= 206) {
+    return LESSON_GROUPS.group2;
+  }
+
+  if (wordId >= 207 && wordId <= 212) {
+    return LESSON_GROUPS.group3;
+  }
+
+  return LESSON_GROUPS.group1;
+};
 // Полная логическая база слов
 const WORDS_BASE = [
   // --- ГРУППА 1: Глаголы с 1го модуля 07/2026 ---
@@ -105,6 +122,7 @@ const AUDIO_READY_TRANSCRIPTIONS = new Set([
 
 const WORDS_DATA = WORDS_BASE.map((word) => ({
   ...word,
+  group: getLessonGroup(word.id),
   audio: AUDIO_READY_TRANSCRIPTIONS.has(word.transcription) ? `/audio/${word.transcription}.mp3` : null
 }));
 
@@ -703,7 +721,7 @@ export default function App() {
               
               {isSortedLogical && currentWord.group && (
                 <div className="self-center bg-indigo-50 border border-indigo-100 text-indigo-700 text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-3">
-                  Связь: {currentWord.group}
+                  {currentWord.group}
                 </div>
               )}
 
@@ -769,7 +787,7 @@ export default function App() {
                     </div>
                     {isSortedLogical && (
                       <span className="text-[11px] text-indigo-200/80 italic max-w-[90%]">
-                        Группа: {currentWord.group}
+                        {currentWord.group}
                       </span>
                     )}
                   </div>
