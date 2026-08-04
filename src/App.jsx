@@ -1115,13 +1115,13 @@ export default function App() {
                           key={char}
                           onClick={() => handleVirtualKeyPress(char)}
                           disabled={writeChecked}
-                          className={`arabic-text flex min-h-11 items-center justify-center rounded-lg border text-6xl font-bold leading-none shadow-sm transition-all active:scale-95 disabled:opacity-50 ${
+                          className={`arabic-text flex min-h-11 items-center justify-center rounded-lg border text-4xl font-bold leading-none shadow-sm transition-all active:scale-95 disabled:opacity-50 ${
                             theme === 'dark'
                               ? 'border-slate-700 bg-slate-900 text-indigo-200 active:bg-slate-700'
                               : 'border-slate-200 bg-white text-indigo-700 active:bg-slate-200'
                           }`}
                         >
-                          {char}
+                          {'◌' + char}
                         </button>
                       ))}
                     </div>
