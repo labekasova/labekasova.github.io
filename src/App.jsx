@@ -133,12 +133,13 @@ const WORDS_DATA = WORDS_BASE.map((word) => ({
 }));
 
 // Клавиатура для ввода
-const ARABIC_KEYS = [
-  ["ض", "ص", "ث", "ق", "ف", "غ", "ع", "ه", "خ", "ح", "ج", "د"],
-  ["ش", "س", "ي", "ب", "ل", "ا", "أ", "ت", "ن", "م", "ك", "ط", "ذ"],
-  ["ئ", "ء", "ؤ", "ر", "لا", "ى", "ة", "و", "ز", "ظ"],
-  ["َ", "ِ", "ُ", "ْ", "ّ"] // Огласовки
+const ARABIC_LETTER_KEYS = [
+  "ض", "ص", "ث", "ق", "ف", "غ", "ع", "ه", "خ", "ح", "ج", "د",
+  "ش", "س", "ي", "ب", "ل", "أ", "ت", "ن", "م", "ك", "ط", "ذ",
+  "ئ", "ء", "ؤ", "ر", "لا", "ى", "ة", "و", "ز", "ظ"
 ];
+
+const ARABIC_DIACRITIC_KEYS = ["َ", "ِ", "ُ", "ْ", "ّ"];
 
 // SVG Иконки
 const IconBook = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>;
@@ -806,7 +807,7 @@ export default function App() {
         </header>
 
         {/* Контент */}
-        <main className={`flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-hidden px-5 pt-5 pb-[max(1rem,env(safe-area-inset-bottom))] ${theme === 'dark' ? 'text-slate-100' : 'text-slate-800'}`}>
+        <main className={`flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-y-auto overflow-x-hidden px-5 pt-5 pb-[max(1rem,env(safe-area-inset-bottom))] ${theme === 'dark' ? 'text-slate-100' : 'text-slate-800'}`}>
           {filteredWords.length === 0 && (
             <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
               <h2 className="mb-2 text-xl font-bold">Для этого выбора пока нет слов</h2>
@@ -1089,50 +1090,68 @@ export default function App() {
                     </button>
                   )}
 
-                  {/* Виртуальная Клавиатура */}
-                  <div className="mt-auto shrink-0 rounded-[1.5rem] bg-slate-100 p-2">
-                    <div className="flex flex-col gap-1" dir="rtl">
-                      {ARABIC_KEYS.map((row, rIdx) => (
-                        <div key={rIdx} className="flex justify-center gap-1">
-                          {row.map((char, cIdx) => (
-                            <button
-                              key={cIdx}
-                              onClick={() => handleVirtualKeyPress(char)}
-                              disabled={writeChecked}
-                              className="flex-1 bg-white hover:bg-slate-50 text-slate-700 text-sm font-bold py-2 rounded-md shadow-sm active:bg-slate-200 disabled:opacity-50 transition-all flex items-center justify-center min-w-[18px]"
-                            >
-                              {char}
-                            </button>
-                          ))}
-                        </div>
+                                    {/* Виртуальная Клавиатура */}
+                  <div className={`mt-auto shrink-0 rounded-2xl p-2.5 ${theme === 'dark' ? 'bg-slate-800/70' : 'bg-slate-100'}`}>
+                    <div className="grid grid-cols-6 gap-1.5 min-[390px]:grid-cols-7" dir="rtl">
+                      {ARABIC_LETTER_KEYS.map((char) => (
+                        <button
+                          key={char}
+                          onClick={() => handleVirtualKeyPress(char)}
+                          disabled={writeChecked}
+                          className={`arabic-text flex min-h-11 min-w-0 items-center justify-center rounded-lg border text-xl font-bold leading-none shadow-sm transition-all active:scale-95 disabled:opacity-50 ${
+                            theme === 'dark'
+                              ? 'border-slate-700 bg-slate-900 text-slate-100 active:bg-slate-700'
+                              : 'border-slate-200 bg-white text-slate-800 active:bg-slate-200'
+                          }`}
+                        >
+                          {char}
+                        </button>
                       ))}
-                      
-                      <div className="flex gap-1 mt-1">
+                    </div>
+
+                    <div className="mt-1.5 grid grid-cols-5 gap-1.5" dir="rtl">
+                      {ARABIC_DIACRITIC_KEYS.map((char) => (
                         <button
-                          onClick={handleClear}
+                          key={char}
+                          onClick={() => handleVirtualKeyPress(char)}
                           disabled={writeChecked}
-                          className="flex-1 bg-slate-300 text-slate-800 text-xs font-bold py-2 rounded-md hover:bg-slate-400 active:scale-95"
+                          className={`arabic-text flex min-h-11 items-center justify-center rounded-lg border text-xl font-bold leading-none shadow-sm transition-all active:scale-95 disabled:opacity-50 ${
+                            theme === 'dark'
+                              ? 'border-slate-700 bg-slate-900 text-indigo-200 active:bg-slate-700'
+                              : 'border-slate-200 bg-white text-indigo-700 active:bg-slate-200'
+                          }`}
                         >
-                          Сброс
+                          {char}
                         </button>
-                        <button
-                          onClick={() => handleVirtualKeyPress(" ")}
-                          disabled={writeChecked}
-                          className="w-1/2 bg-white text-slate-700 py-2 rounded-md shadow-sm hover:bg-slate-50 active:scale-95 text-xs font-semibold"
-                        >
-                          Пробел
-                        </button>
-                        <button
-                          onClick={handleBackspace}
-                          disabled={writeChecked}
-                          className="flex-1 bg-amber-200 text-amber-900 text-xs font-bold py-2 rounded-md hover:bg-amber-300 active:scale-95 flex items-center justify-center gap-0.5"
-                        >
-                          ← Стереть
-                        </button>
-                      </div>
+                      ))}
+                    </div>
+
+                    <div className="mt-2 grid grid-cols-[1fr_1.5fr_1fr] gap-1.5">
+                      <button
+                        onClick={handleBackspace}
+                        disabled={writeChecked}
+                        className="flex min-h-12 items-center justify-center rounded-lg bg-amber-200 px-2 text-xs font-bold text-amber-900 transition-all active:scale-95 disabled:opacity-50"
+                      >
+                        Стереть ←
+                      </button>
+
+                      <button
+                        onClick={() => handleVirtualKeyPress(" ")}
+                        disabled={writeChecked}
+                        className={`min-h-12 rounded-lg text-sm font-semibold shadow-sm transition-all active:scale-95 disabled:opacity-50 ${theme === 'dark' ? 'bg-slate-900 text-slate-100' : 'bg-white text-slate-700'}`}
+                      >
+                        Пробел
+                      </button>
+
+                      <button
+                        onClick={handleClear}
+                        disabled={writeChecked}
+                        className={`min-h-12 rounded-lg px-2 text-xs font-bold transition-all active:scale-95 disabled:opacity-50 ${theme === 'dark' ? 'bg-slate-700 text-slate-100' : 'bg-slate-300 text-slate-800'}`}
+                      >
+                        Сброс
+                      </button>
                     </div>
                   </div>
-
                 </div>
               ) : null}
             </div>
