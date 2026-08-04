@@ -88,13 +88,21 @@ const WORDS_BASE = [
   { id: 3,   arabic: "حَمِدَ", transcription: "Hamida", russian: "воздал хвалу [Богу]", group: "Общение и дух", type: WORD_TYPES.verb },
   { id: 1,   arabic: "سَجَدَ", transcription: "sajada", russian: "совершил земной поклон", group: "Общение и дух", type: WORD_TYPES.verb },
 
-  // --- ГРУППА 9: Новые существительные ---
+    // --- ГРУППА 9: Новые существительные с урока про Сукун 30/07/2026 ---
   { id: 201, arabic: "مَغْرِبُ", transcription: "maghribu", russian: "закат, вечернее время", group: "Время дня", type: WORD_TYPES.noun },
   { id: 202, arabic: "دَفْتَرُ", transcription: "daftaru", russian: "тетрадь", group: "Учёба и знания", type: WORD_TYPES.noun },
   { id: 203, arabic: "مَوْزُ", transcription: "mawzu", russian: "банан", group: "Вода и Еда", type: WORD_TYPES.noun },
   { id: 204, arabic: "وَرْدَةُ", transcription: "wardatu", russian: "цветок / роза", group: "Растения", type: WORD_TYPES.noun },
   { id: 205, arabic: "مُسْلِمُ", transcription: "muslimu", russian: "мусульманин / покорный [Богу]", group: "Люди", type: WORD_TYPES.noun },
-  { id: 206, arabic: "بِنْتُ", transcription: "bintu", russian: "девочка / дочь", group: "Люди", type: WORD_TYPES.noun }
+  { id: 206, arabic: "بِنْتُ", transcription: "bintu", russian: "девочка / дочь", group: "Люди", type: WORD_TYPES.noun },
+
+  // --- ГРУППА 10: Новые слова с урока про Шадда 04/08/2026 ---
+  { id: 207, arabic: "مُحَمَّدٌ", transcription: "muHammadu", russian: "Мухаммад / Магомед", group: "Люди", type: WORD_TYPES.noun },
+  { id: 208, arabic: "يَحُجُّ", transcription: "yaHujju", russian: "совершает хадж", group: "Вера и поклонение", type: WORD_TYPES.verb },
+  { id: 209, arabic: "سِنٌّ", transcription: "sinnu", russian: "зуб", group: "Тело", type: WORD_TYPES.noun },
+  { id: 210, arabic: "صَدَّقَ", transcription: "Saddaqa", russian: "поверил / сказал правду", group: "Общение и дух", type: WORD_TYPES.verb },
+  { id: 211, arabic: "جَنَّةٌ", transcription: "jannatun", russian: "рай / сад", group: "Вера и поклонение", type: WORD_TYPES.noun },
+  { id: 212, arabic: "كَذَّبَ", transcription: "kadhdhaba", russian: "отрицал / счёл ложью", group: "Общение и дух", type: WORD_TYPES.verb }
 ];
 
 const AUDIO_READY_TRANSCRIPTIONS = new Set([
