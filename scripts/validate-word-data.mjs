@@ -68,6 +68,30 @@ expectedFilterCounts.forEach(([filters, expectedCount]) => {
   }
 });
 
+const multiSelectFilterCases = [
+  [{ types: [WORD_TYPES.verb, WORD_TYPES.noun] }, 54],
+  [{ lessonIds: [LESSON_IDS.sukun, LESSON_IDS.shadda] }, 12],
+  [{
+    types: [WORD_TYPES.verb, WORD_TYPES.noun],
+    lessonIds: [LESSON_IDS.sukun, LESSON_IDS.shadda]
+  }, 12],
+  [{
+    types: [WORD_TYPES.verb],
+    lessonIds: [LESSON_IDS.sukun, LESSON_IDS.shadda]
+  }, 3],
+  [{
+    types: [WORD_TYPES.noun, WORD_TYPES.particle],
+    lessonIds: [LESSON_IDS.shadda]
+  }, 3]
+];
+
+multiSelectFilterCases.forEach(([filters, expectedCount]) => {
+  const actualCount = filterWords(WORDS_DATA, filters).length;
+  if (actualCount !== expectedCount) {
+    fail(`Множественный фильтр ${JSON.stringify(filters)} вернул ${actualCount} вместо ${expectedCount}.`);
+  }
+});
+
 const dictionarySearchCases = [
   ['Мухаммад', 207],
   ['muhammadu', 207],
