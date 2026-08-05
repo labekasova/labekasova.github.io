@@ -28,16 +28,30 @@ export const normalizeSearchValue = (value) => (
 export const filterWords = (words, filters = {}) => {
   const {
     type = null,
+    types = null,
     lessonId = 'all',
+    lessonIds = null,
     query = ''
   } = filters;
+  const selectedTypes = Array.isArray(types)
+    ? types
+    : type
+      ? [type]
+      : [];
+  const selectedLessonIds = Array.isArray(lessonIds)
+    ? lessonIds
+    : lessonId && lessonId !== 'all'
+      ? [lessonId]
+      : [];
   const normalizedQuery = normalizeSearchValue(query);
 
   return words.filter((word) => {
-    const matchesType = type ? word.type === type : true;
-    const matchesLesson = lessonId === 'all'
+    const matchesType = selectedTypes.length === 0
       ? true
-      : word.lessonId === lessonId;
+      : selectedTypes.includes(word.type);
+    const matchesLesson = selectedLessonIds.length === 0
+      ? true
+      : selectedLessonIds.includes(word.lessonId);
     const searchableText = normalizeSearchValue([
       word.arabic,
       word.transcription,
