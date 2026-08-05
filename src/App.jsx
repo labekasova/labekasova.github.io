@@ -75,21 +75,47 @@ const formatWordCount = (count) => {
   return `${count} ${form}`;
 };
 
+const toggleSelection = (selectedIds, id) => (
+  selectedIds.includes(id)
+    ? selectedIds.filter((selectedId) => selectedId !== id)
+    : [...selectedIds, id]
+);
+
+const getTypesByFilterIds = (filterIds) => (
+  WORD_FILTERS
+    .filter((filter) => filterIds.includes(filter.id) && filter.type)
+    .map((filter) => filter.type)
+);
+
+const formatLessonSelectionCount = (count) => {
+  const lastTwoDigits = count % 100;
+  const lastDigit = count % 10;
+  const form = lastTwoDigits >= 11 && lastTwoDigits <= 14
+    ? 'уроков'
+    : lastDigit === 1
+      ? 'урок'
+      : lastDigit >= 2 && lastDigit <= 4
+        ? 'урока'
+        : 'уроков';
+
+  return `${count} ${form}`;
+};
+
 export default function App() {
   const audioRef = useRef(null);
   const audioRequestRef = useRef(0);
   const audioSourceRef = useRef('');
   const [activeTab, setActiveTab] = useState('dictionary');
-  const [activeFilter, setActiveFilter] = useState('all');
-  const [activeLessonGroup, setActiveLessonGroup] = useState('all');
-  const [draftFilter, setDraftFilter] = useState('all');
-  const [draftLessonGroup, setDraftLessonGroup] = useState('all');
+  const [activeFilters, setActiveFilters] = useState([]);
+  const [activeLessonGroups, setActiveLessonGroups] = useState([]);
+  const [draftFilters, setDraftFilters] = useState([]);
+  const [draftLessonGroups, setDraftLessonGroups] = useState([]);
   const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
   const [dictionaryQuery, setDictionaryQuery] = useState('');
-  const [dictionaryFilter, setDictionaryFilter] = useState('all');
-  const [dictionaryLessonGroup, setDictionaryLessonGroup] = useState('all');
-  const [dictionaryDraftFilter, setDictionaryDraftFilter] = useState('all');
-  const [dictionaryDraftLessonGroup, setDictionaryDraftLessonGroup] = useState('all');
+  const [dictionaryFilters, setDictionaryFilters] = useState([]);
+  const [dictionaryLessonGroups, setDictionaryLessonGroups] = useState([]);
+  const [dictionaryDraftFilters, setDictionaryDraftFilters] = useState([]);
+  const [dictionaryDraftLessonGroups, setDictionaryDraftLessonGroups] = useState([]);
   const [isDictionaryFilterOpen, setIsDictionaryFilterOpen] = useState(false);
   const [expandedRoot, setExpandedRoot] = useState(null);
   const [theme, setTheme] = useState(() => {
@@ -139,32 +165,36 @@ export default function App() {
     return newArr;
   };
 
-  const activeFilterOption = WORD_FILTERS.find((filter) => filter.id === activeFilter) ?? WORD_FILTERS[0];
-  const activeLessonOption = LESSON_FILTERS.find((lesson) => lesson.id === activeLessonGroup) ?? LESSON_FILTERS[0];
-  const draftFilterOption = WORD_FILTERS.find((filter) => filter.id === draftFilter) ?? WORD_FILTERS[0];
+  const activeFilterTitle = activeFilters.length === 0
+    ? WORD_FILTERS[0].title
+    : activeFilters.length === 1
+      ? WORD_FILTERS.find((filter) => filter.id === activeFilters[0])?.title ?? WORD_FILTERS[0].title
+      : `${activeFilters.length} части речи`;
+  const activeLessonTitle = activeLessonGroups.length === 0
+    ? LESSON_FILTERS[0].label
+    : activeLessonGroups.length === 1
+      ? LESSON_FILTERS.find((lesson) => lesson.id === activeLessonGroups[0])?.label ?? LESSON_FILTERS[0].label
+      : formatLessonSelectionCount(activeLessonGroups.length);
   const filteredWords = useMemo(() => filterWords(WORDS_DATA, {
-    type: activeFilterOption.type,
-    lessonId: activeLessonGroup
-  }), [activeFilterOption.type, activeLessonGroup]);
+    types: getTypesByFilterIds(activeFilters),
+    lessonIds: activeLessonGroups
+  }), [activeFilters, activeLessonGroups]);
   const draftFilteredWords = useMemo(() => filterWords(WORDS_DATA, {
-    type: draftFilterOption.type,
-    lessonId: draftLessonGroup
-  }), [draftFilterOption.type, draftLessonGroup]);
-  const dictionaryFilterOption = WORD_FILTERS.find((filter) => filter.id === dictionaryFilter) ?? WORD_FILTERS[0];
-  const dictionaryLessonOption = LESSON_FILTERS.find((lesson) => lesson.id === dictionaryLessonGroup) ?? LESSON_FILTERS[0];
-  const dictionaryDraftFilterOption = WORD_FILTERS.find((filter) => filter.id === dictionaryDraftFilter) ?? WORD_FILTERS[0];
+    types: getTypesByFilterIds(draftFilters),
+    lessonIds: draftLessonGroups
+  }), [draftFilters, draftLessonGroups]);
   const dictionaryWords = useMemo(() => sortWordsByRussian(filterWords(WORDS_DATA, {
-    type: dictionaryFilterOption.type,
-    lessonId: dictionaryLessonGroup,
+    types: getTypesByFilterIds(dictionaryFilters),
+    lessonIds: dictionaryLessonGroups,
     query: dictionaryQuery
-  })), [dictionaryFilterOption.type, dictionaryLessonGroup, dictionaryQuery]);
+  })), [dictionaryFilters, dictionaryLessonGroups, dictionaryQuery]);
   const dictionaryDraftWords = useMemo(() => filterWords(WORDS_DATA, {
-    type: dictionaryDraftFilterOption.type,
-    lessonId: dictionaryDraftLessonGroup,
+    types: getTypesByFilterIds(dictionaryDraftFilters),
+    lessonIds: dictionaryDraftLessonGroups,
     query: dictionaryQuery
-  }), [dictionaryDraftFilterOption.type, dictionaryDraftLessonGroup, dictionaryQuery]);
+  }), [dictionaryDraftFilters, dictionaryDraftLessonGroups, dictionaryQuery]);
   const repeatedRootIndex = useMemo(() => buildRepeatedRootIndex(WORDS_DATA), []);
-  const dictionaryActiveFilterCount = Number(dictionaryFilter !== 'all') + Number(dictionaryLessonGroup !== 'all');
+  const dictionaryActiveFilterCount = dictionaryFilters.length + dictionaryLessonGroups.length;
 
   const resetLearningState = useCallback((nextWords) => {
     setWords([...nextWords]);
@@ -361,7 +391,7 @@ export default function App() {
     resetQuizState(filteredWords);
     resetWriteState(filteredWords);
     setIsFilterMenuOpen(false);
-  }, [activeFilter, activeLessonGroup, resetLearningState, resetQuizState, resetWriteState, filteredWords]);
+  }, [activeFilters, activeLessonGroups, resetLearningState, resetQuizState, resetWriteState, filteredWords]);
 
   useEffect(() => {
     setIsFilterMenuOpen(false);
@@ -429,7 +459,7 @@ export default function App() {
     setIsAudioPlaying(false);
     setIsAudioLoading(false);
     audioRequestRef.current += 1;
-  }, [currentIndex, activeFilter, activeLessonGroup, activeTab]);
+  }, [currentIndex, activeFilters, activeLessonGroups, activeTab]);
 
   const currentWord = words[currentIndex];
 
@@ -512,68 +542,92 @@ export default function App() {
       ? 'Аудио загружается'
       : 'Прослушать произношение';
   const openFilterMenu = () => {
-    setDraftFilter(activeFilter);
-    setDraftLessonGroup(activeLessonGroup);
+    setDraftFilters([...activeFilters]);
+    setDraftLessonGroups([...activeLessonGroups]);
     setIsFilterMenuOpen(true);
   };
 
   const applyFilters = () => {
-    setActiveFilter(draftFilter);
-    setActiveLessonGroup(draftLessonGroup);
+    setActiveFilters([...draftFilters]);
+    setActiveLessonGroups([...draftLessonGroups]);
     setIsFilterMenuOpen(false);
   };
 
   const resetDraftFilters = () => {
-    setDraftFilter('all');
-    setDraftLessonGroup('all');
+    setDraftFilters([]);
+    setDraftLessonGroups([]);
+  };
+
+  const toggleDraftFilter = (filterId) => {
+    setDraftFilters((selectedIds) => (
+      filterId === 'all' ? [] : toggleSelection(selectedIds, filterId)
+    ));
+  };
+
+  const toggleDraftLessonGroup = (lessonId) => {
+    setDraftLessonGroups((selectedIds) => (
+      lessonId === 'all' ? [] : toggleSelection(selectedIds, lessonId)
+    ));
   };
 
   const countWordsForType = (filter) => filterWords(WORDS_DATA, {
-    type: filter.type,
-    lessonId: draftLessonGroup
+    types: filter.type ? [filter.type] : [],
+    lessonIds: draftLessonGroups
   }).length;
 
   const countWordsForLesson = (lesson) => filterWords(WORDS_DATA, {
-    type: draftFilterOption.type,
-    lessonId: lesson.id
+    types: getTypesByFilterIds(draftFilters),
+    lessonIds: lesson.id === 'all' ? [] : [lesson.id]
   }).length;
 
   const openDictionaryFilterMenu = () => {
-    setDictionaryDraftFilter(dictionaryFilter);
-    setDictionaryDraftLessonGroup(dictionaryLessonGroup);
+    setDictionaryDraftFilters([...dictionaryFilters]);
+    setDictionaryDraftLessonGroups([...dictionaryLessonGroups]);
     setIsDictionaryFilterOpen(true);
   };
 
   const applyDictionaryFilters = () => {
-    setDictionaryFilter(dictionaryDraftFilter);
-    setDictionaryLessonGroup(dictionaryDraftLessonGroup);
+    setDictionaryFilters([...dictionaryDraftFilters]);
+    setDictionaryLessonGroups([...dictionaryDraftLessonGroups]);
     setExpandedRoot(null);
     setIsDictionaryFilterOpen(false);
   };
 
   const resetDictionaryDraftFilters = () => {
-    setDictionaryDraftFilter('all');
-    setDictionaryDraftLessonGroup('all');
+    setDictionaryDraftFilters([]);
+    setDictionaryDraftLessonGroups([]);
+  };
+
+  const toggleDictionaryDraftFilter = (filterId) => {
+    setDictionaryDraftFilters((selectedIds) => (
+      filterId === 'all' ? [] : toggleSelection(selectedIds, filterId)
+    ));
+  };
+
+  const toggleDictionaryDraftLessonGroup = (lessonId) => {
+    setDictionaryDraftLessonGroups((selectedIds) => (
+      lessonId === 'all' ? [] : toggleSelection(selectedIds, lessonId)
+    ));
   };
 
   const resetDictionaryView = () => {
     setDictionaryQuery('');
-    setDictionaryFilter('all');
-    setDictionaryLessonGroup('all');
-    setDictionaryDraftFilter('all');
-    setDictionaryDraftLessonGroup('all');
+    setDictionaryFilters([]);
+    setDictionaryLessonGroups([]);
+    setDictionaryDraftFilters([]);
+    setDictionaryDraftLessonGroups([]);
     setExpandedRoot(null);
   };
 
   const countDictionaryWordsForType = (filter) => filterWords(WORDS_DATA, {
-    type: filter.type,
-    lessonId: dictionaryDraftLessonGroup,
+    types: filter.type ? [filter.type] : [],
+    lessonIds: dictionaryDraftLessonGroups,
     query: dictionaryQuery
   }).length;
 
   const countDictionaryWordsForLesson = (lesson) => filterWords(WORDS_DATA, {
-    type: dictionaryDraftFilterOption.type,
-    lessonId: lesson.id,
+    types: getTypesByFilterIds(dictionaryDraftFilters),
+    lessonIds: lesson.id === 'all' ? [] : [lesson.id],
     query: dictionaryQuery
   }).length;
 
@@ -617,7 +671,7 @@ export default function App() {
                 <span aria-hidden="true" className="flex h-[18px] w-[18px] items-center justify-center opacity-0">
                   <IconChevronDown />
                 </span>
-                <span>{activeTab === 'dictionary' ? 'Словарь' : activeFilterOption.title}</span>
+                <span>{activeTab === 'dictionary' ? 'Словарь' : activeFilterTitle}</span>
                 <span
                   aria-hidden="true"
                   className={`flex h-[18px] w-[18px] items-center justify-center text-white/85 transition-transform duration-200 ${activeTab === 'dictionary' ? 'opacity-0' : ''} ${isFilterMenuOpen ? 'rotate-180' : ''}`}
@@ -629,7 +683,7 @@ export default function App() {
             <p className="mt-1 max-w-full px-8 text-center text-xs leading-4 text-white/70">
               {activeTab === 'dictionary'
                 ? `${formatWordCount(dictionaryWords.length)} из ${WORDS_DATA.length}`
-                : `${activeLessonOption.label} · ${formatWordCount(filteredWords.length)}`}
+                : `${activeLessonTitle} · ${formatWordCount(filteredWords.length)}`}
             </p>
 
             {isFilterMenuOpen && activeTab !== 'dictionary' && (
@@ -658,7 +712,7 @@ export default function App() {
                     <div>
                       <h2 id="filter-sheet-title" className="text-lg font-bold">Выбор слов</h2>
                       <p className={`text-xs ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
-                        Выберите часть речи и урок
+                        Можно выбрать несколько вариантов
                       </p>
                     </div>
                     <button
@@ -680,10 +734,11 @@ export default function App() {
                         <button
                           key={filter.id}
                           type="button"
-                          aria-pressed={draftFilter === filter.id}
-                          onClick={() => setDraftFilter(filter.id)}
+                          role="checkbox"
+                          aria-checked={filter.id === 'all' ? draftFilters.length === 0 : draftFilters.includes(filter.id)}
+                          onClick={() => toggleDraftFilter(filter.id)}
                           className={`flex min-h-12 w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-sm transition-colors ${
-                            draftFilter === filter.id
+                            (filter.id === 'all' ? draftFilters.length === 0 : draftFilters.includes(filter.id))
                               ? theme === 'dark'
                                 ? 'bg-slate-800 text-white'
                                 : 'bg-indigo-50 text-indigo-700'
@@ -692,10 +747,12 @@ export default function App() {
                                 : 'text-slate-700 hover:bg-slate-50'
                           }`}
                         >
-                          <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 ${
-                            draftFilter === filter.id ? 'border-indigo-500' : theme === 'dark' ? 'border-slate-500' : 'border-slate-300'
+                          <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 ${
+                            (filter.id === 'all' ? draftFilters.length === 0 : draftFilters.includes(filter.id)) ? 'border-indigo-500 bg-indigo-500 text-white' : theme === 'dark' ? 'border-slate-500' : 'border-slate-300'
                           }`}>
-                            {draftFilter === filter.id && <span className="h-2.5 w-2.5 rounded-full bg-indigo-500" />}
+                            {(filter.id === 'all' ? draftFilters.length === 0 : draftFilters.includes(filter.id)) && (
+                              <span className="h-2.5 w-2.5 rounded-sm bg-white" />
+                            )}
                           </span>
                           <span className="min-w-0 flex-1">{filter.label}</span>
                           <span className={`shrink-0 text-xs ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
@@ -713,10 +770,11 @@ export default function App() {
                         <button
                           key={lesson.id}
                           type="button"
-                          aria-pressed={draftLessonGroup === lesson.id}
-                          onClick={() => setDraftLessonGroup(lesson.id)}
+                          role="checkbox"
+                          aria-checked={lesson.id === 'all' ? draftLessonGroups.length === 0 : draftLessonGroups.includes(lesson.id)}
+                          onClick={() => toggleDraftLessonGroup(lesson.id)}
                           className={`flex min-h-12 w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-sm transition-colors ${
-                            draftLessonGroup === lesson.id
+                            (lesson.id === 'all' ? draftLessonGroups.length === 0 : draftLessonGroups.includes(lesson.id))
                               ? theme === 'dark'
                                 ? 'bg-slate-800 text-white'
                                 : 'bg-indigo-50 text-indigo-700'
@@ -725,10 +783,12 @@ export default function App() {
                                 : 'text-slate-700 hover:bg-slate-50'
                           }`}
                         >
-                          <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 ${
-                            draftLessonGroup === lesson.id ? 'border-indigo-500' : theme === 'dark' ? 'border-slate-500' : 'border-slate-300'
+                          <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 ${
+                            (lesson.id === 'all' ? draftLessonGroups.length === 0 : draftLessonGroups.includes(lesson.id)) ? 'border-indigo-500 bg-indigo-500 text-white' : theme === 'dark' ? 'border-slate-500' : 'border-slate-300'
                           }`}>
-                            {draftLessonGroup === lesson.id && <span className="h-2.5 w-2.5 rounded-full bg-indigo-500" />}
+                            {(lesson.id === 'all' ? draftLessonGroups.length === 0 : draftLessonGroups.includes(lesson.id)) && (
+                              <span className="h-2.5 w-2.5 rounded-sm bg-white" />
+                            )}
                           </span>
                           <span className="min-w-0 flex-1 leading-5">{lesson.label}</span>
                           <span className={`shrink-0 text-xs ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
@@ -750,8 +810,7 @@ export default function App() {
                     <button
                       type="button"
                       onClick={applyFilters}
-                      disabled={draftFilteredWords.length === 0}
-                      className="min-h-12 rounded-xl bg-indigo-600 px-4 text-sm font-semibold text-white shadow-sm disabled:bg-slate-300 disabled:text-slate-500"
+                      className="min-h-12 rounded-xl bg-indigo-600 px-4 text-sm font-semibold text-white shadow-sm"
                     >
                       {draftFilteredWords.length > 0
                         ? `Показать ${draftFilteredWords.length} слов`
@@ -1221,38 +1280,50 @@ export default function App() {
 
                 {dictionaryActiveFilterCount > 0 && (
                   <div className="mt-3 flex min-w-0 flex-wrap gap-2">
-                    {dictionaryFilter !== 'all' && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setDictionaryFilter('all');
-                          setExpandedRoot(null);
-                        }}
-                        aria-label={`Убрать фильтр ${dictionaryFilterOption.title}`}
-                        className={`flex min-h-9 max-w-full items-center gap-2 rounded-lg px-3 text-left text-xs font-semibold ${
-                          theme === 'dark' ? 'bg-slate-800 text-indigo-200' : 'bg-indigo-50 text-indigo-700'
-                        }`}
-                      >
-                        <span className="min-w-0 truncate">{dictionaryFilterOption.title}</span>
-                        <span aria-hidden="true" className="shrink-0 text-lg leading-none">×</span>
-                      </button>
-                    )}
-                    {dictionaryLessonGroup !== 'all' && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setDictionaryLessonGroup('all');
-                          setExpandedRoot(null);
-                        }}
-                        aria-label={`Убрать фильтр ${dictionaryLessonOption.label}`}
-                        className={`flex min-h-9 max-w-full items-center gap-2 rounded-lg px-3 text-left text-xs font-semibold ${
-                          theme === 'dark' ? 'bg-slate-800 text-indigo-200' : 'bg-indigo-50 text-indigo-700'
-                        }`}
-                      >
-                        <span className="min-w-0 truncate">{dictionaryLessonOption.label}</span>
-                        <span aria-hidden="true" className="shrink-0 text-lg leading-none">×</span>
-                      </button>
-                    )}
+                    {dictionaryFilters.map((filterId) => {
+                      const filter = WORD_FILTERS.find((item) => item.id === filterId);
+                      if (!filter) return null;
+
+                      return (
+                        <button
+                          key={filter.id}
+                          type="button"
+                          onClick={() => {
+                            setDictionaryFilters((currentFilters) => currentFilters.filter((id) => id !== filter.id));
+                            setExpandedRoot(null);
+                          }}
+                          aria-label={`Убрать фильтр ${filter.title}`}
+                          className={`flex min-h-9 max-w-full items-center gap-2 rounded-lg px-3 text-left text-xs font-semibold ${
+                            theme === 'dark' ? 'bg-slate-800 text-indigo-200' : 'bg-indigo-50 text-indigo-700'
+                          }`}
+                        >
+                          <span className="min-w-0 truncate">{filter.title}</span>
+                          <span aria-hidden="true" className="shrink-0 text-lg leading-none">×</span>
+                        </button>
+                      );
+                    })}
+                    {dictionaryLessonGroups.map((lessonId) => {
+                      const lesson = LESSON_FILTERS.find((item) => item.id === lessonId);
+                      if (!lesson) return null;
+
+                      return (
+                        <button
+                          key={lesson.id}
+                          type="button"
+                          onClick={() => {
+                            setDictionaryLessonGroups((currentLessons) => currentLessons.filter((id) => id !== lesson.id));
+                            setExpandedRoot(null);
+                          }}
+                          aria-label={`Убрать фильтр ${lesson.label}`}
+                          className={`flex min-h-9 max-w-full items-center gap-2 rounded-lg px-3 text-left text-xs font-semibold ${
+                            theme === 'dark' ? 'bg-slate-800 text-indigo-200' : 'bg-indigo-50 text-indigo-700'
+                          }`}
+                        >
+                          <span className="min-w-0 truncate">{lesson.label}</span>
+                          <span aria-hidden="true" className="shrink-0 text-lg leading-none">×</span>
+                        </button>
+                      );
+                    })}
                   </div>
                 )}
               </div>
@@ -1353,7 +1424,7 @@ export default function App() {
                     role="dialog"
                     aria-modal="true"
                     aria-labelledby="dictionary-filter-title"
-                    className={`fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-md overflow-hidden rounded-t-[1.75rem] border-x border-t shadow-[0_-18px_50px_rgba(15,23,42,0.2)] ${
+                    className={`fixed inset-x-0 bottom-0 z-40 mx-auto flex max-h-[85dvh] w-full max-w-md flex-col overflow-hidden rounded-t-[1.75rem] border-x border-t shadow-[0_-18px_50px_rgba(15,23,42,0.2)] ${
                       theme === 'dark'
                         ? 'border-slate-700 bg-slate-900 text-slate-100'
                         : 'border-slate-200 bg-white text-slate-800'
@@ -1379,48 +1450,98 @@ export default function App() {
                       </button>
                     </div>
 
-                    <div className="space-y-5 px-4 py-5">
-                      <label className="block">
-                        <span className={`mb-2 block text-xs font-bold ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
+                    <div className="space-y-5 overflow-y-auto px-4 py-5">
+                      <div>
+                        <h3 className={`mb-2 text-xs font-bold uppercase ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
                           Часть речи
-                        </span>
-                        <select
-                          value={dictionaryDraftFilter}
-                          onChange={(event) => setDictionaryDraftFilter(event.target.value)}
-                          className={`min-h-12 w-full rounded-xl border px-3 text-base outline-none ${
-                            theme === 'dark'
-                              ? 'border-slate-700 bg-slate-800 text-slate-100'
-                              : 'border-slate-200 bg-white text-slate-800'
-                          }`}
-                        >
-                          {WORD_FILTERS.map((filter) => (
-                            <option key={filter.id} value={filter.id}>
-                              {filter.title} · {formatWordCount(countDictionaryWordsForType(filter))}
-                            </option>
-                          ))}
-                        </select>
-                      </label>
+                        </h3>
+                        <div className="space-y-1">
+                          {WORD_FILTERS.map((filter) => {
+                            const isSelected = filter.id === 'all'
+                              ? dictionaryDraftFilters.length === 0
+                              : dictionaryDraftFilters.includes(filter.id);
 
-                      <label className="block">
-                        <span className={`mb-2 block text-xs font-bold ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
+                            return (
+                              <button
+                                key={filter.id}
+                                type="button"
+                                role="checkbox"
+                                aria-checked={isSelected}
+                                onClick={() => toggleDictionaryDraftFilter(filter.id)}
+                                className={`flex min-h-12 w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-sm transition-colors ${
+                                  isSelected
+                                    ? theme === 'dark'
+                                      ? 'bg-slate-800 text-white'
+                                      : 'bg-indigo-50 text-indigo-700'
+                                    : theme === 'dark'
+                                      ? 'text-slate-200 hover:bg-slate-800/70'
+                                      : 'text-slate-700 hover:bg-slate-50'
+                                }`}
+                              >
+                                <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 ${
+                                  isSelected
+                                    ? 'border-indigo-500 bg-indigo-500'
+                                    : theme === 'dark'
+                                      ? 'border-slate-500'
+                                      : 'border-slate-300'
+                                }`}>
+                                  {isSelected && <span className="h-2.5 w-2.5 rounded-sm bg-white" />}
+                                </span>
+                                <span className="min-w-0 flex-1">{filter.label}</span>
+                                <span className={`shrink-0 text-xs ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
+                                  {countDictionaryWordsForType(filter)}
+                                </span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      <div>
+                        <h3 className={`mb-2 text-xs font-bold uppercase ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
                           Урок
-                        </span>
-                        <select
-                          value={dictionaryDraftLessonGroup}
-                          onChange={(event) => setDictionaryDraftLessonGroup(event.target.value)}
-                          className={`min-h-12 w-full rounded-xl border px-3 text-base outline-none ${
-                            theme === 'dark'
-                              ? 'border-slate-700 bg-slate-800 text-slate-100'
-                              : 'border-slate-200 bg-white text-slate-800'
-                          }`}
-                        >
-                          {LESSON_FILTERS.map((lesson) => (
-                            <option key={lesson.id} value={lesson.id}>
-                              {lesson.label} · {formatWordCount(countDictionaryWordsForLesson(lesson))}
-                            </option>
-                          ))}
-                        </select>
-                      </label>
+                        </h3>
+                        <div className="space-y-1">
+                          {LESSON_FILTERS.map((lesson) => {
+                            const isSelected = lesson.id === 'all'
+                              ? dictionaryDraftLessonGroups.length === 0
+                              : dictionaryDraftLessonGroups.includes(lesson.id);
+
+                            return (
+                              <button
+                                key={lesson.id}
+                                type="button"
+                                role="checkbox"
+                                aria-checked={isSelected}
+                                onClick={() => toggleDictionaryDraftLessonGroup(lesson.id)}
+                                className={`flex min-h-12 w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-sm transition-colors ${
+                                  isSelected
+                                    ? theme === 'dark'
+                                      ? 'bg-slate-800 text-white'
+                                      : 'bg-indigo-50 text-indigo-700'
+                                    : theme === 'dark'
+                                      ? 'text-slate-200 hover:bg-slate-800/70'
+                                      : 'text-slate-700 hover:bg-slate-50'
+                                }`}
+                              >
+                                <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 ${
+                                  isSelected
+                                    ? 'border-indigo-500 bg-indigo-500'
+                                    : theme === 'dark'
+                                      ? 'border-slate-500'
+                                      : 'border-slate-300'
+                                }`}>
+                                  {isSelected && <span className="h-2.5 w-2.5 rounded-sm bg-white" />}
+                                </span>
+                                <span className="min-w-0 flex-1 leading-5">{lesson.label}</span>
+                                <span className={`shrink-0 text-xs ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
+                                  {countDictionaryWordsForLesson(lesson)}
+                                </span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
 
                       <p className={`text-center text-sm ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`} aria-live="polite">
                         Будет показано: {formatWordCount(dictionaryDraftWords.length)}
