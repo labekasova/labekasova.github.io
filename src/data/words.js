@@ -59,10 +59,10 @@ export const WORDS_BASE = [
   { id: 204, arabic: 'وَرْدَةُ', transcription: 'wardatu', russian: 'цветок / роза', translations: ['цветок', 'роза'], semanticGroup: 'Растения', type: WORD_TYPES.noun, lessonId: SUKUN },
   { id: 205, arabic: 'مُسْلِمُ', transcription: 'muslimu', russian: 'мусульманин / покорный [Богу]', translations: ['мусульманин', 'покорный [Богу]'], semanticGroup: 'Люди', type: WORD_TYPES.noun, lessonId: SUKUN },
   { id: 206, arabic: 'بِنْتُ', transcription: 'bintu', russian: 'девочка / дочь', translations: ['девочка', 'дочь'], semanticGroup: 'Люди', type: WORD_TYPES.noun, lessonId: SUKUN },
-  { id: 207, arabic: 'مُحَمَّدٌ', transcription: 'muHammadu', russian: 'Мухаммад / Магомед', translations: ['Мухаммад', 'Магомед'], semanticGroup: 'Люди', type: WORD_TYPES.noun, lessonId: SHADDA, root: 'ح م د' },
+  { id: 207, arabic: 'مُحَمَّدُ', transcription: 'muHammadu', russian: 'Мухаммад / восхваляемый', translations: ['Мухаммад', 'восхваляемый'], semanticGroup: 'Люди', type: WORD_TYPES.noun, lessonId: SHADDA, root: 'ح م د' },
   { id: 208, arabic: 'يَحُجُّ', transcription: 'yaHujju', russian: 'совершает хадж', translations: ['совершает хадж'], semanticGroup: 'Вера и поклонение', type: WORD_TYPES.verb, lessonId: SHADDA },
-  { id: 209, arabic: 'سِنٌّ', transcription: 'sinnu', russian: 'зуб', translations: ['зуб'], semanticGroup: 'Тело', type: WORD_TYPES.noun, lessonId: SHADDA },
-  { id: 210, arabic: 'صَدَّقَ', transcription: 'Saddaqa', russian: 'поверил / сказал правду', translations: ['поверил', 'сказал правду'], semanticGroup: 'Общение и дух', type: WORD_TYPES.verb, lessonId: SHADDA },
+  { id: 209, arabic: 'سِنُّ', transcription: 'sinnu', russian: 'зуб', translations: ['зуб'], semanticGroup: 'Тело', type: WORD_TYPES.noun, lessonId: SHADDA },
+  { id: 210, arabic: 'صَدَّقَ', transcription: 'Saddaqa', russian: 'поверил / признал истинным', translations: ['поверил', 'признал истинным'], semanticGroup: 'Общение и дух', type: WORD_TYPES.verb, lessonId: SHADDA },
   { id: 211, arabic: 'جَنَّةٌ', transcription: 'jannatun', russian: 'рай / сад', translations: ['рай', 'сад'], semanticGroup: 'Вера и поклонение', type: WORD_TYPES.noun, lessonId: SHADDA },
   { id: 212, arabic: 'كَذَّبَ', transcription: 'kadhdhaba', russian: 'отрицал / счёл ложью', translations: ['отрицал', 'счёл ложью'], semanticGroup: 'Общение и дух', type: WORD_TYPES.verb, lessonId: SHADDA }
 ];
@@ -76,7 +76,13 @@ const AUDIO_READY_TRANSCRIPTIONS = new Set([
   'mawzu',
   'maghribu',
   'muslimu',
-  'wardatu'
+  'wardatu',
+  'muHammadu',
+  'yaHujju',
+  'sinnu',
+  'Saddaqa',
+  'jannatun',
+  'kadhdhaba'
 ]);
 
 export const WORDS_DATA = WORDS_BASE.map((word) => ({
