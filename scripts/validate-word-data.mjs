@@ -7,7 +7,7 @@ import {
   sortWordsByRussian
 } from '../src/domain/wordSelectors.js';
 
-const EXPECTED_WORD_COUNT = 54;
+const EXPECTED_WORD_COUNT = 73;
 
 const fail = (message) => {
   throw new Error(message);
@@ -41,8 +41,8 @@ const sortedWords = sortWordsByRussian(WORDS_DATA);
 if (sortedWords.some((word) => !getPrimaryTranslation(word))) {
   fail('Не для всех слов определён основной перевод для сортировки.');
 }
-if (getPrimaryTranslation(sortedWords[0]) !== 'банан') {
-  fail('Русская сортировка словаря не начинается со слова «банан».');
+if (getPrimaryTranslation(sortedWords[0]) !== 'Аиша') {
+  fail('Русская сортировка словаря не начинается со слова «Аиша».');
 }
 
 const repeatedRoots = buildRepeatedRootIndex(WORDS_DATA);
@@ -51,14 +51,32 @@ if (hamdRootWords.length !== 2) {
   fail('Ожидалась пара однокоренных слов для корня ح م د.');
 }
 
+const expectedRepeatedRootCounts = {
+  'ك ت ب': 2,
+  'س ل م': 3,
+  'د ر س': 2,
+  'ج د د': 2
+};
+
+Object.entries(expectedRepeatedRootCounts).forEach(([root, expectedCount]) => {
+  const actualCount = repeatedRoots[root]?.length ?? 0;
+  if (actualCount !== expectedCount) {
+    fail(`Для корня ${root} найдено ${actualCount} слов вместо ${expectedCount}.`);
+  }
+});
+
 const expectedFilterCounts = [
-  [{ type: WORD_TYPES.verb }, 45],
-  [{ type: WORD_TYPES.noun }, 9],
+  [{ type: WORD_TYPES.verb }, 47],
+  [{ type: WORD_TYPES.noun }, 26],
   [{ type: WORD_TYPES.particle }, 0],
   [{ lessonId: LESSON_IDS.module1 }, 42],
   [{ lessonId: LESSON_IDS.sukun }, 6],
   [{ lessonId: LESSON_IDS.shadda }, 6],
-  [{ type: WORD_TYPES.noun, lessonId: LESSON_IDS.shadda }, 3]
+  [{ lessonId: LESSON_IDS.stress }, 7],
+  [{ lessonId: LESSON_IDS.taMarbuta }, 12],
+  [{ type: WORD_TYPES.noun, lessonId: LESSON_IDS.shadda }, 3],
+  [{ type: WORD_TYPES.noun, lessonId: LESSON_IDS.stress }, 7],
+  [{ type: WORD_TYPES.verb, lessonId: LESSON_IDS.taMarbuta }, 2]
 ];
 
 expectedFilterCounts.forEach(([filters, expectedCount]) => {
@@ -69,7 +87,7 @@ expectedFilterCounts.forEach(([filters, expectedCount]) => {
 });
 
 const multiSelectFilterCases = [
-  [{ types: [WORD_TYPES.verb, WORD_TYPES.noun] }, 54],
+  [{ types: [WORD_TYPES.verb, WORD_TYPES.noun] }, 73],
   [{ lessonIds: [LESSON_IDS.sukun, LESSON_IDS.shadda] }, 12],
   [{
     types: [WORD_TYPES.verb, WORD_TYPES.noun],
@@ -82,7 +100,14 @@ const multiSelectFilterCases = [
   [{
     types: [WORD_TYPES.noun, WORD_TYPES.particle],
     lessonIds: [LESSON_IDS.shadda]
-  }, 3]
+  }, 3],
+  [{
+    lessonIds: [LESSON_IDS.stress, LESSON_IDS.taMarbuta]
+  }, 19],
+  [{
+    types: [WORD_TYPES.noun],
+    lessonIds: [LESSON_IDS.stress, LESSON_IDS.taMarbuta]
+  }, 17]
 ];
 
 multiSelectFilterCases.forEach(([filters, expectedCount]) => {
@@ -96,7 +121,10 @@ const dictionarySearchCases = [
   ['Мухаммад', 207],
   ['muhammadu', 207],
   ['محمد', 207],
-  ['сад', 211]
+  ['сад', 211],
+  ['книга', 301],
+  ['مدرسة', 409],
+  ['muthmiraat', 406]
 ];
 
 dictionarySearchCases.forEach(([query, expectedId]) => {
