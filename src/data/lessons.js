@@ -1,7 +1,9 @@
 export const LESSON_IDS = {
   module1: 'module-1-verbs',
   sukun: 'sukun-2026-07-30',
-  shadda: 'shadda-2026-08-04'
+  shadda: 'shadda-2026-08-04',
+  stress: 'stress-2026-08-08',
+  taMarbuta: 'ta-marbuta-ta-maftuha-2026-08-08'
 };
 
 export const LESSONS = [
@@ -22,6 +24,18 @@ export const LESSONS = [
     label: 'Слова с урока про Шадда',
     date: '2026-08-04',
     order: 3
+  },
+  {
+    id: LESSON_IDS.stress,
+    label: 'Слова с урока про ударения',
+    date: '2026-08-08',
+    order: 4
+  },
+  {
+    id: LESSON_IDS.taMarbuta,
+    label: 'Слова с урока про та-марбута, та-мафтуха',
+    date: '2026-08-08',
+    order: 5
   }
 ];
 
