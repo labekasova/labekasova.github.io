@@ -1,6 +1,6 @@
 {
   "name": "arabic-words-learning",
-  "version": "3.1.0",
+  "version": "4.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,11 +10,15 @@
     "validate:data": "node scripts/validate-word-data.mjs"
   },
   "dependencies": {
+    "@tailwindcss/vite": "latest",
     "@vitejs/plugin-react": "latest",
-    "vite": "latest",
+    "lucide-react": "^1.30.0",
     "react": "latest",
     "react-dom": "latest",
+    "react-markdown": "^10.1.0",
+    "react-router-dom": "^7.18.2",
+    "remark-gfm": "^4.0.1",
     "tailwindcss": "latest",
-    "@tailwindcss/vite": "latest"
+    "vite": "latest"
   }
 }
