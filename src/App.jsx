@@ -1,11 +1,15 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { LESSON_FILTERS } from './data/lessons.js';
+import { RULES } from './data/rulesIndex.js';
 import { WORDS_DATA, WORD_TYPES } from './data/words.js';
 import {
   buildRepeatedRootIndex,
   filterWords,
   sortWordsByRussian
 } from './domain/wordSelectors.js';
+import ReferenceSwitch from './features/rules/ReferenceSwitch.jsx';
+import RulesLibrary from './features/rules/RulesLibrary.jsx';
 
 const WORD_FILTERS = [
   { id: 'all', label: 'Все слова', title: 'Все слова', type: null },
@@ -75,6 +79,20 @@ const formatWordCount = (count) => {
   return `${count} ${form}`;
 };
 
+const formatArticleCount = (count) => {
+  const lastTwoDigits = count % 100;
+  const lastDigit = count % 10;
+  const form = lastTwoDigits >= 11 && lastTwoDigits <= 14
+    ? 'статей'
+    : lastDigit === 1
+      ? 'статья'
+      : lastDigit >= 2 && lastDigit <= 4
+        ? 'статьи'
+        : 'статей';
+
+  return `${count} ${form}`;
+};
+
 const toggleSelection = (selectedIds, id) => (
   selectedIds.includes(id)
     ? selectedIds.filter((selectedId) => selectedId !== id)
@@ -102,10 +120,16 @@ const formatLessonSelectionCount = (count) => {
 };
 
 export default function App() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const mainRef = useRef(null);
   const audioRef = useRef(null);
   const audioRequestRef = useRef(0);
   const audioSourceRef = useRef('');
-  const [activeTab, setActiveTab] = useState('dictionary');
+  const rulesPathMatch = location.pathname.match(/^\/rules(?:\/([^/]+))?\/?$/);
+  const isRulesView = location.pathname.startsWith('/rules');
+  const selectedRuleId = rulesPathMatch?.[1] ?? null;
+  const [activeTab, setActiveTab] = useState('reference');
   const [activeFilters, setActiveFilters] = useState([]);
   const [activeLessonGroups, setActiveLessonGroups] = useState([]);
   const [draftFilters, setDraftFilters] = useState([]);
@@ -399,6 +423,16 @@ export default function App() {
   }, [activeTab]);
 
   useEffect(() => {
+    if (isRulesView) {
+      setActiveTab('reference');
+    }
+  }, [isRulesView]);
+
+  useEffect(() => {
+    mainRef.current?.scrollTo({ top: 0 });
+  }, [location.pathname]);
+
+  useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     window.localStorage.setItem('theme', theme);
   }, [theme]);
@@ -631,6 +665,18 @@ export default function App() {
     query: dictionaryQuery
   }).length;
 
+  const openReferenceView = (view) => {
+    setActiveTab('reference');
+    setIsFilterMenuOpen(false);
+    setIsDictionaryFilterOpen(false);
+    navigate(view === 'rules' ? '/rules' : '/');
+  };
+
+  const openStudyTab = (tab) => {
+    navigate('/');
+    setActiveTab(tab);
+  };
+
   return (
     <div className={`min-h-dvh overflow-x-hidden px-3 font-sans selection:bg-indigo-100 sm:px-0 ${theme === 'dark' ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-800'}`}>
       
@@ -662,31 +708,33 @@ export default function App() {
             <div className="relative flex w-full items-center justify-center">
               <button
                 type="button"
-                onClick={activeTab === 'dictionary' ? undefined : openFilterMenu}
-                disabled={activeTab === 'dictionary'}
+                onClick={activeTab === 'reference' ? undefined : openFilterMenu}
+                disabled={activeTab === 'reference'}
                 className="inline-grid grid-cols-[18px_auto_18px] items-center gap-2 px-1 py-1 text-center text-xl font-bold leading-none text-white"
-                aria-haspopup={activeTab === 'dictionary' ? undefined : 'dialog'}
-                aria-expanded={activeTab === 'dictionary' ? undefined : isFilterMenuOpen}
+                aria-haspopup={activeTab === 'reference' ? undefined : 'dialog'}
+                aria-expanded={activeTab === 'reference' ? undefined : isFilterMenuOpen}
               >
                 <span aria-hidden="true" className="flex h-[18px] w-[18px] items-center justify-center opacity-0">
                   <IconChevronDown />
                 </span>
-                <span>{activeTab === 'dictionary' ? 'Словарь' : activeFilterTitle}</span>
+                <span>{activeTab === 'reference' ? 'Справочник' : activeFilterTitle}</span>
                 <span
                   aria-hidden="true"
-                  className={`flex h-[18px] w-[18px] items-center justify-center text-white/85 transition-transform duration-200 ${activeTab === 'dictionary' ? 'opacity-0' : ''} ${isFilterMenuOpen ? 'rotate-180' : ''}`}
+                  className={`flex h-[18px] w-[18px] items-center justify-center text-white/85 transition-transform duration-200 ${activeTab === 'reference' ? 'opacity-0' : ''} ${isFilterMenuOpen ? 'rotate-180' : ''}`}
                 >
                   <IconChevronDown />
                 </span>
               </button>
             </div>
             <p className="mt-1 max-w-full px-8 text-center text-xs leading-4 text-white/70">
-              {activeTab === 'dictionary'
-                ? `${formatWordCount(dictionaryWords.length)} из ${WORDS_DATA.length}`
+              {activeTab === 'reference'
+                ? isRulesView
+                  ? `Правила · ${formatArticleCount(RULES.length)}`
+                  : `Словарь · ${formatWordCount(dictionaryWords.length)} из ${WORDS_DATA.length}`
                 : `${activeLessonTitle} · ${formatWordCount(filteredWords.length)}`}
             </p>
 
-            {isFilterMenuOpen && activeTab !== 'dictionary' && (
+            {isFilterMenuOpen && activeTab !== 'reference' && (
               <>
                 <button
                   type="button"
@@ -822,35 +870,35 @@ export default function App() {
             )}
           </div>
 
-          <div className="relative grid min-h-12 w-full min-w-0 grid-cols-4 overflow-hidden rounded-xl bg-indigo-700/50 p-1 text-[11px] min-[390px]:text-xs">
+          <div className="relative grid min-h-12 w-full min-w-0 grid-cols-4 overflow-hidden rounded-xl bg-indigo-700/50 p-1 text-[10px] min-[430px]:text-xs">
 
             <button
-              onClick={() => setActiveTab('dictionary')}
-              className={`flex min-w-0 flex-col items-center justify-center gap-0.5 rounded-lg py-1.5 font-medium transition-all duration-300 min-[390px]:flex-row min-[390px]:gap-1.5 ${activeTab === 'dictionary' ? 'bg-white text-indigo-600 shadow' : 'text-indigo-100 hover:text-white'}`}
+              onClick={() => openReferenceView(isRulesView ? 'rules' : 'dictionary')}
+              className={`flex min-w-0 flex-col items-center justify-center gap-0.5 rounded-lg py-1.5 font-medium transition-all duration-300 min-[430px]:flex-row min-[430px]:gap-1.5 ${activeTab === 'reference' ? 'bg-white text-indigo-600 shadow' : 'text-indigo-100 hover:text-white'}`}
             >
-              <IconDictionary /> <span>Словарь</span>
+              <IconDictionary /> <span>Справочник</span>
             </button>
             <button 
-              onClick={() => setActiveTab('learn')}
-              className={`flex min-w-0 flex-col items-center justify-center gap-0.5 rounded-lg py-1.5 font-medium transition-all duration-300 min-[390px]:flex-row min-[390px]:gap-1.5 ${activeTab === 'learn' ? 'bg-white text-indigo-600 shadow' : 'text-indigo-100 hover:text-white'}`}
+              onClick={() => openStudyTab('learn')}
+              className={`flex min-w-0 flex-col items-center justify-center gap-0.5 rounded-lg py-1.5 font-medium transition-all duration-300 min-[430px]:flex-row min-[430px]:gap-1.5 ${activeTab === 'learn' ? 'bg-white text-indigo-600 shadow' : 'text-indigo-100 hover:text-white'}`}
             >
               <IconBook /> <span>Учить</span>
             </button>
             <button 
               onClick={() => {
-                setActiveTab('quiz');
+                openStudyTab('quiz');
                 if (quizCompleted || !quizQuestion) startQuizFromScratch();
               }}
-              className={`flex min-w-0 flex-col items-center justify-center gap-0.5 rounded-lg py-1.5 font-medium transition-all duration-300 min-[390px]:flex-row min-[390px]:gap-1.5 ${activeTab === 'quiz' ? 'bg-white text-indigo-600 shadow' : 'text-indigo-100 hover:text-white'}`}
+              className={`flex min-w-0 flex-col items-center justify-center gap-0.5 rounded-lg py-1.5 font-medium transition-all duration-300 min-[430px]:flex-row min-[430px]:gap-1.5 ${activeTab === 'quiz' ? 'bg-white text-indigo-600 shadow' : 'text-indigo-100 hover:text-white'}`}
             >
               <IconBrain /> <span>Тест</span>
             </button>
             <button 
               onClick={() => {
-                setActiveTab('write');
+                openStudyTab('write');
                 if (writeCompleted || !writeQuestion) startWriteFromScratch();
               }}
-              className={`flex min-w-0 flex-col items-center justify-center gap-0.5 rounded-lg py-1.5 font-medium transition-all duration-300 min-[390px]:flex-row min-[390px]:gap-1.5 ${activeTab === 'write' ? 'bg-white text-indigo-600 shadow' : 'text-indigo-100 hover:text-white'}`}
+              className={`flex min-w-0 flex-col items-center justify-center gap-0.5 rounded-lg py-1.5 font-medium transition-all duration-300 min-[430px]:flex-row min-[430px]:gap-1.5 ${activeTab === 'write' ? 'bg-white text-indigo-600 shadow' : 'text-indigo-100 hover:text-white'}`}
             >
               <IconPen /> <span>Письмо</span>
             </button>
@@ -858,8 +906,8 @@ export default function App() {
         </header>
 
         {/* Контент */}
-        <main className={`flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-y-auto overflow-x-hidden px-5 pt-5 pb-[max(1rem,env(safe-area-inset-bottom))] ${theme === 'dark' ? 'text-slate-100' : 'text-slate-800'}`}>
-          {activeTab !== 'dictionary' && filteredWords.length === 0 && (
+        <main ref={mainRef} className={`flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-y-auto overflow-x-hidden px-5 pt-5 pb-[max(1rem,env(safe-area-inset-bottom))] ${theme === 'dark' ? 'text-slate-100' : 'text-slate-800'}`}>
+          {activeTab !== 'reference' && filteredWords.length === 0 && (
             <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
               <h2 className="mb-2 text-xl font-bold">Для этого выбора пока нет слов</h2>
               <p className="text-sm text-slate-500">
@@ -1209,14 +1257,15 @@ export default function App() {
           )}
 
           {/* ================= СЛОВАРЬ ================= */}
-          {activeTab === 'dictionary' && (
+          {activeTab === 'reference' && !isRulesView && (
             <section className="flex w-full flex-col">
               <div className={`sticky top-0 z-[5] -mx-5 -mt-5 border-b px-5 pb-3 pt-5 ${
                 theme === 'dark'
                   ? 'border-slate-800 bg-slate-900'
                   : 'border-slate-100 bg-white'
               }`}>
-                <label className="relative block">
+                <ReferenceSwitch activeView="dictionary" onChange={openReferenceView} theme={theme} />
+                <label className="relative mt-3 block">
                   <span className={`pointer-events-none absolute left-3 top-1/2 flex -translate-y-1/2 ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
                     <IconSearch />
                   </span>
@@ -1568,6 +1617,17 @@ export default function App() {
                 </>
               )}
             </section>
+          )}
+
+          {/* ================= ПРАВИЛА ================= */}
+          {activeTab === 'reference' && isRulesView && (
+            <RulesLibrary
+              selectedRuleId={selectedRuleId}
+              onOpenRule={(ruleId) => navigate(`/rules/${ruleId}`)}
+              onBackToRules={() => navigate('/rules')}
+              onReferenceChange={openReferenceView}
+              theme={theme}
+            />
           )}
 
         </main>
