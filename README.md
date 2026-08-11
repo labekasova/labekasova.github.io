@@ -1,6 +1,8 @@
-# Arabic Words Learning v4.0
+# Arabic Words Learning v4.1
 
 Mobile-first Arabic vocabulary trainer published at `labekasova.github.io`. Authors: Larisa, Igor.
+
+Release 4.1 adds the solar and lunar letters lesson, nine vocabulary entries, and a dedicated searchable grammar article.
 
 ## Stack
 
