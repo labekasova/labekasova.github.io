@@ -3,7 +3,8 @@ export const LESSON_IDS = {
   sukun: 'sukun-2026-07-30',
   shadda: 'shadda-2026-08-04',
   stress: 'stress-2026-08-08',
-  taMarbuta: 'ta-marbuta-ta-maftuha-2026-08-08'
+  taMarbuta: 'ta-marbuta-ta-maftuha-2026-08-08',
+  solarLunar: 'solar-lunar-letters-2026-08-11'
 };
 
 export const LESSONS = [
@@ -36,6 +37,12 @@ export const LESSONS = [
     label: 'Слова с урока про та-марбута, та-мафтуха',
     date: '2026-08-08',
     order: 5
+  },
+  {
+    id: LESSON_IDS.solarLunar,
+    label: 'Слова с урока про солнечные и лунные буквы',
+    date: '2026-08-11',
+    order: 6
   }
 ];
 

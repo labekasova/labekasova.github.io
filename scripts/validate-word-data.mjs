@@ -7,7 +7,7 @@ import {
   sortWordsByRussian
 } from '../src/domain/wordSelectors.js';
 
-const EXPECTED_WORD_COUNT = 73;
+const EXPECTED_WORD_COUNT = 82;
 
 const fail = (message) => {
   throw new Error(message);
@@ -55,7 +55,9 @@ const expectedRepeatedRootCounts = {
   'ك ت ب': 2,
   'س ل م': 3,
   'د ر س': 2,
-  'ج د د': 2
+  'ج د د': 2,
+  'ص د ق': 2,
+  'ح ج ج': 2
 };
 
 Object.entries(expectedRepeatedRootCounts).forEach(([root, expectedCount]) => {
@@ -67,15 +69,17 @@ Object.entries(expectedRepeatedRootCounts).forEach(([root, expectedCount]) => {
 
 const expectedFilterCounts = [
   [{ type: WORD_TYPES.verb }, 47],
-  [{ type: WORD_TYPES.noun }, 26],
+  [{ type: WORD_TYPES.noun }, 35],
   [{ type: WORD_TYPES.particle }, 0],
   [{ lessonId: LESSON_IDS.module1 }, 42],
   [{ lessonId: LESSON_IDS.sukun }, 6],
   [{ lessonId: LESSON_IDS.shadda }, 6],
   [{ lessonId: LESSON_IDS.stress }, 7],
   [{ lessonId: LESSON_IDS.taMarbuta }, 12],
+  [{ lessonId: LESSON_IDS.solarLunar }, 9],
   [{ type: WORD_TYPES.noun, lessonId: LESSON_IDS.shadda }, 3],
   [{ type: WORD_TYPES.noun, lessonId: LESSON_IDS.stress }, 7],
+  [{ type: WORD_TYPES.noun, lessonId: LESSON_IDS.solarLunar }, 9],
   [{ type: WORD_TYPES.verb, lessonId: LESSON_IDS.taMarbuta }, 2]
 ];
 
@@ -87,7 +91,7 @@ expectedFilterCounts.forEach(([filters, expectedCount]) => {
 });
 
 const multiSelectFilterCases = [
-  [{ types: [WORD_TYPES.verb, WORD_TYPES.noun] }, 73],
+  [{ types: [WORD_TYPES.verb, WORD_TYPES.noun] }, 82],
   [{ lessonIds: [LESSON_IDS.sukun, LESSON_IDS.shadda] }, 12],
   [{
     types: [WORD_TYPES.verb, WORD_TYPES.noun],
@@ -107,7 +111,11 @@ const multiSelectFilterCases = [
   [{
     types: [WORD_TYPES.noun],
     lessonIds: [LESSON_IDS.stress, LESSON_IDS.taMarbuta]
-  }, 17]
+  }, 17],
+  [{
+    types: [WORD_TYPES.noun],
+    lessonIds: [LESSON_IDS.shadda, LESSON_IDS.solarLunar]
+  }, 12]
 ];
 
 multiSelectFilterCases.forEach(([filters, expectedCount]) => {
@@ -124,7 +132,10 @@ const dictionarySearchCases = [
   ['сад', 211],
   ['книга', 301],
   ['مدرسة', 409],
-  ['muthmiraat', 406]
+  ['muthmiraat', 406],
+  ['правдивость', 501],
+  ['الرُّكُوعُ', 505],
+  ['al-mawaddatu', 509]
 ];
 
 dictionarySearchCases.forEach(([query, expectedId]) => {

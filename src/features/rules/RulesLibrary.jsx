@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { ArrowRight, BookOpenText, ChevronLeft, ChevronRight, Search, X } from 'lucide-react';
+import { ArrowRight, BookOpenText, ChevronLeft, ChevronRight, Moon, Search, Sun, X } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { filterRules, RULE_BY_ID, RULES } from '../../data/rulesIndex.js';
@@ -33,10 +33,62 @@ const formatArticleCount = (count) => {
   return `${count} ${form}`;
 };
 
+function RuleSymbol({ rule, theme, compact = false }) {
+  const sizeClasses = compact ? 'h-12 w-12' : 'h-14 w-14';
+  const textSizeClasses = compact ? 'text-2xl' : 'text-[2rem]';
+  const colorClasses = theme === 'dark'
+    ? 'bg-slate-800 text-indigo-200'
+    : 'bg-indigo-50 text-indigo-700';
+
+  if (rule.icon === 'solar-lunar') {
+    const iconSize = compact ? 19 : 22;
+
+    return (
+      <span className={`flex ${sizeClasses} shrink-0 items-center justify-center gap-0.5 rounded-lg ${colorClasses}`}>
+        <Sun size={iconSize} className="text-amber-500" aria-hidden="true" />
+        <Moon size={iconSize} className={theme === 'dark' ? 'text-indigo-200' : 'text-indigo-600'} aria-hidden="true" />
+      </span>
+    );
+  }
+
+  return (
+    <span
+      className={`arabic-text flex ${sizeClasses} ${textSizeClasses} shrink-0 items-center justify-center rounded-lg font-bold ${colorClasses}`}
+      dir="rtl"
+    >
+      {rule.symbol}
+    </span>
+  );
+}
+
 const getMarkdownComponents = (theme) => ({
-  h2: ({ children }) => (
-    <h2 className="mb-3 mt-9 text-xl font-bold leading-7">{children}</h2>
-  ),
+  h2: ({ children }) => {
+    const text = getTextContent(children);
+    const HeadingIcon = /^Лунные буквы/i.test(text)
+      ? Moon
+      : /^Солнечные буквы/i.test(text)
+        ? Sun
+        : null;
+
+    return (
+      <h2 className="mb-3 mt-9 flex items-start gap-2 text-xl font-bold leading-7">
+        {HeadingIcon && (
+          <HeadingIcon
+            size={23}
+            className={`mt-0.5 shrink-0 ${
+              HeadingIcon === Sun
+                ? 'text-amber-500'
+                : theme === 'dark'
+                  ? 'text-indigo-200'
+                  : 'text-indigo-600'
+            }`}
+            aria-hidden="true"
+          />
+        )}
+        <span>{children}</span>
+      </h2>
+    );
+  },
   h3: ({ children }) => (
     <h3 className="mb-2 mt-7 text-base font-bold leading-6">{children}</h3>
   ),
@@ -122,14 +174,7 @@ function RuleArticle({ ruleId, onBack, onOpenRule, theme }) {
         theme === 'dark' ? 'border-slate-800' : 'border-slate-200'
       }`}>
         <div className="flex min-w-0 items-start gap-4">
-          <span
-            className={`arabic-text flex h-14 w-14 shrink-0 items-center justify-center rounded-lg text-[2rem] font-bold ${
-              theme === 'dark' ? 'bg-slate-800 text-indigo-200' : 'bg-indigo-50 text-indigo-700'
-            }`}
-            dir="rtl"
-          >
-            {rule.symbol}
-          </span>
+          <RuleSymbol rule={rule} theme={theme} />
           <div className="min-w-0">
             <p className={`text-xs font-semibold uppercase ${
               theme === 'dark' ? 'text-slate-500' : 'text-slate-500'
@@ -276,14 +321,7 @@ export default function RulesLibrary({
                 onClick={() => onOpenRule(rule.id)}
                 className="flex min-h-[7.5rem] w-full min-w-0 items-center gap-4 py-4 text-left"
               >
-                <span
-                  className={`arabic-text flex h-12 w-12 shrink-0 items-center justify-center rounded-lg text-2xl font-bold ${
-                    theme === 'dark' ? 'bg-slate-800 text-indigo-200' : 'bg-indigo-50 text-indigo-700'
-                  }`}
-                  dir="rtl"
-                >
-                  {rule.symbol}
-                </span>
+                <RuleSymbol rule={rule} theme={theme} compact />
                 <span className="min-w-0 flex-1">
                   <span className={`block text-xs font-semibold uppercase ${
                     theme === 'dark' ? 'text-slate-500' : 'text-slate-400'

@@ -1,5 +1,6 @@
 import maddContent from '../content/rules/madd.md?raw';
 import shaddaContent from '../content/rules/shadda.md?raw';
+import solarLunarContent from '../content/rules/solar-lunar.md?raw';
 import sukunContent from '../content/rules/sukun.md?raw';
 import taMarbutaContent from '../content/rules/ta-marbuta.md?raw';
 
@@ -52,6 +53,18 @@ export const RULES = [
     summary: 'Долгие гласные ā, ū и ī и буквы удлинения.',
     keywords: ['удлинение', 'долгая гласная', 'ударение', 'алиф', 'вав', 'йа', 'آ', 'ا', 'و', 'ي'],
     content: maddContent
+  },
+  {
+    id: 'solar-lunar',
+    order: 5,
+    title: 'Солнечные и лунные буквы',
+    arabicTitle: 'الْحُرُوفُ الشَّمْسِيَّةُ وَالْقَمَرِيَّةُ',
+    symbol: 'ال',
+    icon: 'solar-lunar',
+    category: RULE_CATEGORIES.reading,
+    summary: 'Произношение артикля ال перед солнечными и лунными буквами.',
+    keywords: ['артикль', 'определённость', 'солнечные буквы', 'лунные буквы', 'хамзат аль-васль', 'اللام الشمسية', 'اللام القمرية', 'ال'],
+    content: solarLunarContent
   }
 ].sort((left, right) => left.order - right.order);
 
