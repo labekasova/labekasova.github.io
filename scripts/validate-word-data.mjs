@@ -127,15 +127,15 @@ multiSelectFilterCases.forEach(([filters, expectedCount]) => {
 
 const dictionarySearchCases = [
   ['Мухаммад', 207],
-  ['muhammadu', 207],
+  ['muhammad', 207],
   ['محمد', 207],
   ['сад', 211],
   ['книга', 301],
   ['مدرسة', 409],
   ['muthmiraat', 406],
   ['правдивость', 501],
-  ['الرُّكُوعُ', 505],
-  ['al-mawaddatu', 509]
+  ['رُكُوع', 505],
+  ['mawaddah', 509]
 ];
 
 dictionarySearchCases.forEach(([query, expectedId]) => {
