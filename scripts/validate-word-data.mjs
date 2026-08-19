@@ -7,7 +7,7 @@ import {
   sortWordsByRussian
 } from '../src/domain/wordSelectors.js';
 
-const EXPECTED_WORD_COUNT = 110;
+const EXPECTED_WORD_COUNT = 119;
 
 const fail = (message) => {
   throw new Error(message);
@@ -78,7 +78,11 @@ const expectedRepeatedRootCounts = {
   'د ر س': 2,
   'ج د د': 2,
   'ص د ق': 2,
-  'ح ج ج': 2
+  'ح ج ج': 2,
+  'س ج د': 2,
+  'غ س ل': 2,
+  'ط ي ر': 2,
+  'ب ن ي': 2
 };
 
 Object.entries(expectedRepeatedRootCounts).forEach(([root, expectedCount]) => {
@@ -91,7 +95,7 @@ Object.entries(expectedRepeatedRootCounts).forEach(([root, expectedCount]) => {
 const expectedFilterCounts = [
   [{ type: WORD_TYPES.verb }, 47],
   [{ type: WORD_TYPES.noun }, 63],
-  [{ type: WORD_TYPES.particle }, 0],
+  [{ type: WORD_TYPES.particle }, 9],
   [{ lessonId: LESSON_IDS.module1 }, 42],
   [{ lessonId: LESSON_IDS.sukun }, 6],
   [{ lessonId: LESSON_IDS.shadda }, 6],
@@ -99,10 +103,12 @@ const expectedFilterCounts = [
   [{ lessonId: LESSON_IDS.taMarbuta }, 12],
   [{ lessonId: LESSON_IDS.solarLunar }, 9],
   [{ lessonId: LESSON_IDS.partsOfSpeech }, 28],
+  [{ lessonId: LESSON_IDS.particlesFromRules }, 9],
   [{ type: WORD_TYPES.noun, lessonId: LESSON_IDS.shadda }, 3],
   [{ type: WORD_TYPES.noun, lessonId: LESSON_IDS.stress }, 7],
   [{ type: WORD_TYPES.noun, lessonId: LESSON_IDS.solarLunar }, 9],
   [{ type: WORD_TYPES.noun, lessonId: LESSON_IDS.partsOfSpeech }, 28],
+  [{ type: WORD_TYPES.particle, lessonId: LESSON_IDS.particlesFromRules }, 9],
   [{ type: WORD_TYPES.verb, lessonId: LESSON_IDS.taMarbuta }, 2]
 ];
 
@@ -115,6 +121,7 @@ expectedFilterCounts.forEach(([filters, expectedCount]) => {
 
 const multiSelectFilterCases = [
   [{ types: [WORD_TYPES.verb, WORD_TYPES.noun] }, 110],
+  [{ types: [WORD_TYPES.verb, WORD_TYPES.noun, WORD_TYPES.particle] }, 119],
   [{ lessonIds: [LESSON_IDS.sukun, LESSON_IDS.shadda] }, 12],
   [{
     types: [WORD_TYPES.verb, WORD_TYPES.noun],
@@ -161,7 +168,10 @@ const dictionarySearchCases = [
   ['mawaddah', 509],
   ['автобус', 606],
   ['غسالة', 619],
-  ['wuDuu2', 627]
+  ['wuDuu2', 627],
+  ['определённый артикль', 709],
+  ['إلى', 702],
+  ['прошедшее отрицание', 707]
 ];
 
 dictionarySearchCases.forEach(([query, expectedId]) => {

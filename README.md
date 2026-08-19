@@ -1,8 +1,8 @@
-# Arabic Words Learning v4.2
+# Arabic Words Learning v4.2.1
 
 Mobile-first Arabic vocabulary trainer published at `labekasova.github.io`. Authors: Larisa, Igor.
 
-Release 4.2 adds four grammar articles, a 28-word parts-of-speech lesson, and grammatical gender labels for every noun.
+Release 4.2.1 adds the particles taught in the grammar reference to every learning mode and completes the shared-root links for the current vocabulary.
 
 ## Stack
 
