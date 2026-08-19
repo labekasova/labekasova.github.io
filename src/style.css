@@ -14,11 +14,147 @@ body,
 
 body {
   margin: 0;
+  min-width: 320px;
   background: #f8fafc;
 }
 
 * {
   box-sizing: border-box;
+}
+
+.app-viewport {
+  padding: 0;
+}
+
+.app-shell {
+  max-width: none;
+}
+
+.app-header {
+  padding: max(1.5rem, env(safe-area-inset-top)) 1rem 1.25rem;
+  border-radius: 0 0 1.5rem 1.5rem;
+}
+
+.app-primary-nav {
+  max-width: 48rem;
+  margin-inline: auto;
+}
+
+.theme-toggle {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.app-main {
+  padding: 1.5rem 1rem max(1rem, env(safe-area-inset-bottom));
+}
+
+.content-standard {
+  max-width: 45rem;
+  margin-inline: auto;
+}
+
+.content-wide {
+  max-width: 60rem;
+  margin-inline: auto;
+}
+
+.reference-layout {
+  min-width: 0;
+}
+
+.reference-toolbar {
+  margin: -1.5rem -1rem 0;
+  padding: 1.5rem 1rem 1rem;
+}
+
+.reference-controls {
+  min-width: 0;
+}
+
+.reference-results-grid {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 640px) {
+  .app-viewport {
+    padding: 1rem;
+  }
+
+  .app-shell {
+    min-height: calc(100dvh - 2rem);
+    max-width: 48rem;
+    border-radius: 1.75rem;
+  }
+
+  .app-header {
+    padding: 1.75rem 1.5rem 1.5rem;
+    border-radius: 0 0 1.75rem 1.75rem;
+  }
+
+  .app-main {
+    padding: 2rem 1.5rem max(1.5rem, env(safe-area-inset-bottom));
+  }
+
+  .reference-toolbar {
+    margin: -2rem -1.5rem 0;
+    padding: 2rem 1.5rem 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .responsive-sheet {
+    inset: 50% auto auto 50%;
+    width: min(42rem, calc(100% - 2rem));
+    max-width: 42rem;
+    max-height: min(80dvh, 48rem);
+    transform: translate(-50%, -50%);
+    border-width: 1px;
+    border-radius: 1.25rem;
+    box-shadow: 0 24px 70px rgba(15, 23, 42, 0.28);
+  }
+}
+
+@media (min-width: 1024px) {
+  .app-viewport {
+    padding-inline: 2rem;
+  }
+
+  .app-shell {
+    max-width: 73.75rem;
+  }
+
+  .app-header {
+    padding: 1.5rem 2rem 1.25rem;
+  }
+
+  .app-main {
+    padding: 2rem 2rem max(1.5rem, env(safe-area-inset-bottom));
+  }
+
+  .reference-toolbar {
+    margin: -2rem -2rem 0;
+    padding: 1.5rem 2rem;
+  }
+
+  .reference-controls {
+    display: grid;
+    grid-template-columns: minmax(17rem, 0.75fr) minmax(22rem, 1.25fr);
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .reference-results-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 2rem;
+  }
+
+  .theme-toggle {
+    right: 2rem;
+    top: 1.5rem;
+  }
 }
 
 @keyframes cardSlideNext {

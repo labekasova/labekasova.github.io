@@ -683,7 +683,7 @@ export default function App() {
   };
 
   return (
-    <div className={`min-h-dvh overflow-x-hidden px-3 font-sans selection:bg-indigo-100 sm:px-0 ${theme === 'dark' ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-800'}`}>
+    <div className={`app-viewport min-h-dvh overflow-x-hidden font-sans selection:bg-indigo-100 ${theme === 'dark' ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-800'}`}>
       
       <style dangerouslySetInnerHTML={{__html: `
         .perspective-1000 { perspective: 1000px; }
@@ -697,10 +697,10 @@ export default function App() {
         }
       `}} />
 
-      <div className={`mx-auto flex min-h-dvh w-full min-w-0 max-w-none flex-col overflow-hidden shadow-xl lg:max-w-md ${theme === 'dark' ? 'bg-slate-900' : 'bg-white'}`}>
+      <div className={`app-shell mx-auto flex min-h-dvh w-full min-w-0 flex-col overflow-hidden shadow-xl ${theme === 'dark' ? 'bg-slate-900' : 'bg-white'}`}>
         
         {/* Шапка */}
-        <header className={`relative z-10 w-full min-w-0 shrink-0 overflow-visible rounded-b-[2rem] px-5 pb-6 pt-8 text-white shadow-md ${theme === 'dark' ? 'bg-slate-800' : 'bg-indigo-600'}`}>
+        <header className={`app-header relative z-10 w-full min-w-0 shrink-0 overflow-visible text-white shadow-md ${theme === 'dark' ? 'bg-slate-800' : 'bg-indigo-600'}`}>
           <button
             type="button"
             aria-label={theme === 'dark' ? 'Переключить на светлую тему' : 'Переключить на тёмную тему'}
@@ -709,20 +709,20 @@ export default function App() {
           >
             {theme === 'dark' ? <IconSun /> : <IconMoon />}
           </button>
-          <div className="relative z-20 mb-4 flex w-full flex-col items-center">
+          <div className="relative z-20 mb-4 flex w-full flex-col items-center sm:mb-5">
             <div className="relative flex w-full items-center justify-center">
               <button
                 type="button"
                 onClick={activeTab === 'reference' ? undefined : openFilterMenu}
                 disabled={activeTab === 'reference'}
-                className="inline-grid grid-cols-[18px_auto_18px] items-center gap-2 px-1 py-1 text-center text-xl font-bold leading-none text-white"
+                className="inline-grid max-w-[calc(100%-4.5rem)] grid-cols-[18px_minmax(0,auto)_18px] items-center gap-2 px-1 py-1 text-center text-lg font-bold leading-tight text-white sm:text-xl"
                 aria-haspopup={activeTab === 'reference' ? undefined : 'dialog'}
                 aria-expanded={activeTab === 'reference' ? undefined : isFilterMenuOpen}
               >
                 <span aria-hidden="true" className="flex h-[18px] w-[18px] items-center justify-center opacity-0">
                   <IconChevronDown />
                 </span>
-                <span>{activeTab === 'reference' ? 'Справочник' : activeFilterTitle}</span>
+                <span className="min-w-0 break-words">{activeTab === 'reference' ? 'Справочник' : activeFilterTitle}</span>
                 <span
                   aria-hidden="true"
                   className={`flex h-[18px] w-[18px] items-center justify-center text-white/85 transition-transform duration-200 ${activeTab === 'reference' ? 'opacity-0' : ''} ${isFilterMenuOpen ? 'rotate-180' : ''}`}
@@ -731,7 +731,7 @@ export default function App() {
                 </span>
               </button>
             </div>
-            <p className="mt-1 max-w-full px-8 text-center text-xs leading-4 text-white/70">
+            <p className="mt-1 max-w-2xl px-10 text-center text-xs leading-5 text-white/75 sm:px-12">
               {activeTab === 'reference'
                 ? isRulesView
                   ? `Правила · ${formatArticleCount(RULES.length)}`
@@ -751,7 +751,7 @@ export default function App() {
                   role="dialog"
                   aria-modal="true"
                   aria-labelledby="filter-sheet-title"
-                  className={`fixed inset-x-0 bottom-0 z-40 mx-auto flex max-h-[85dvh] w-full max-w-md flex-col overflow-hidden rounded-t-[1.75rem] border-x border-t shadow-[0_-18px_50px_rgba(15,23,42,0.2)] ${
+                  className={`responsive-sheet fixed inset-x-0 bottom-0 z-40 mx-auto flex max-h-[85dvh] w-full max-w-md flex-col overflow-hidden rounded-t-[1.75rem] border-x border-t shadow-[0_-18px_50px_rgba(15,23,42,0.2)] ${
                     theme === 'dark'
                       ? 'border-slate-700 bg-slate-900 text-slate-100'
                       : 'border-slate-200 bg-white'
@@ -875,7 +875,7 @@ export default function App() {
             )}
           </div>
 
-          <div className="relative grid min-h-12 w-full min-w-0 grid-cols-4 overflow-hidden rounded-xl bg-indigo-700/50 p-1 text-[10px] min-[430px]:text-xs">
+          <div className="app-primary-nav relative grid min-h-12 w-full min-w-0 grid-cols-4 overflow-hidden rounded-xl bg-indigo-700/50 p-1 text-[10px] min-[430px]:text-xs">
 
             <button
               onClick={() => openReferenceView(isRulesView ? 'rules' : 'dictionary')}
@@ -911,7 +911,7 @@ export default function App() {
         </header>
 
         {/* Контент */}
-        <main ref={mainRef} className={`flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-y-auto overflow-x-hidden px-5 pt-5 pb-[max(1rem,env(safe-area-inset-bottom))] ${theme === 'dark' ? 'text-slate-100' : 'text-slate-800'}`}>
+        <main ref={mainRef} className={`app-main flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-y-auto overflow-x-hidden ${theme === 'dark' ? 'text-slate-100' : 'text-slate-800'}`}>
           {activeTab !== 'reference' && filteredWords.length === 0 && (
             <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
               <h2 className="mb-2 text-xl font-bold">Для этого выбора пока нет слов</h2>
@@ -923,15 +923,15 @@ export default function App() {
 
           {/* ================= КАРТОЧКИ ================= */}
           {activeTab === 'learn' && words.length > 0 && (
-            <div className="flex-1 flex flex-col justify-start pt-4">
+            <div className="content-standard flex w-full flex-1 flex-col justify-start pt-2 sm:pt-4 lg:pt-2">
               
               {isSortedLogical && currentWord.group && (
-                <div className="self-center bg-indigo-50 border border-indigo-100 text-indigo-700 text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-3">
+                <div className="mb-4 max-w-full self-center rounded-lg border border-indigo-100 bg-indigo-50 px-3 py-1.5 text-center text-xs font-semibold leading-5 text-indigo-700">
                   {currentWord.group}
                 </div>
               )}
 
-              <div className="flex justify-between items-center mb-3 text-xs font-semibold text-slate-500 px-1">
+              <div className="mb-3 flex flex-col gap-2 px-1 text-xs font-semibold text-slate-500 min-[390px]:flex-row min-[390px]:items-center min-[390px]:justify-between">
                 <span className="flex min-w-0 items-center gap-1.5">
                   <span>{getWordTypeLabel(currentWord.type)}</span>
                   {getWordGenderLabel(currentWord) && (
@@ -965,7 +965,7 @@ export default function App() {
               {/* Карточка 3D */}
               <div 
                 key={currentWord.id}
-                className={`relative w-full aspect-[4/3] perspective-1000 cursor-pointer touch-pan-y ${cardDirection ? `card-slide-${cardDirection}` : ''}`}
+                className={`relative aspect-[4/3] w-full cursor-pointer touch-pan-y perspective-1000 sm:aspect-[16/10] lg:aspect-[16/9] ${cardDirection ? `card-slide-${cardDirection}` : ''}`}
                 onClick={() => setIsFlipped(!isFlipped)}
                 onTouchStart={onTouchStart}
                 onTouchMove={onTouchMove}
@@ -976,7 +976,7 @@ export default function App() {
                 >
                   <div className="absolute w-full h-full backface-hidden bg-white border-2 border-slate-100 rounded-3xl flex items-center justify-center p-6 text-center">
                     <div className="flex flex-col items-center gap-3">
-                      <span className="text-6xl font-bold text-slate-800 arabic-text" dir="rtl">
+                      <span className="arabic-text text-5xl font-bold text-slate-800 sm:text-6xl lg:text-7xl" dir="rtl">
                         {currentWord.arabic}
                       </span>
                       <span className="text-xs text-slate-400 bg-slate-50 px-2.5 py-1 rounded-full mt-2">
@@ -1008,7 +1008,7 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="flex justify-between items-center mt-6 px-2">
+              <div className="mt-4 flex items-center justify-between px-1 sm:mt-6 sm:px-2">
                 <button 
                   onClick={prevCard}
                   className="w-12 h-12 flex items-center justify-center bg-white border border-slate-200 text-slate-600 rounded-full shadow-sm active:scale-90 transition-all"
@@ -1040,7 +1040,7 @@ export default function App() {
 
           {/* ================= ТЕСТ ================= */}
           {activeTab === 'quiz' && filteredWords.length > 0 && (
-            <div className="flex-1 flex flex-col justify-between">
+            <div className="content-standard flex w-full flex-1 flex-col justify-between">
               {quizCompleted ? (
                 <div className="flex-1 flex flex-col items-center justify-center text-center p-6">
                   <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-4 text-3xl">🎉</div>
@@ -1068,7 +1068,7 @@ export default function App() {
                     </div>
                   </div>
 
-                  <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 flex flex-col items-center justify-center mb-4 flex-1 min-h-[140px]">
+                  <div className="mb-5 flex min-h-[160px] flex-1 flex-col items-center justify-center rounded-3xl border border-slate-100 bg-white p-6 shadow-sm sm:min-h-[220px] sm:p-8">
                     <span className="text-xs text-slate-400 mb-1 uppercase tracking-wider font-semibold">Выберите перевод:</span>
                     <span className="text-5xl font-bold text-slate-800 arabic-text mt-1" dir="rtl">
                       {quizQuestion.correctWord.arabic}
@@ -1079,7 +1079,7 @@ export default function App() {
                     </span>
                   </div>
 
-                  <div className="flex flex-col gap-2.5 mb-2">
+                  <div className="mb-2 grid grid-cols-1 gap-2.5 sm:grid-cols-2 sm:gap-3">
                     {quizQuestion.options.map((option, idx) => {
                       let buttonClass = "bg-white border border-slate-200 text-slate-700 active:scale-[0.99] hover:bg-slate-50";
                       
@@ -1098,7 +1098,7 @@ export default function App() {
                           key={idx}
                           onClick={() => handleQuizAnswer(option)}
                           disabled={!!selectedAnswer}
-                          className={`w-full text-left p-3.5 rounded-2xl font-semibold transition-all duration-150 flex items-center justify-between text-sm ${buttonClass}`}
+                          className={`flex min-h-14 w-full items-center justify-between rounded-2xl p-3.5 text-left text-sm font-semibold transition-all duration-150 sm:p-4 ${buttonClass}`}
                         >
                           <span>{option.russian}</span>
                           {selectedAnswer && option.arabic === quizQuestion.correctWord.arabic && (
@@ -1118,7 +1118,7 @@ export default function App() {
 
           {/* ================= ПИСЬМО ================= */}
           {activeTab === 'write' && filteredWords.length > 0 && (
-            <div className="flex min-h-0 flex-1 flex-col">
+            <div className="content-wide flex min-h-0 w-full flex-1 flex-col">
               {writeCompleted ? (
                 <div className="flex-1 flex flex-col items-center justify-center text-center p-6">
                   <div className="w-20 h-20 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-4 text-3xl">✍️</div>
@@ -1132,7 +1132,7 @@ export default function App() {
                   </button>
                 </div>
               ) : writeQuestion ? (
-                <div className="flex-1 flex flex-col justify-between">
+                <div className="flex flex-1 flex-col justify-between lg:justify-start">
                   <div>
                     <div className="mb-3">
                       <div className="flex justify-between text-xs font-semibold text-slate-500 mb-1">
@@ -1203,14 +1203,14 @@ export default function App() {
                   )}
 
                                     {/* Виртуальная Клавиатура */}
-                  <div className={`mt-auto shrink-0 rounded-2xl p-2.5 ${theme === 'dark' ? 'bg-slate-800/70' : 'bg-slate-100'}`}>
-                    <div className="grid grid-cols-6 gap-1.5 min-[390px]:grid-cols-7" dir="rtl">
+                  <div className={`mt-auto shrink-0 rounded-2xl p-2.5 sm:p-3 lg:mt-6 ${theme === 'dark' ? 'bg-slate-800/70' : 'bg-slate-100'}`}>
+                    <div className="grid grid-cols-6 gap-1.5 min-[390px]:grid-cols-7 sm:grid-cols-8 lg:grid-cols-10 lg:gap-2" dir="rtl">
                       {ARABIC_LETTER_KEYS.map((char) => (
                         <button
                           key={char}
                           onClick={() => handleVirtualKeyPress(char)}
                           disabled={writeChecked}
-                          className={`arabic-text flex min-h-11 min-w-0 items-center justify-center rounded-lg border text-xl font-bold leading-none shadow-sm transition-all active:scale-95 disabled:opacity-50 ${
+                          className={`arabic-text flex min-h-11 min-w-0 items-center justify-center rounded-lg border text-xl font-bold leading-none shadow-sm transition-all active:scale-95 disabled:opacity-50 sm:min-h-12 sm:text-2xl ${
                             theme === 'dark'
                               ? 'border-slate-700 bg-slate-900 text-slate-100 active:bg-slate-700'
                               : 'border-slate-200 bg-white text-slate-800 active:bg-slate-200'
@@ -1271,14 +1271,15 @@ export default function App() {
 
           {/* ================= СЛОВАРЬ ================= */}
           {activeTab === 'reference' && !isRulesView && (
-            <section className="flex w-full flex-col">
-              <div className={`sticky top-0 z-[5] -mx-5 -mt-5 border-b px-5 pb-3 pt-5 ${
+            <section className="reference-layout flex w-full flex-col">
+              <div className={`reference-toolbar sticky top-0 z-[5] border-b ${
                 theme === 'dark'
                   ? 'border-slate-800 bg-slate-900'
                   : 'border-slate-100 bg-white'
               }`}>
-                <ReferenceSwitch activeView="dictionary" onChange={openReferenceView} theme={theme} />
-                <label className="relative mt-3 block">
+                <div className="reference-controls">
+                  <ReferenceSwitch activeView="dictionary" onChange={openReferenceView} theme={theme} />
+                  <label className="relative mt-3 block lg:mt-0">
                   <span className={`pointer-events-none absolute left-3 top-1/2 flex -translate-y-1/2 ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
                     <IconSearch />
                   </span>
@@ -1313,7 +1314,8 @@ export default function App() {
                       ×
                     </button>
                   )}
-                </label>
+                  </label>
+                </div>
 
                 <div className="mt-3 flex min-w-0 items-center justify-between gap-3">
                   <button
@@ -1391,14 +1393,14 @@ export default function App() {
               </div>
 
               {dictionaryWords.length > 0 ? (
-                <ul className={`divide-y ${theme === 'dark' ? 'divide-slate-800' : 'divide-slate-200'}`}>
+                <ul className="reference-results-grid">
                   {dictionaryWords.map((word) => {
                     const rootWords = word.root ? repeatedRootIndex[word.root] ?? [] : [];
                     const relatedWords = rootWords.filter((rootWord) => rootWord.id !== word.id);
                     const isRootExpanded = expandedRoot === word.root && relatedWords.length > 0;
 
                     return (
-                      <li key={word.id} className="py-4">
+                      <li key={word.id} className={`border-b py-4 sm:py-5 ${theme === 'dark' ? 'border-slate-800' : 'border-slate-200'}`}>
                         <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_minmax(92px,auto)] items-start gap-3">
                           <div className="min-w-0">
                             <p className={`break-words text-base font-bold leading-6 ${theme === 'dark' ? 'text-slate-100' : 'text-slate-800'}`}>
@@ -1489,7 +1491,7 @@ export default function App() {
                     role="dialog"
                     aria-modal="true"
                     aria-labelledby="dictionary-filter-title"
-                    className={`fixed inset-x-0 bottom-0 z-40 mx-auto flex max-h-[85dvh] w-full max-w-md flex-col overflow-hidden rounded-t-[1.75rem] border-x border-t shadow-[0_-18px_50px_rgba(15,23,42,0.2)] ${
+                    className={`responsive-sheet fixed inset-x-0 bottom-0 z-40 mx-auto flex max-h-[85dvh] w-full max-w-md flex-col overflow-hidden rounded-t-[1.75rem] border-x border-t shadow-[0_-18px_50px_rgba(15,23,42,0.2)] ${
                       theme === 'dark'
                         ? 'border-slate-700 bg-slate-900 text-slate-100'
                         : 'border-slate-200 bg-white text-slate-800'

@@ -71,7 +71,7 @@ const getMarkdownComponents = (theme) => ({
         : null;
 
     return (
-      <h2 className="mb-3 mt-9 flex items-start gap-2 text-xl font-bold leading-7">
+      <h2 className="mb-3 mt-8 flex items-start gap-2 text-xl font-bold leading-7 sm:mt-9">
         {HeadingIcon && (
           <HeadingIcon
             size={23}
@@ -102,7 +102,7 @@ const getMarkdownComponents = (theme) => ({
         className={`mb-4 ${
           arabicExample
             ? 'arabic-text text-[1.7rem] font-semibold leading-[1.8]'
-            : 'text-[17px] leading-[1.7]'
+            : 'text-base leading-[1.7] sm:text-[17px]'
         }`}
       >
         {children}
@@ -120,8 +120,8 @@ const getMarkdownComponents = (theme) => ({
     );
   },
   em: ({ children }) => <em className="font-medium not-italic text-indigo-600">{children}</em>,
-  ul: ({ children }) => <ul className="mb-5 list-disc space-y-2.5 pl-6 text-[17px] leading-[1.65]">{children}</ul>,
-  ol: ({ children }) => <ol className="mb-5 list-decimal space-y-2.5 pl-6 text-[17px] leading-[1.65]">{children}</ol>,
+  ul: ({ children }) => <ul className="mb-5 list-disc space-y-2.5 pl-6 text-base leading-[1.65] sm:text-[17px]">{children}</ul>,
+  ol: ({ children }) => <ol className="mb-5 list-decimal space-y-2.5 pl-6 text-base leading-[1.65] sm:text-[17px]">{children}</ol>,
   li: ({ children }) => <li className="pl-1">{children}</li>,
   table: ({ children }) => (
     <div className={`mb-6 w-full overflow-x-auto border ${
@@ -184,7 +184,7 @@ function RuleArticle({ ruleId, onBack, onOpenRule, theme }) {
   const nextRule = ruleIndex < RULES.length - 1 ? RULES[ruleIndex + 1] : null;
 
   return (
-    <article className="mx-auto w-full max-w-[680px]">
+    <article className="mx-auto w-full max-w-[760px] pb-4">
       <button
         type="button"
         onClick={onBack}
@@ -207,7 +207,7 @@ function RuleArticle({ ruleId, onBack, onOpenRule, theme }) {
             }`}>
               {rule.category}
             </p>
-            <h1 className="mt-1 text-2xl font-bold leading-8">{rule.title}</h1>
+            <h1 className="mt-1 text-xl font-bold leading-7 sm:text-2xl sm:leading-8">{rule.title}</h1>
             <p className={`arabic-text mt-1 break-words text-xl leading-8 ${
               theme === 'dark' ? 'text-indigo-200' : 'text-indigo-700'
             }`} dir="rtl">
@@ -288,15 +288,15 @@ export default function RulesLibrary({
   }
 
   return (
-    <section className="w-full">
-      <div className={`sticky top-0 z-[5] -mx-5 -mt-5 border-b px-5 pb-3 pt-5 ${
+    <section className="reference-layout w-full">
+      <div className={`reference-toolbar sticky top-0 z-[5] border-b ${
         theme === 'dark'
           ? 'border-slate-800 bg-slate-900'
           : 'border-slate-100 bg-white'
       }`}>
-        <ReferenceSwitch activeView="rules" onChange={onReferenceChange} theme={theme} />
-
-        <label className="relative mt-3 block">
+        <div className="reference-controls">
+          <ReferenceSwitch activeView="rules" onChange={onReferenceChange} theme={theme} />
+          <label className="relative mt-3 block lg:mt-0">
           <span className={`pointer-events-none absolute left-3 top-1/2 flex -translate-y-1/2 ${
             theme === 'dark' ? 'text-slate-400' : 'text-slate-500'
           }`}>
@@ -327,7 +327,8 @@ export default function RulesLibrary({
               <X size={20} aria-hidden="true" />
             </button>
           )}
-        </label>
+          </label>
+        </div>
 
         <p className={`mt-3 text-sm ${
           theme === 'dark' ? 'text-slate-400' : 'text-slate-500'
@@ -337,15 +338,13 @@ export default function RulesLibrary({
       </div>
 
       {visibleRules.length > 0 ? (
-        <ul className={`divide-y ${
-          theme === 'dark' ? 'divide-slate-800' : 'divide-slate-200'
-        }`}>
+        <ul className="reference-results-grid">
           {visibleRules.map((rule) => (
-            <li key={rule.id}>
+            <li key={rule.id} className={`border-b ${theme === 'dark' ? 'border-slate-800' : 'border-slate-200'}`}>
               <button
                 type="button"
                 onClick={() => onOpenRule(rule.id)}
-                className="flex min-h-[7.5rem] w-full min-w-0 items-center gap-4 py-4 text-left"
+                className="flex min-h-[7.5rem] w-full min-w-0 items-center gap-4 py-4 text-left sm:py-5"
               >
                 <RuleSymbol rule={rule} theme={theme} compact />
                 <span className="min-w-0 flex-1">

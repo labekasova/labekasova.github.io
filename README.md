@@ -1,8 +1,8 @@
-# Arabic Words Learning v4.2.1
+# Arabic Words Learning v5.0
 
 Mobile-first Arabic vocabulary trainer published at `labekasova.github.io`. Authors: Larisa, Igor.
 
-Release 4.2.1 adds the particles taught in the grammar reference to every learning mode and completes the shared-root links for the current vocabulary.
+Release 5.0 introduces responsive layouts for phones, tablets, laptops, and wide desktop screens. It adds adaptive spacing, a wider desktop workspace, two-column reference lists, responsive learning modes, and desktop filter dialogs.
 
 ## Stack
 
