@@ -6,12 +6,18 @@ export const WORD_TYPES = {
   particle: 'particle'
 };
 
+export const WORD_GENDERS = {
+  masculine: 'masculine',
+  feminine: 'feminine'
+};
+
 const MODULE_1 = LESSON_IDS.module1;
 const SUKUN = LESSON_IDS.sukun;
 const SHADDA = LESSON_IDS.shadda;
 const STRESS = LESSON_IDS.stress;
 const TA_MARBUTA = LESSON_IDS.taMarbuta;
 const SOLAR_LUNAR = LESSON_IDS.solarLunar;
+const PARTS_OF_SPEECH = LESSON_IDS.partsOfSpeech;
 
 export const WORDS_BASE = [
   { id: 101, arabic: 'دَخَلَ', transcription: 'dakhala', russian: 'вошёл', translations: ['вошёл'], semanticGroup: 'Помещение и движение', type: WORD_TYPES.verb, lessonId: MODULE_1 },
@@ -95,8 +101,43 @@ export const WORDS_BASE = [
   { id: 506, arabic: 'صَبْر', transcription: 'Sabr', russian: 'терпение', translations: ['терпение'], semanticGroup: 'Общение и дух', type: WORD_TYPES.noun, lessonId: SOLAR_LUNAR },
   { id: 507, arabic: 'ذَهَب', transcription: 'dhahab', russian: 'золото', translations: ['золото'], semanticGroup: 'Материалы и ценности', type: WORD_TYPES.noun, lessonId: SOLAR_LUNAR },
   { id: 508, arabic: 'عَصْر', transcription: '3aSr', russian: 'послеполуденное время / эпоха', translations: ['послеполуденное время', 'эпоха'], semanticGroup: 'Время и события', type: WORD_TYPES.noun, lessonId: SOLAR_LUNAR },
-  { id: 509, arabic: 'مَوَدَّة', transcription: 'mawaddah', russian: 'любовь / привязанность', translations: ['любовь', 'привязанность'], semanticGroup: 'Общение и дух', type: WORD_TYPES.noun, lessonId: SOLAR_LUNAR }
+  { id: 509, arabic: 'مَوَدَّة', transcription: 'mawaddah', russian: 'любовь / привязанность', translations: ['любовь', 'привязанность'], semanticGroup: 'Общение и дух', type: WORD_TYPES.noun, lessonId: SOLAR_LUNAR },
+  { id: 601, arabic: 'أُذُنٌ', transcription: '2udhun', russian: 'ухо', translations: ['ухо'], semanticGroup: 'Тело', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH },
+  { id: 602, arabic: 'بَطِّيخٌ', transcription: 'baTTiikh', russian: 'арбуз', translations: ['арбуз'], semanticGroup: 'Еда и продукты', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH },
+  { id: 603, arabic: 'تُفَّاحٌ', transcription: 'tuffaaH', russian: 'яблоко / яблоки', translations: ['яблоко', 'яблоки'], semanticGroup: 'Еда и продукты', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH },
+  { id: 604, arabic: 'ثَوْمٌ', transcription: 'thawm', russian: 'чеснок', translations: ['чеснок'], semanticGroup: 'Еда и продукты', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH },
+  { id: 605, arabic: 'جَزَرٌ', transcription: 'jazar', russian: 'морковь', translations: ['морковь'], semanticGroup: 'Еда и продукты', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH },
+  { id: 606, arabic: 'حَافِلَةٌ', transcription: 'Haafila', russian: 'автобус', translations: ['автобус'], semanticGroup: 'Транспорт', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH },
+  { id: 607, arabic: 'خُبْزٌ', transcription: 'khubz', russian: 'хлеб', translations: ['хлеб'], semanticGroup: 'Еда и продукты', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH },
+  { id: 608, arabic: 'دَرَّاجَةٌ', transcription: 'darraaja', russian: 'велосипед', translations: ['велосипед'], semanticGroup: 'Транспорт', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH },
+  { id: 609, arabic: 'ذُرَةٌ', transcription: 'dhura', russian: 'кукуруза', translations: ['кукуруза'], semanticGroup: 'Еда и продукты', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH },
+  { id: 610, arabic: 'رُمَّانٌ', transcription: 'rummaan', russian: 'гранат', translations: ['гранат'], semanticGroup: 'Еда и продукты', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH },
+  { id: 611, arabic: 'زَيْتُونٌ', transcription: 'zaytuun', russian: 'оливки / маслины', translations: ['оливки', 'маслины'], semanticGroup: 'Еда и продукты', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH },
+  { id: 612, arabic: 'سَيَّارَةٌ', transcription: 'sayyaara', russian: 'машина / автомобиль', translations: ['машина', 'автомобиль'], semanticGroup: 'Транспорт', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH },
+  { id: 613, arabic: 'شَارِعٌ', transcription: 'shaari3', russian: 'улица', translations: ['улица'], semanticGroup: 'Город и места', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH },
+  { id: 614, arabic: 'صَلَاةٌ', transcription: 'Salaa', russian: 'молитва / намаз', translations: ['молитва', 'намаз'], semanticGroup: 'Вера и поклонение', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH },
+  { id: 615, arabic: 'ضَابِطٌ', transcription: 'DaabiT', russian: 'офицер', translations: ['офицер'], semanticGroup: 'Люди', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH },
+  { id: 616, arabic: 'طَائِرَةٌ', transcription: 'Taa2ira', russian: 'самолёт', translations: ['самолёт'], semanticGroup: 'Транспорт', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH },
+  { id: 617, arabic: 'ظَرْفٌ', transcription: 'DHarf', russian: 'конверт', translations: ['конверт'], semanticGroup: 'Быт и предметы', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH },
+  { id: 618, arabic: 'عِنَبٌ', transcription: '3inab', russian: 'виноград', translations: ['виноград'], semanticGroup: 'Еда и продукты', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH },
+  { id: 619, arabic: 'غَسَّالَةٌ', transcription: 'ghassaala', russian: 'стиральная машина', translations: ['стиральная машина'], semanticGroup: 'Быт и предметы', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH },
+  { id: 620, arabic: 'فَرِيزٌ', transcription: 'fariiz', russian: 'клубника', translations: ['клубника'], semanticGroup: 'Еда и продукты', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH },
+  { id: 621, arabic: 'قِطَارٌ', transcription: 'qiTaar', russian: 'поезд', translations: ['поезд'], semanticGroup: 'Транспорт', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH },
+  { id: 622, arabic: 'كَعْبَةٌ', transcription: 'ka3ba', russian: 'Кааба', translations: ['Кааба'], semanticGroup: 'Вера и поклонение', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH },
+  { id: 623, arabic: 'لَيْمُونٌ', transcription: 'laymuun', russian: 'лимон', translations: ['лимон'], semanticGroup: 'Еда и продукты', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH },
+  { id: 624, arabic: 'مَسْجِدٌ', transcription: 'masjid', russian: 'мечеть', translations: ['мечеть'], semanticGroup: 'Вера и поклонение', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH },
+  { id: 625, arabic: 'نَخْلَةٌ', transcription: 'nakhla', russian: 'пальма', translations: ['пальма'], semanticGroup: 'Растения', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH },
+  { id: 626, arabic: 'هَاتِفٌ', transcription: 'haatif', russian: 'телефон', translations: ['телефон'], semanticGroup: 'Быт и предметы', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH },
+  { id: 627, arabic: 'وُضُوءٌ', transcription: 'wuDuu2', russian: 'омовение / вуду', translations: ['омовение', 'вуду'], semanticGroup: 'Вера и поклонение', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH },
+  { id: 628, arabic: 'يَقْطِينٌ', transcription: 'yaqTiin', russian: 'тыква', translations: ['тыква'], semanticGroup: 'Еда и продукты', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH }
 ];
+
+const FEMININE_NOUN_IDS = new Set([
+  204, 206, 209, 211,
+  402, 403, 404, 405, 406, 407, 408, 409, 410, 411,
+  509,
+  601, 606, 608, 609, 612, 614, 616, 619, 622, 625
+]);
 
 const AUDIO_READY_TRANSCRIPTIONS = new Set([
   'dakhala', 'kharaja', 'waqafa', 'jalasa', 'nazala', 'sakana', 'Hajaza',
@@ -116,6 +157,11 @@ const AUDIO_READY_TRANSCRIPTIONS = new Set([
 export const WORDS_DATA = WORDS_BASE.map((word) => ({
   ...word,
   group: LESSON_BY_ID[word.lessonId].label,
+  gender: word.type === WORD_TYPES.noun
+    ? FEMININE_NOUN_IDS.has(word.id)
+      ? WORD_GENDERS.feminine
+      : WORD_GENDERS.masculine
+    : null,
   audio: AUDIO_READY_TRANSCRIPTIONS.has(word.transcription)
     ? `/audio/${word.transcription}.mp3`
     : null

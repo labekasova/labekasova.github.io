@@ -1,13 +1,14 @@
 {
   "name": "arabic-words-learning",
-  "version": "4.1.0",
+  "version": "4.2.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "validate:data": "node scripts/validate-word-data.mjs"
+    "validate:data": "node scripts/validate-word-data.mjs",
+    "validate:rules": "node scripts/validate-rule-content.mjs"
   },
   "dependencies": {
     "@tailwindcss/vite": "latest",

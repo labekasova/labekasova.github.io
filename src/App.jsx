@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
 import { LESSON_FILTERS } from './data/lessons.js';
 import { RULES } from './data/rulesIndex.js';
-import { WORDS_DATA, WORD_TYPES } from './data/words.js';
+import { WORD_GENDERS, WORDS_DATA, WORD_TYPES } from './data/words.js';
 import {
   buildRepeatedRootIndex,
   filterWords,
@@ -63,6 +63,11 @@ const getWordTypeLabel = (type) => {
   if (type === WORD_TYPES.verb) return 'Глагол';
   if (type === WORD_TYPES.noun) return 'Имя';
   return 'Частица';
+};
+
+const getWordGenderLabel = (word) => {
+  if (word.type !== WORD_TYPES.noun) return null;
+  return word.gender === WORD_GENDERS.feminine ? 'ж.р.' : 'м.р.';
 };
 
 const formatWordCount = (count) => {
@@ -927,14 +932,17 @@ export default function App() {
               )}
 
               <div className="flex justify-between items-center mb-3 text-xs font-semibold text-slate-500 px-1">
-                <span>
-  {currentWord.type === WORD_TYPES.verb
-    ? 'Глагол'
-    : currentWord.type === WORD_TYPES.noun
-      ? 'Имя'
-      : 'Частица'}{' '}
-  {currentIndex + 1} из {words.length}
-</span>
+                <span className="flex min-w-0 items-center gap-1.5">
+                  <span>{getWordTypeLabel(currentWord.type)}</span>
+                  {getWordGenderLabel(currentWord) && (
+                    <span className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${
+                      theme === 'dark' ? 'bg-slate-800 text-indigo-200' : 'bg-indigo-50 text-indigo-700'
+                    }`}>
+                      {getWordGenderLabel(currentWord)}
+                    </span>
+                  )}
+                  <span>{currentIndex + 1} из {words.length}</span>
+                </span>
                 <div className="flex gap-1.5">
                   {isSortedLogical ? (
                     <button 
@@ -986,6 +994,11 @@ export default function App() {
                         [{currentWord.transcription}]
                       </span>
                     </div>
+                    {getWordGenderLabel(currentWord) && (
+                      <span className="mb-2 rounded-md bg-white/15 px-2 py-1 text-[11px] font-semibold text-indigo-100">
+                        Имя · {getWordGenderLabel(currentWord)}
+                      </span>
+                    )}
                     {isSortedLogical && (
                       <span className="text-[11px] text-indigo-200/80 italic max-w-[90%]">
                         {currentWord.group}
@@ -1395,7 +1408,10 @@ export default function App() {
                               [{word.transcription}]
                             </p>
                             <p className={`mt-2 break-words text-xs leading-5 ${theme === 'dark' ? 'text-slate-500' : 'text-slate-400'}`}>
-                              {getWordTypeLabel(word.type)} · {word.group}
+                              {getWordTypeLabel(word.type)}
+                              {getWordGenderLabel(word) ? ` · ${getWordGenderLabel(word)}` : ''}
+                              {' · '}
+                              {word.group}
                             </p>
                           </div>
                           <div className="min-w-0 text-right" dir="rtl">

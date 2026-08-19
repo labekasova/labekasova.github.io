@@ -1,8 +1,8 @@
-# Arabic Words Learning v4.1
+# Arabic Words Learning v4.2
 
 Mobile-first Arabic vocabulary trainer published at `labekasova.github.io`. Authors: Larisa, Igor.
 
-Release 4.1 adds the solar and lunar letters lesson, nine vocabulary entries, and a dedicated searchable grammar article.
+Release 4.2 adds four grammar articles, a 28-word parts-of-speech lesson, and grammatical gender labels for every noun.
 
 ## Stack
 
@@ -24,6 +24,7 @@ Release 4.1 adds the solar and lunar letters lesson, nine vocabulary entries, an
 - `src/features/rules/ReferenceSwitch.jsx` - dictionary/rules switch
 - `src/features/rules/RulesLibrary.jsx` - rule list, search, and article reader
 - `scripts/validate-word-data.mjs` - vocabulary integrity checks
+- `scripts/validate-rule-content.mjs` - article completeness and ordering checks
 
 ## Reference routes
 
@@ -36,6 +37,7 @@ Release 4.1 adds the solar and lunar letters lesson, nine vocabulary entries, an
 ```bash
 npm ci
 npm run validate:data
+npm run validate:rules
 npm run build
 npm run dev
 ```

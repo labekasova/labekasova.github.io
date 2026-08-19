@@ -1,5 +1,5 @@
 import { LESSON_BY_ID, LESSON_IDS } from '../src/data/lessons.js';
-import { WORDS_BASE, WORDS_DATA, WORD_TYPES } from '../src/data/words.js';
+import { WORD_GENDERS, WORDS_BASE, WORDS_DATA, WORD_TYPES } from '../src/data/words.js';
 import {
   buildRepeatedRootIndex,
   filterWords,
@@ -7,7 +7,7 @@ import {
   sortWordsByRussian
 } from '../src/domain/wordSelectors.js';
 
-const EXPECTED_WORD_COUNT = 82;
+const EXPECTED_WORD_COUNT = 110;
 
 const fail = (message) => {
   throw new Error(message);
@@ -37,12 +37,33 @@ if (WORDS_DATA.some((word) => !word.group)) {
   fail('Не для всех слов вычислена подпись урока.');
 }
 
+const nounWords = WORDS_DATA.filter((word) => word.type === WORD_TYPES.noun);
+if (nounWords.some((word) => !Object.values(WORD_GENDERS).includes(word.gender))) {
+  fail('Не для всех имён указан корректный род.');
+}
+if (WORDS_DATA.some((word) => word.type !== WORD_TYPES.noun && word.gender !== null)) {
+  fail('Род должен быть указан только у слов категории «имя».');
+}
+if (nounWords.filter((word) => word.gender === WORD_GENDERS.feminine).length !== 25) {
+  fail('Ожидалось 25 имён женского рода.');
+}
+
 const sortedWords = sortWordsByRussian(WORDS_DATA);
 if (sortedWords.some((word) => !getPrimaryTranslation(word))) {
   fail('Не для всех слов определён основной перевод для сортировки.');
 }
-if (getPrimaryTranslation(sortedWords[0]) !== 'Аиша') {
-  fail('Русская сортировка словаря не начинается со слова «Аиша».');
+const russianCollator = new Intl.Collator('ru', {
+  sensitivity: 'base',
+  numeric: true
+});
+if (sortedWords.some((word, index) => (
+  index > 0
+  && russianCollator.compare(
+    getPrimaryTranslation(sortedWords[index - 1]),
+    getPrimaryTranslation(word)
+  ) > 0
+))) {
+  fail('Русская сортировка словаря нарушена.');
 }
 
 const repeatedRoots = buildRepeatedRootIndex(WORDS_DATA);
@@ -69,7 +90,7 @@ Object.entries(expectedRepeatedRootCounts).forEach(([root, expectedCount]) => {
 
 const expectedFilterCounts = [
   [{ type: WORD_TYPES.verb }, 47],
-  [{ type: WORD_TYPES.noun }, 35],
+  [{ type: WORD_TYPES.noun }, 63],
   [{ type: WORD_TYPES.particle }, 0],
   [{ lessonId: LESSON_IDS.module1 }, 42],
   [{ lessonId: LESSON_IDS.sukun }, 6],
@@ -77,9 +98,11 @@ const expectedFilterCounts = [
   [{ lessonId: LESSON_IDS.stress }, 7],
   [{ lessonId: LESSON_IDS.taMarbuta }, 12],
   [{ lessonId: LESSON_IDS.solarLunar }, 9],
+  [{ lessonId: LESSON_IDS.partsOfSpeech }, 28],
   [{ type: WORD_TYPES.noun, lessonId: LESSON_IDS.shadda }, 3],
   [{ type: WORD_TYPES.noun, lessonId: LESSON_IDS.stress }, 7],
   [{ type: WORD_TYPES.noun, lessonId: LESSON_IDS.solarLunar }, 9],
+  [{ type: WORD_TYPES.noun, lessonId: LESSON_IDS.partsOfSpeech }, 28],
   [{ type: WORD_TYPES.verb, lessonId: LESSON_IDS.taMarbuta }, 2]
 ];
 
@@ -91,7 +114,7 @@ expectedFilterCounts.forEach(([filters, expectedCount]) => {
 });
 
 const multiSelectFilterCases = [
-  [{ types: [WORD_TYPES.verb, WORD_TYPES.noun] }, 82],
+  [{ types: [WORD_TYPES.verb, WORD_TYPES.noun] }, 110],
   [{ lessonIds: [LESSON_IDS.sukun, LESSON_IDS.shadda] }, 12],
   [{
     types: [WORD_TYPES.verb, WORD_TYPES.noun],
@@ -135,7 +158,10 @@ const dictionarySearchCases = [
   ['muthmiraat', 406],
   ['правдивость', 501],
   ['رُكُوع', 505],
-  ['mawaddah', 509]
+  ['mawaddah', 509],
+  ['автобус', 606],
+  ['غسالة', 619],
+  ['wuDuu2', 627]
 ];
 
 dictionarySearchCases.forEach(([query, expectedId]) => {

@@ -4,7 +4,8 @@ export const LESSON_IDS = {
   shadda: 'shadda-2026-08-04',
   stress: 'stress-2026-08-08',
   taMarbuta: 'ta-marbuta-ta-maftuha-2026-08-08',
-  solarLunar: 'solar-lunar-letters-2026-08-11'
+  solarLunar: 'solar-lunar-letters-2026-08-11',
+  partsOfSpeech: 'parts-of-speech-2026-08-19'
 };
 
 export const LESSONS = [
@@ -43,6 +44,12 @@ export const LESSONS = [
     label: 'Слова с урока про солнечные и лунные буквы',
     date: '2026-08-11',
     order: 6
+  },
+  {
+    id: LESSON_IDS.partsOfSpeech,
+    label: '28 новых слов на выучить с урока о частях речи',
+    date: '2026-08-19',
+    order: 7
   }
 ];
 

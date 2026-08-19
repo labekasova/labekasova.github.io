@@ -123,6 +123,32 @@ const getMarkdownComponents = (theme) => ({
   ul: ({ children }) => <ul className="mb-5 list-disc space-y-2.5 pl-6 text-[17px] leading-[1.65]">{children}</ul>,
   ol: ({ children }) => <ol className="mb-5 list-decimal space-y-2.5 pl-6 text-[17px] leading-[1.65]">{children}</ol>,
   li: ({ children }) => <li className="pl-1">{children}</li>,
+  table: ({ children }) => (
+    <div className={`mb-6 w-full overflow-x-auto border ${
+      theme === 'dark' ? 'border-slate-700' : 'border-slate-200'
+    }`}>
+      <table className="min-w-[560px] border-collapse text-left text-[15px] leading-6">
+        {children}
+      </table>
+    </div>
+  ),
+  thead: ({ children }) => (
+    <thead className={theme === 'dark' ? 'bg-slate-800' : 'bg-slate-100'}>{children}</thead>
+  ),
+  th: ({ children }) => (
+    <th className={`border-b px-3 py-2.5 font-bold ${
+      theme === 'dark' ? 'border-slate-700' : 'border-slate-200'
+    }`}>
+      {children}
+    </th>
+  ),
+  td: ({ children }) => (
+    <td className={`border-b px-3 py-2.5 align-top ${
+      theme === 'dark' ? 'border-slate-800' : 'border-slate-100'
+    }`}>
+      {children}
+    </td>
+  ),
   blockquote: ({ children }) => (
     <blockquote
       className={`my-6 border-l-4 border-amber-400 px-4 py-3 text-[16px] leading-7 ${

@@ -1,4 +1,8 @@
+import demonstrativePronounsContent from '../content/rules/demonstrative-pronouns.md?raw';
+import hamzaContent from '../content/rules/hamza.md?raw';
 import maddContent from '../content/rules/madd.md?raw';
+import partsOfSpeechContent from '../content/rules/parts-of-speech.md?raw';
+import personalPronounsContent from '../content/rules/personal-pronouns.md?raw';
 import shaddaContent from '../content/rules/shadda.md?raw';
 import solarLunarContent from '../content/rules/solar-lunar.md?raw';
 import sukunContent from '../content/rules/sukun.md?raw';
@@ -6,7 +10,8 @@ import taMarbutaContent from '../content/rules/ta-marbuta.md?raw';
 
 export const RULE_CATEGORIES = {
   reading: 'Чтение и произношение',
-  endings: 'Буквы и окончания'
+  endings: 'Буквы и окончания',
+  grammar: 'Грамматика'
 };
 
 export const RULES = [
@@ -65,6 +70,50 @@ export const RULES = [
     summary: 'Произношение артикля ال перед солнечными и лунными буквами.',
     keywords: ['артикль', 'определённость', 'солнечные буквы', 'лунные буквы', 'хамзат аль-васль', 'اللام الشمسية', 'اللام القمرية', 'ال'],
     content: solarLunarContent
+  },
+  {
+    id: 'demonstrative-pronouns',
+    order: 6,
+    title: 'Указательные местоимения',
+    arabicTitle: 'أَسْمَاءُ الإِشَارَةِ',
+    symbol: 'هٰذَا',
+    category: RULE_CATEGORIES.grammar,
+    summary: 'Формы «этот», «эта», «эти» и согласование с существительным.',
+    keywords: ['этот', 'эта', 'эти', 'местоимения', 'род', 'число', 'هٰذَا', 'هٰذِهِ', 'هٰؤُلَاءِ'],
+    content: demonstrativePronounsContent
+  },
+  {
+    id: 'personal-pronouns',
+    order: 7,
+    title: 'Личные местоимения',
+    arabicTitle: 'الضَّمَائِرُ الشَّخْصِيَّةُ',
+    symbol: 'أَنَا',
+    category: RULE_CATEGORIES.grammar,
+    summary: 'Я, мы, ты, он и она и формы прошедшего времени.',
+    keywords: ['я', 'мы', 'ты', 'он', 'она', 'спряжение', 'прошедшее время', 'أَنَا', 'نَحْنُ', 'هُوَ', 'هِيَ'],
+    content: personalPronounsContent
+  },
+  {
+    id: 'hamza',
+    order: 8,
+    title: 'Хамза',
+    arabicTitle: 'الهَمْزَةُ',
+    symbol: 'ء',
+    category: RULE_CATEGORIES.reading,
+    summary: 'Отдельный звук хамзы и выбор её написания в слове.',
+    keywords: ['хамза', 'алиф', 'огласовка', 'ء', 'أ', 'ؤ', 'ئ'],
+    content: hamzaContent
+  },
+  {
+    id: 'parts-of-speech',
+    order: 9,
+    title: 'Части речи в арабском',
+    arabicTitle: 'أَقْسَامُ الكَلَامِ',
+    symbol: 'ا ف ح',
+    category: RULE_CATEGORIES.grammar,
+    summary: 'Имя, глагол и частица — три основные категории арабской грамматики.',
+    keywords: ['части речи', 'имя', 'глагол', 'частица', 'اِسْمٌ', 'فِعْلٌ', 'حَرْفٌ'],
+    content: partsOfSpeechContent
   }
 ].sort((left, right) => left.order - right.order);
 
