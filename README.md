@@ -19,12 +19,16 @@ Release 5.0 introduces responsive layouts for phones, tablets, laptops, and wide
 - `src/data/words.js` - vocabulary data
 - `src/data/lessons.js` - lesson metadata
 - `src/data/rulesIndex.js` - rule metadata and searchable index
-- `src/content/rules/*.md` - one Markdown article per language rule
+- `src/content/rules/` - one Markdown article per language rule
 - `src/domain/wordSelectors.js` - filtering, search, sorting, and root indexing
 - `src/features/rules/ReferenceSwitch.jsx` - dictionary/rules switch
 - `src/features/rules/RulesLibrary.jsx` - rule list, search, and article reader
 - `scripts/validate-word-data.mjs` - vocabulary integrity checks
 - `scripts/validate-rule-content.mjs` - article completeness and ordering checks
+- `scripts/validate-dictionary-audio.mjs` - dictionary audio coverage check
+- `scripts/validate-rule-language.mjs` - rule transcription and audio mapping check
+
+Additional technical notes are in `docs/`.
 
 ## Reference routes
 
@@ -41,5 +45,7 @@ npm run validate:rules
 npm run build
 npm run dev
 ```
+
+On Windows, `start-dev.cmd` can be launched with a double click. It installs the locked dependencies on first run and opens the local current version in the browser.
 
 The GitHub Pages deployment workflow is stored in `.github/workflows/deploy.yml`.

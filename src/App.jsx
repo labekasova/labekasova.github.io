@@ -51,13 +51,14 @@ const IconArrowRight = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" 
 const IconShuffle = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22"/><path d="m18 2 4 4-4 4"/><path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2"/><path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8"/><path d="m18 14 4 4-4 4"/></svg>;
 const IconRotateCcw = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>;
 const IconEye = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>;
-const IconVolume = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>;
+const IconVolume = ({ className = '' }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>;
 const IconMoon = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3a6 6 0 1 0 9 9 9 9 0 1 1-9-9Z"/></svg>;
 const IconSun = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>;
 const IconChevronDown = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>;
 const IconDictionary = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 5.5A2.5 2.5 0 0 1 5.5 3H11v17H5.5A2.5 2.5 0 0 0 3 22Z"/><path d="M21 5.5A2.5 2.5 0 0 0 18.5 3H13v17h5.5A2.5 2.5 0 0 1 21 22Z"/></svg>;
 const IconSearch = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>;
 const IconSliders = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 21v-7"/><path d="M4 10V3"/><path d="M12 21v-9"/><path d="M12 8V3"/><path d="M20 21v-5"/><path d="M20 12V3"/><path d="M1 14h6"/><path d="M9 8h6"/><path d="M17 16h6"/></svg>;
+const IconChevronsUp = ({ size = 20, strokeWidth = 2.5 }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="m17 11-5-5-5 5"/><path d="m17 18-5-5-5 5"/></svg>;
 
 const getWordTypeLabel = (type) => {
   if (type === WORD_TYPES.verb) return 'Глагол';
@@ -146,6 +147,7 @@ export default function App() {
   const [dictionaryDraftFilters, setDictionaryDraftFilters] = useState([]);
   const [dictionaryDraftLessonGroups, setDictionaryDraftLessonGroups] = useState([]);
   const [isDictionaryFilterOpen, setIsDictionaryFilterOpen] = useState(false);
+  const [isDictionaryScrollTopVisible, setIsDictionaryScrollTopVisible] = useState(false);
   const [expandedRoot, setExpandedRoot] = useState(null);
   const [theme, setTheme] = useState(() => {
     if (typeof window === 'undefined') {
@@ -163,6 +165,7 @@ export default function App() {
   const [isFlipped, setIsFlipped] = useState(false);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [isAudioLoading, setIsAudioLoading] = useState(false);
+  const [activeAudioPath, setActiveAudioPath] = useState(null);
   const [cardDirection, setCardDirection] = useState(null);
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
@@ -434,8 +437,34 @@ export default function App() {
   }, [isRulesView]);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
     mainRef.current?.scrollTo({ top: 0 });
   }, [location.pathname]);
+
+  useEffect(() => {
+    if (activeTab !== 'reference' || isRulesView) {
+      setIsDictionaryScrollTopVisible(false);
+      return undefined;
+    }
+
+    const updateVisibility = () => {
+      const scrollPosition = Math.max(
+        window.scrollY,
+        document.documentElement.scrollTop,
+        mainRef.current?.scrollTop ?? 0
+      );
+      setIsDictionaryScrollTopVisible(scrollPosition > 240);
+    };
+
+    updateVisibility();
+    window.addEventListener('scroll', updateVisibility, { passive: true });
+    mainRef.current?.addEventListener('scroll', updateVisibility, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', updateVisibility);
+      mainRef.current?.removeEventListener('scroll', updateVisibility);
+    };
+  }, [activeTab, isRulesView]);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -459,11 +488,18 @@ export default function App() {
       setIsAudioPlaying(false);
     };
     const handleCanPlay = () => setIsAudioLoading(false);
-    const handlePause = () => setIsAudioPlaying(false);
-    const handleEnded = () => setIsAudioPlaying(false);
+    const handlePause = () => {
+      setIsAudioPlaying(false);
+      setActiveAudioPath(null);
+    };
+    const handleEnded = () => {
+      setIsAudioPlaying(false);
+      setActiveAudioPath(null);
+    };
     const handleError = () => {
       setIsAudioLoading(false);
       setIsAudioPlaying(false);
+      setActiveAudioPath(null);
     };
 
     audio.addEventListener('loadstart', handleLoadStart);
@@ -497,28 +533,30 @@ export default function App() {
     audio.currentTime = 0;
     setIsAudioPlaying(false);
     setIsAudioLoading(false);
+    setActiveAudioPath(null);
     audioRequestRef.current += 1;
   }, [currentIndex, activeFilters, activeLessonGroups, activeTab]);
 
   const currentWord = words[currentIndex];
 
-  const playCurrentAudio = async () => {
-    if (!currentWord.audio) return;
+  const playWordAudio = async (word) => {
+    if (!word.audio) return;
     const audio = audioRef.current;
     if (!audio) return;
 
     const requestId = audioRequestRef.current + 1;
     audioRequestRef.current = requestId;
-    const nextSrc = new URL(currentWord.audio, window.location.origin).href;
+    const nextSrc = new URL(word.audio, window.location.origin).href;
     const isSameSource = audioSourceRef.current === nextSrc;
 
     setIsAudioLoading(true);
     setIsAudioPlaying(false);
 
     audio.pause();
+    setActiveAudioPath(word.audio);
 
     if (!isSameSource) {
-      audio.src = currentWord.audio;
+      audio.src = word.audio;
       audioSourceRef.current = nextSrc;
       audio.load();
     } else {
@@ -563,6 +601,7 @@ export default function App() {
 
       setIsAudioLoading(false);
       setIsAudioPlaying(false);
+      setActiveAudioPath(null);
 
       audio.pause();
       audio.removeAttribute('src');
@@ -570,6 +609,8 @@ export default function App() {
       audioSourceRef.current = '';
     }
   };
+
+  const playCurrentAudio = () => playWordAudio(currentWord);
 
   const audioButtonLabel = !currentWord?.audio
     ? 'Аудио пока нет'
@@ -669,6 +710,11 @@ export default function App() {
     lessonIds: lesson.id === 'all' ? [] : [lesson.id],
     query: dictionaryQuery
   }).length;
+
+  const scrollDictionaryToTop = () => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    mainRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const openReferenceView = (view) => {
     setActiveTab('reference');
@@ -1398,6 +1444,7 @@ export default function App() {
                     const rootWords = word.root ? repeatedRootIndex[word.root] ?? [] : [];
                     const relatedWords = rootWords.filter((rootWord) => rootWord.id !== word.id);
                     const isRootExpanded = expandedRoot === word.root && relatedWords.length > 0;
+                    const isDictionaryAudioActive = activeAudioPath === word.audio;
 
                     return (
                       <li key={word.id} className={`border-b py-4 sm:py-5 ${theme === 'dark' ? 'border-slate-800' : 'border-slate-200'}`}>
@@ -1406,9 +1453,26 @@ export default function App() {
                             <p className={`break-words text-base font-bold leading-6 ${theme === 'dark' ? 'text-slate-100' : 'text-slate-800'}`}>
                               {word.russian}
                             </p>
-                            <p className={`mt-0.5 break-words text-sm ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
-                              [{word.transcription}]
-                            </p>
+                            <div className="mt-0.5 min-w-0">
+                              <button
+                                type="button"
+                                onClick={() => playWordAudio(word)}
+                                aria-label={`Прослушать произношение: ${word.arabic}`}
+                                aria-pressed={activeAudioPath === word.audio && isAudioPlaying}
+                                data-playing={isDictionaryAudioActive}
+                                className={`dictionary-audio-trigger -my-1 inline-flex min-h-8 max-w-full items-center gap-1 rounded-md py-1 pr-1 text-left text-sm transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 active:text-indigo-700 ${
+                                  isDictionaryAudioActive
+                                    ? 'text-indigo-600'
+                                    : theme === 'dark'
+                                      ? 'text-slate-400 hover:text-indigo-300'
+                                      : 'text-slate-500 hover:text-indigo-600'
+                                }`}
+                              >
+                                <span>[{word.transcription}]</span>
+                                <IconVolume className="relative top-px h-3.5 w-3.5" />
+                                <span className="sr-only">Прослушать</span>
+                              </button>
+                            </div>
                             <p className={`mt-2 break-words text-xs leading-5 ${theme === 'dark' ? 'text-slate-500' : 'text-slate-400'}`}>
                               {getWordTypeLabel(word.type)}
                               {getWordGenderLabel(word) ? ` · ${getWordGenderLabel(word)}` : ''}
@@ -1634,6 +1698,24 @@ export default function App() {
                   </section>
                 </>
               )}
+
+              <button
+                type="button"
+                onClick={scrollDictionaryToTop}
+                aria-label="Вернуться к началу словаря"
+                style={{ transform: isDictionaryScrollTopVisible ? 'translateY(0)' : 'translateY(0.75rem)' }}
+                className={`fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-4 z-30 flex h-11 w-11 items-center justify-center rounded-xl border shadow-lg transition-all duration-200 motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 ${
+                  isDictionaryScrollTopVisible
+                    ? 'opacity-100'
+                    : 'pointer-events-none opacity-0'
+                } ${
+                  theme === 'dark'
+                    ? 'border-slate-600 bg-slate-800/95 text-indigo-200 shadow-slate-950/30 hover:bg-slate-700'
+                    : 'border-indigo-100 bg-white/95 text-indigo-600 shadow-indigo-950/15 hover:bg-indigo-50'
+                }`}
+              >
+                <IconChevronsUp size={21} strokeWidth={2.4} />
+              </button>
             </section>
           )}
 

@@ -36,16 +36,44 @@ WORDS_BASE.forEach((word) => {
 if (WORDS_DATA.some((word) => !word.group)) {
   fail('Не для всех слов вычислена подпись урока.');
 }
+if (WORDS_DATA.some((word) => !word.audio)) {
+  fail('Для каждого слова должна быть включена озвучка.');
+}
 
 const nounWords = WORDS_DATA.filter((word) => word.type === WORD_TYPES.noun);
 if (nounWords.some((word) => !Object.values(WORD_GENDERS).includes(word.gender))) {
   fail('Не для всех имён указан корректный род.');
+}
+if (nounWords.some((word) => /[ًٌٍ]$/.test(word.arabic))) {
+  fail('Словарные формы имён не должны оканчиваться на танвин.');
+}
+if (nounWords.some((word) => word.arabic.endsWith('ة') && !word.transcription.endsWith('h'))) {
+  fail('Транскрипция имён с та-марбутой должна оканчиваться на h.');
 }
 if (WORDS_DATA.some((word) => word.type !== WORD_TYPES.noun && word.gender !== null)) {
   fail('Род должен быть указан только у слов категории «имя».');
 }
 if (nounWords.filter((word) => word.gender === WORD_GENDERS.feminine).length !== 25) {
   fail('Ожидалось 25 имён женского рода.');
+}
+
+const expectedFeminineNounIds = new Set([
+  204, 206, 209, 211,
+  402, 403, 404, 405, 406, 407, 408, 409, 410, 411,
+  509,
+  601, 606, 608, 609, 612, 614, 616, 619, 622, 625
+]);
+const actualFeminineNounIds = new Set(
+  nounWords
+    .filter((word) => word.gender === WORD_GENDERS.feminine)
+    .map((word) => word.id)
+);
+
+if (
+  actualFeminineNounIds.size !== expectedFeminineNounIds.size
+  || [...expectedFeminineNounIds].some((id) => !actualFeminineNounIds.has(id))
+) {
+  fail('Набор имён женского рода не соответствует проверенной словарной разметке.');
 }
 
 const sortedWords = sortWordsByRussian(WORDS_DATA);

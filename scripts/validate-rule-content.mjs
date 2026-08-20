@@ -35,5 +35,25 @@ for (const [ruleId, fileName] of expectedNewRules) {
   previousPosition = position;
 }
 
+const examplesWithRequiredAudio = [
+  ['parts-of-speech.md', 'خَالِد', 'Khaalid'],
+  ['solar-lunar.md', 'بَيْت', 'bayt'],
+  ['solar-lunar.md', 'الْبَيْتُ', 'al-baytu'],
+  ['solar-lunar.md', 'الْقَمَرُ', 'al-qamaru'],
+  ['solar-lunar.md', 'الْعَصْرُ', 'al-3aSru'],
+  ['solar-lunar.md', 'الشَّمْسُ', 'ash-shamsu'],
+  ['solar-lunar.md', 'الصَّبَاحُ', 'aS-SabaaHu'],
+  ['solar-lunar.md', 'الرُّكُوعُ', 'ar-rukuu3u']
+];
+
+for (const [fileName, arabic, transcription] of examplesWithRequiredAudio) {
+  const content = await readFile(new URL(fileName, rulesDirectory), 'utf8');
+  const expectedBlock = `**${arabic}**\n*${transcription}*`;
+
+  if (!content.includes(expectedBlock)) {
+    throw new Error(`У примера «${arabic}» нет отдельного блока с транскрипцией и озвучкой.`);
+  }
+}
+
 console.log(`Проверено новых статей: ${expectedNewRules.length}.`);
 console.log(`Каталог: ${fileURLToPath(rulesDirectory)}`);

@@ -8,7 +8,16 @@
     "build": "vite build",
     "preview": "vite preview",
     "validate:data": "node scripts/validate-word-data.mjs",
-    "validate:rules": "node scripts/validate-rule-content.mjs"
+    "validate:rules": "node scripts/validate-rule-content.mjs",
+    "validate:dictionary-audio": "node scripts/validate-dictionary-audio.mjs",
+    "validate:rule-language": "node scripts/validate-rule-language.mjs",
+    "list:rule-audio": "node scripts/list-rule-audio.mjs",
+    "validate:rule-pause-forms": "node scripts/validate-rule-pause-forms.mjs",
+    "validate:rule-navigation": "node scripts/validate-rule-navigation.mjs",
+    "validate:rule-article-ui": "node scripts/validate-rule-article-ui.mjs",
+    "validate:sukun-rule": "node scripts/validate-sukun-rule.mjs",
+    "validate:letters-rule": "node scripts/validate-letters-rule.mjs",
+    "validate:reference-enhancements": "node scripts/validate-reference-enhancements.mjs"
   },
   "dependencies": {
     "@tailwindcss/vite": "latest",
