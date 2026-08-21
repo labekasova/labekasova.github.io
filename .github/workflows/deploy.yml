@@ -27,6 +27,8 @@ jobs:
           node-version: lts/*
           cache: npm
       - run: npm ci
+      - run: npm run validate:data
+      - run: npm run validate:learning-content
       - run: npm run build
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5
