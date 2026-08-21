@@ -1,6 +1,6 @@
 {
   "name": "arabic-words-learning",
-  "version": "5.2.0",
+  "version": "6.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -8,6 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "validate:data": "node scripts/validate-word-data.mjs",
+    "validate:learning-content": "node scripts/validate-learning-content.mjs",
     "validate:rules": "node scripts/validate-rule-content.mjs",
     "validate:dictionary-audio": "node scripts/validate-dictionary-audio.mjs",
     "validate:rule-language": "node scripts/validate-rule-language.mjs",

@@ -1,17 +1,18 @@
-# Arabic Words Learning v5.1
+# Arabic Learning v6.0
 
-Mobile-first Arabic vocabulary trainer published at `labekasova.github.io`. Authors: Larisa, Igor.
+Responsive Arabic vocabulary, phrase, dialogue, grammar, and verb-form trainer published at `labekasova.github.io`. Authors: Larisa, Igor.
 
-Release 5.1 keeps the dictionary and rule audio work introduced after v5.0 and adds:
+## Release 6.0
 
-- the formatted article "Местоимения" with internal links to related rules;
-- 22 words in the group "Англ слова которые звучат как русские";
-- all 12 unique detached personal-pronoun forms;
-- common-gender labels for pronouns used for both genders;
-- four new repeated-root families connected to existing vocabulary;
-- the shorter lesson label "Частицы".
-
-The 119 existing dictionary recordings remain enabled. New entries display their transcription without a playback button until matching MP3 files are added.
+- replaces the old exercise-first navigation with `Слова / Фразы / Справочник`;
+- keeps word learning, testing, and writing as modes inside `Слова`;
+- adds a searchable catalogue of 40 standalone phrases;
+- adds phrase reading, translation choice, and sentence-building exercises;
+- adds two article-style dialogues with 22 translated lines;
+- adds a searchable verb reference with nine verbs and four basic forms;
+- adds a simple verb-form recognition exercise;
+- separates conversation topics from lessons for future many-to-many filtering;
+- increases Arabic type sizes for comfortable phone reading.
 
 ## Stack
 
@@ -22,39 +23,48 @@ The 119 existing dictionary recordings remain enabled. New entries display their
 - React Markdown
 - GitHub Actions and GitHub Pages
 
+No new runtime dependency was added in v6.0.
+
 ## Structure
 
-- `src/App.jsx` - application shell, dictionary, and learning modes
+- `src/App.jsx` - application shell, primary navigation, and existing word modes
 - `src/data/words.js` - vocabulary data
-- `src/data/lessons.js` - lesson metadata
-- `src/data/rulesIndex.js` - rule metadata and searchable index
-- `src/content/rules/` - one Markdown article per language rule
-- `src/domain/wordSelectors.js` - filtering, search, sorting, and root indexing
-- `src/features/rules/ReferenceSwitch.jsx` - dictionary/rules switch
-- `src/features/rules/RulesLibrary.jsx` - rule list, search, and article reader
-- `scripts/validate-word-data.mjs` - vocabulary integrity checks
-- `scripts/validate-rule-content.mjs` - article completeness and ordering checks
-- `scripts/validate-dictionary-audio.mjs` - dictionary audio coverage check
-- `scripts/validate-rule-language.mjs` - rule transcription and audio mapping check
+- `src/data/phrases.js` - standalone phrase data
+- `src/data/dialogues.js` - non-exercise dialogue articles
+- `src/data/topics.js` - conversation-topic metadata
+- `src/data/verbConjugations.js` - incrementally populated verb forms
+- `src/data/lessons.js` - lesson metadata shared by words and phrases
+- `src/domain/phraseSelectors.js` - phrase search, filters, shuffling, and quiz options
+- `src/features/phrases/` - phrase catalogue, exercises, filters, and dialogue reader
+- `src/features/verbs/` - verb reference and practice
+- `src/features/rules/` - rule library and reference navigation
+- `scripts/validate-learning-content.mjs` - phrase, dialogue, and verb data checks
 
-Additional technical notes are in `docs/`.
+## Routes
 
-## Reference routes
-
+- `#/words/learn` - word cards
+- `#/words/test` - word translation test
+- `#/words/write` - Arabic writing
+- `#/words/verb-forms` - verb-form practice
+- `#/phrases/library` - all phrases
+- `#/phrases/read` - phrase reading
+- `#/phrases/translation` - translation choice
+- `#/phrases/build` - sentence building
+- `#/phrases/dialogues` - dialogue catalogue
+- `#/phrases/dialogues/:dialogueId` - dialogue article
 - `#/` - dictionary
-- `#/rules` - rules index
-- `#/rules/:ruleId` - individual rule article
+- `#/rules` and `#/rules/:ruleId` - grammar rules
+- `#/verbs` and `#/verbs/:verbId` - verb reference
 
 ## Commands
 
 ```bash
 npm ci
 npm run validate:data
+npm run validate:learning-content
 npm run validate:rules
 npm run build
 npm run dev
 ```
 
-On Windows, `start-dev.cmd` can be launched with a double click. It installs the locked dependencies on first run and opens the local current version in the browser.
-
-The GitHub Pages deployment workflow is stored in `.github/workflows/deploy.yml`.
+The GitHub Pages workflow remains in `.github/workflows/deploy.yml`.
