@@ -15,6 +15,7 @@ const expectedRuleIds = [
   'pronouns',
   'demonstrative-pronouns',
   'personal-pronouns',
+  'interrogative-words',
   'hamza',
   'parts-of-speech'
 ];
@@ -35,9 +36,9 @@ for (const ruleId of expectedRuleIds) {
     }
   }
 
-  if (ruleId === 'pronouns') {
+  if (['pronouns', 'interrogative-words'].includes(ruleId)) {
     if (item.audio !== null) {
-      throw new Error('До записи новой озвучки заголовок «Местоимения» не должен показывать аудиокнопку.');
+      throw new Error(`До записи новой озвучки заголовок «${ruleId}» не должен показывать аудиокнопку.`);
     }
   } else if (!item.audio?.startsWith('/audio/rules/')) {
     throw new Error(`Аудио заголовка ${ruleId} должно храниться отдельно от словаря.`);

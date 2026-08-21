@@ -1,5 +1,6 @@
 import demonstrativePronounsContent from '../content/rules/demonstrative-pronouns.md?raw';
 import hamzaContent from '../content/rules/hamza.md?raw';
+import interrogativeWordsContent from '../content/rules/interrogative-words.md?raw';
 import maddContent from '../content/rules/madd.md?raw';
 import partsOfSpeechContent from '../content/rules/parts-of-speech.md?raw';
 import personalPronounsContent from '../content/rules/personal-pronouns.md?raw';
@@ -122,13 +123,25 @@ export const RULES = [
     symbol: 'أَنَا',
     readMinutes: 5,
     category: RULE_CATEGORIES.grammar,
-    summary: 'Я, мы, ты, он и она и формы прошедшего времени.',
-    keywords: ['я', 'мы', 'ты', 'он', 'она', 'спряжение', 'прошедшее время', 'أَنَا', 'نَحْنُ', 'هُوَ', 'هِيَ'],
+    summary: 'Все 14 позиций личных местоимений и полная схема прошедшего времени.',
+    keywords: ['я', 'мы', 'ты', 'вы', 'он', 'она', 'они', 'двое', 'спряжение', 'прошедшее время', 'أَنَا', 'نَحْنُ', 'أَنْتُمَا', 'هُمَا', 'هُنَّ'],
     content: personalPronounsContent
   },
   {
-    id: 'hamza',
+    id: 'interrogative-words',
     order: 9,
+    title: 'Вопросительные слова в арабском языке',
+    arabicTitle: 'أَدَوَاتُ الِاسْتِفْهَامِ',
+    symbol: 'مَنْ؟',
+    readMinutes: 6,
+    category: RULE_CATEGORIES.grammar,
+    summary: 'Кто, что, где, когда, почему, как, сколько и общие вопросы.',
+    keywords: ['вопрос', 'кто', 'что', 'где', 'когда', 'почему', 'как', 'сколько', 'чей', 'куда', 'откуда', 'مَنْ', 'مَا', 'أَيْنَ', 'هَلْ'],
+    content: interrogativeWordsContent
+  },
+  {
+    id: 'hamza',
+    order: 10,
     title: 'Хамза',
     arabicTitle: 'الهَمْزَة',
     symbol: 'ء',
@@ -140,7 +153,7 @@ export const RULES = [
   },
   {
     id: 'parts-of-speech',
-    order: 10,
+    order: 11,
     title: 'Части речи в арабском',
     arabicTitle: 'أَقْسَام الكَلَام',
     symbol: 'ا ف ح',

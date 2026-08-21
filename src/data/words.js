@@ -22,6 +22,8 @@ const PARTS_OF_SPEECH = LESSON_IDS.partsOfSpeech;
 const PARTICLES_FROM_RULES = LESSON_IDS.particlesFromRules;
 const FAMILIAR_SOUNDING_WORDS = LESSON_IDS.familiarSoundingWords;
 const PERSONAL_PRONOUNS = LESSON_IDS.personalPronouns;
+const DEMONSTRATIVE_PRONOUNS = LESSON_IDS.demonstrativePronouns;
+const QUESTION_WORDS = LESSON_IDS.questionWords;
 
 export const WORDS_BASE = [
   { id: 101, arabic: 'دَخَلَ', transcription: 'dakhala', russian: 'вошёл', translations: ['вошёл'], semanticGroup: 'Помещение и движение', type: WORD_TYPES.verb, lessonId: MODULE_1 },
@@ -135,14 +137,14 @@ export const WORDS_BASE = [
   { id: 627, arabic: 'وُضُوء', transcription: 'wuDuu2', russian: 'омовение / вуду', translations: ['омовение', 'вуду'], semanticGroup: 'Вера и поклонение', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH },
   { id: 628, arabic: 'يَقْطِين', transcription: 'yaqTiin', russian: 'тыква', translations: ['тыква'], semanticGroup: 'Еда и продукты', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH },
 
-  { id: 701, arabic: 'مِنْ', transcription: 'min', russian: 'из / от', translations: ['из', 'от'], semanticGroup: 'Служебные слова', type: WORD_TYPES.particle, lessonId: PARTICLES_FROM_RULES },
-  { id: 702, arabic: 'إِلَى', transcription: '2ilaa', russian: 'к / в направлении к', translations: ['к', 'в направлении к'], semanticGroup: 'Служебные слова', type: WORD_TYPES.particle, lessonId: PARTICLES_FROM_RULES },
+  { id: 701, arabic: 'مِنْ', transcription: 'min', russian: 'из / от', translations: ['из', 'от'], semanticGroup: 'Служебные слова', type: WORD_TYPES.particle, lessonId: PARTICLES_FROM_RULES, lessonIds: [PARTICLES_FROM_RULES, QUESTION_WORDS] },
+  { id: 702, arabic: 'إِلَى', transcription: '2ilaa', russian: 'к / в направлении к', translations: ['к', 'в направлении к'], semanticGroup: 'Служебные слова', type: WORD_TYPES.particle, lessonId: PARTICLES_FROM_RULES, lessonIds: [PARTICLES_FROM_RULES, QUESTION_WORDS] },
   { id: 703, arabic: 'عَلَى', transcription: '3alaa', russian: 'на', translations: ['на'], semanticGroup: 'Служебные слова', type: WORD_TYPES.particle, lessonId: PARTICLES_FROM_RULES },
   { id: 704, arabic: 'فِي', transcription: 'fii', russian: 'в / внутри', translations: ['в', 'внутри'], semanticGroup: 'Служебные слова', type: WORD_TYPES.particle, lessonId: PARTICLES_FROM_RULES },
   { id: 705, arabic: 'وَ', transcription: 'wa', russian: 'и', translations: ['и'], semanticGroup: 'Служебные слова', type: WORD_TYPES.particle, lessonId: PARTICLES_FROM_RULES },
   { id: 706, arabic: 'لَا', transcription: 'laa', russian: 'не', translations: ['не'], semanticGroup: 'Служебные слова', type: WORD_TYPES.particle, lessonId: PARTICLES_FROM_RULES },
   { id: 707, arabic: 'لَمْ', transcription: 'lam', russian: 'не (прошедшее отрицание)', translations: ['не (прошедшее отрицание)'], semanticGroup: 'Служебные слова', type: WORD_TYPES.particle, lessonId: PARTICLES_FROM_RULES },
-  { id: 708, arabic: 'لِ', transcription: 'li', russian: 'для / кому-либо / принадлежность', translations: ['для', 'кому-либо', 'принадлежность'], semanticGroup: 'Служебные слова', type: WORD_TYPES.particle, lessonId: PARTICLES_FROM_RULES },
+  { id: 708, arabic: 'لِ', transcription: 'li', russian: 'для / кому-либо / принадлежность', translations: ['для', 'кому-либо', 'принадлежность'], semanticGroup: 'Служебные слова', type: WORD_TYPES.particle, lessonId: PARTICLES_FROM_RULES, lessonIds: [PARTICLES_FROM_RULES, QUESTION_WORDS] },
   { id: 709, arabic: 'الْ', transcription: 'al-', russian: 'определённый артикль', translations: ['определённый артикль'], semanticGroup: 'Служебные слова', type: WORD_TYPES.particle, lessonId: PARTICLES_FROM_RULES },
 
   { id: 801, arabic: 'تَدْرِيب', transcription: 'tadriib', russian: 'тренировка', translations: ['тренировка'], semanticGroup: 'Учёба и навыки', type: WORD_TYPES.noun, lessonId: FAMILIAR_SOUNDING_WORDS, root: 'د ر ب' },
@@ -179,7 +181,26 @@ export const WORDS_BASE = [
   { id: 909, arabic: 'هِيَ', transcription: 'hiya', russian: 'она', translations: ['она'], semanticGroup: 'Личные местоимения', type: WORD_TYPES.noun, lessonId: PERSONAL_PRONOUNS },
   { id: 910, arabic: 'هُمَا', transcription: 'humaa', russian: 'они двое / они две', translations: ['они двое', 'они две'], semanticGroup: 'Личные местоимения', type: WORD_TYPES.noun, lessonId: PERSONAL_PRONOUNS },
   { id: 911, arabic: 'هُمْ', transcription: 'hum', russian: 'они, мужчины или смешанная группа', translations: ['они', 'мужчины или смешанная группа'], semanticGroup: 'Личные местоимения', type: WORD_TYPES.noun, lessonId: PERSONAL_PRONOUNS },
-  { id: 912, arabic: 'هُنَّ', transcription: 'hunna', russian: 'они, женщины', translations: ['они', 'женщины'], semanticGroup: 'Личные местоимения', type: WORD_TYPES.noun, lessonId: PERSONAL_PRONOUNS }
+  { id: 912, arabic: 'هُنَّ', transcription: 'hunna', russian: 'они, женщины', translations: ['они', 'женщины'], semanticGroup: 'Личные местоимения', type: WORD_TYPES.noun, lessonId: PERSONAL_PRONOUNS },
+
+  { id: 1001, arabic: 'هٰذَا', transcription: 'haadhaa', russian: 'этот / это', translations: ['этот', 'это'], semanticGroup: 'Указание', type: WORD_TYPES.noun, lessonId: DEMONSTRATIVE_PRONOUNS },
+  { id: 1002, arabic: 'هٰذِهِ', transcription: 'haadhihi', russian: 'эта / это', translations: ['эта', 'это'], semanticGroup: 'Указание', type: WORD_TYPES.noun, lessonId: DEMONSTRATIVE_PRONOUNS },
+  { id: 1003, arabic: 'هٰؤُلَاءِ', transcription: 'haa2ulaa2i', russian: 'эти', translations: ['эти'], semanticGroup: 'Указание', type: WORD_TYPES.noun, lessonId: DEMONSTRATIVE_PRONOUNS },
+  { id: 1004, arabic: 'هُنَا', transcription: 'hunaa', russian: 'здесь / тут', translations: ['здесь', 'тут'], semanticGroup: 'Указание места', type: WORD_TYPES.noun, lessonId: DEMONSTRATIVE_PRONOUNS },
+  { id: 1005, arabic: 'هُنَاكَ', transcription: 'hunaaka', russian: 'там', translations: ['там'], semanticGroup: 'Указание места', type: WORD_TYPES.noun, lessonId: DEMONSTRATIVE_PRONOUNS },
+
+  { id: 1101, arabic: 'مَنْ', transcription: 'man', russian: 'кто?', translations: ['кто?'], semanticGroup: 'Вопросительные слова', type: WORD_TYPES.noun, lessonId: QUESTION_WORDS },
+  { id: 1102, arabic: 'مَا', transcription: 'maa', russian: 'что?', translations: ['что?'], semanticGroup: 'Вопросительные слова', type: WORD_TYPES.noun, lessonId: QUESTION_WORDS },
+  { id: 1103, arabic: 'مَاذَا', transcription: 'maadhaa', russian: 'что? (перед действием)', translations: ['что?', 'перед действием'], semanticGroup: 'Вопросительные слова', type: WORD_TYPES.noun, lessonId: QUESTION_WORDS },
+  { id: 1104, arabic: 'أَيْنَ', transcription: '2ayna', russian: 'где?', translations: ['где?'], semanticGroup: 'Вопросительные слова', type: WORD_TYPES.noun, lessonId: QUESTION_WORDS },
+  { id: 1105, arabic: 'مَتَى', transcription: 'mataa', russian: 'когда?', translations: ['когда?'], semanticGroup: 'Вопросительные слова', type: WORD_TYPES.noun, lessonId: QUESTION_WORDS },
+  { id: 1106, arabic: 'كَيْفَ', transcription: 'kayfa', russian: 'как?', translations: ['как?'], semanticGroup: 'Вопросительные слова', type: WORD_TYPES.noun, lessonId: QUESTION_WORDS },
+  { id: 1107, arabic: 'لِمَاذَا', transcription: 'limaadhaa', russian: 'почему?', translations: ['почему?'], semanticGroup: 'Вопросительные слова', type: WORD_TYPES.noun, lessonId: QUESTION_WORDS },
+  { id: 1108, arabic: 'كَمْ', transcription: 'kam', russian: 'сколько?', translations: ['сколько?'], semanticGroup: 'Вопросительные слова', type: WORD_TYPES.noun, lessonId: QUESTION_WORDS },
+  { id: 1109, arabic: 'أَيّ', transcription: 'ayy', russian: 'какой? / который?', translations: ['какой?', 'который?'], semanticGroup: 'Вопросительные слова', type: WORD_TYPES.noun, lessonId: QUESTION_WORDS },
+  { id: 1110, arabic: 'لِمَنْ', transcription: 'liman', russian: 'чей? / кому принадлежит?', translations: ['чей?', 'кому принадлежит?'], semanticGroup: 'Вопросительные слова', type: WORD_TYPES.noun, lessonId: QUESTION_WORDS },
+  { id: 1111, arabic: 'هَلْ', transcription: 'hal', russian: 'ли? (общий вопрос)', translations: ['ли?', 'общий вопрос'], semanticGroup: 'Вопросительные слова', type: WORD_TYPES.particle, lessonId: QUESTION_WORDS },
+  { id: 1112, arabic: 'أَ', transcription: '2a', russian: 'ли? (вопросительная хамза)', translations: ['ли?', 'вопросительная хамза'], semanticGroup: 'Вопросительные слова', type: WORD_TYPES.particle, lessonId: QUESTION_WORDS }
 ];
 
 const FEMININE_NOUN_IDS = new Set([
@@ -188,10 +209,15 @@ const FEMININE_NOUN_IDS = new Set([
   509,
   601, 606, 608, 609, 612, 614, 616, 619, 622, 625,
   803, 811, 812, 815, 816, 821, 822,
-  904, 907, 909, 912
+  904, 907, 909, 912,
+  1002
 ]);
 
-const COMMON_GENDER_NOUN_IDS = new Set([901, 902, 905, 910]);
+const COMMON_GENDER_NOUN_IDS = new Set([
+  901, 902, 905, 910,
+  1003, 1004, 1005,
+  1101, 1102, 1103, 1104, 1105, 1106, 1107, 1108, 1109, 1110
+]);
 
 const AUDIO_READY_TRANSCRIPTIONS = new Set([
   'dakhala', 'kharaja', 'waqafa', 'jalasa', 'nazala', 'sakana', 'Hajaza',
@@ -213,17 +239,24 @@ const AUDIO_READY_TRANSCRIPTIONS = new Set([
   'yaqTiin', 'min', '2ilaa', '3alaa', 'fii', 'wa', 'laa', 'lam', 'li', 'al-'
 ]);
 
-export const WORDS_DATA = WORDS_BASE.map((word) => ({
-  ...word,
-  group: LESSON_BY_ID[word.lessonId].label,
-  gender: word.type === WORD_TYPES.noun
-    ? FEMININE_NOUN_IDS.has(word.id)
-      ? WORD_GENDERS.feminine
-      : COMMON_GENDER_NOUN_IDS.has(word.id)
-        ? WORD_GENDERS.common
-        : WORD_GENDERS.masculine
-    : null,
-  audio: AUDIO_READY_TRANSCRIPTIONS.has(word.transcription)
-    ? `/audio/${word.transcription}.mp3`
-    : null
-}));
+export const WORDS_DATA = WORDS_BASE.map((word) => {
+  const lessonIds = word.lessonIds ?? [word.lessonId];
+  const groups = lessonIds.map((lessonId) => LESSON_BY_ID[lessonId].label);
+
+  return {
+    ...word,
+    lessonIds,
+    groups,
+    group: groups[0],
+    gender: word.type === WORD_TYPES.noun
+      ? FEMININE_NOUN_IDS.has(word.id)
+        ? WORD_GENDERS.feminine
+        : COMMON_GENDER_NOUN_IDS.has(word.id)
+          ? WORD_GENDERS.common
+          : WORD_GENDERS.masculine
+      : null,
+    audio: AUDIO_READY_TRANSCRIPTIONS.has(word.transcription)
+      ? `/audio/${word.transcription}.mp3`
+      : null
+  };
+});

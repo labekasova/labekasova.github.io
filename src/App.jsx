@@ -975,7 +975,7 @@ export default function App() {
               
               {isSortedLogical && currentWord.group && (
                 <div className="mb-4 max-w-full self-center rounded-lg border border-indigo-100 bg-indigo-50 px-3 py-1.5 text-center text-xs font-semibold leading-5 text-indigo-700">
-                  {currentWord.group}
+                  {currentWord.groups.join(' · ')}
                 </div>
               )}
 
@@ -1049,7 +1049,7 @@ export default function App() {
                     )}
                     {isSortedLogical && (
                       <span className="text-[11px] text-indigo-200/80 italic max-w-[90%]">
-                        {currentWord.group}
+                        {currentWord.groups.join(' · ')}
                       </span>
                     )}
                   </div>
@@ -1489,7 +1489,7 @@ export default function App() {
                               {getWordTypeLabel(word.type)}
                               {getWordGenderLabel(word) ? ` · ${getWordGenderLabel(word)}` : ''}
                               {' · '}
-                              {word.group}
+                              {word.groups.join(' · ')}
                             </p>
                           </div>
                           <div className="min-w-0 text-right" dir="rtl">

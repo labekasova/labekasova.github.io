@@ -7,6 +7,7 @@ const expectedNewRules = [
   ['pronouns', 'pronouns.md'],
   ['demonstrative-pronouns', 'demonstrative-pronouns.md'],
   ['personal-pronouns', 'personal-pronouns.md'],
+  ['interrogative-words', 'interrogative-words.md'],
   ['hamza', 'hamza.md'],
   ['parts-of-speech', 'parts-of-speech.md']
 ];
@@ -49,6 +50,27 @@ const requiredPronounsFragments = [
 for (const fragment of requiredPronounsFragments) {
   if (!pronounsContent.includes(fragment)) {
     throw new Error(`В статье «Местоимения» отсутствует обязательный фрагмент: ${fragment}`);
+  }
+}
+
+const personalPronounsContent = await readFile(new URL('personal-pronouns.md', rulesDirectory), 'utf8');
+for (const fragment of ['أَنْتُمَا', 'أَنْتُنَّ', 'هُمَا', 'هُمْ', 'هُنَّ', 'كَتَبْتُمَا', 'كَتَبْنَ']) {
+  if (!personalPronounsContent.includes(fragment)) {
+    throw new Error(`В полной статье о личных местоимениях отсутствует форма: ${fragment}`);
+  }
+}
+
+const demonstrativeContent = await readFile(new URL('demonstrative-pronouns.md', rulesDirectory), 'utf8');
+for (const fragment of ['هُنَا', 'هُنَاكَ', 'здесь, тут', 'там']) {
+  if (!demonstrativeContent.includes(fragment)) {
+    throw new Error(`В статье об указательных местоимениях отсутствует форма: ${fragment}`);
+  }
+}
+
+const interrogativeContent = await readFile(new URL('interrogative-words.md', rulesDirectory), 'utf8');
+for (const fragment of ['مَنْ', 'مَاذَا', 'أَيْنَ', 'لِمَاذَا', 'لِمَنْ', 'هَلْ', 'مِنْ + أَيْنَ', 'إِلَى + أَيْنَ']) {
+  if (!interrogativeContent.includes(fragment)) {
+    throw new Error(`В статье о вопросительных словах отсутствует форма: ${fragment}`);
   }
 }
 

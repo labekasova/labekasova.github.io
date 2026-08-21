@@ -37,6 +37,7 @@ const readingTimes = new Map([
   ['pronouns', 7],
   ['demonstrative-pronouns', 5],
   ['personal-pronouns', 5],
+  ['interrogative-words', 6],
   ['hamza', 6],
   ['parts-of-speech', 8]
 ]);

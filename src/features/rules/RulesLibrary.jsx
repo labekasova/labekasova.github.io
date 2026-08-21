@@ -189,31 +189,33 @@ function RuleAudioTrigger({ item, activeAudioPath, onPlayAudio, theme }) {
   );
 }
 
-function RuleLanguageCard({ item, activeAudioPath, onPlayAudio, theme, compact = false }) {
+function RuleLanguageCard({ item, activeAudioPath, onPlayAudio, theme }) {
   return (
-    <section className={`my-5 rounded-xl border px-4 py-4 text-center ${
+    <section className={`my-1 grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 border-b py-3 ${
       theme === 'dark'
-        ? 'border-slate-700 bg-slate-800/70'
-        : 'border-slate-200 bg-slate-50/80'
+        ? 'border-slate-800'
+        : 'border-slate-200'
     }`}>
-      <p className={`arabic-text mb-1 break-words text-[1.9rem] font-semibold leading-[1.55] ${
+      <div className="min-w-0 text-left">
+        <RuleAudioTrigger
+          item={item}
+          activeAudioPath={activeAudioPath}
+          onPlayAudio={onPlayAudio}
+          theme={theme}
+        />
+        {item.russian && (
+          <p className={`mt-1 text-sm leading-5 ${
+            theme === 'dark' ? 'text-slate-400' : 'text-slate-500'
+          }`}>
+            {item.russian}
+          </p>
+        )}
+      </div>
+      <p className={`arabic-text min-w-0 break-words text-right text-[1.65rem] font-semibold leading-[1.5] sm:text-[1.8rem] ${
         theme === 'dark' ? 'text-indigo-100' : 'text-slate-800'
       }`} dir="rtl">
         {item.arabic}
       </p>
-      <RuleAudioTrigger
-        item={item}
-        activeAudioPath={activeAudioPath}
-        onPlayAudio={onPlayAudio}
-        theme={theme}
-      />
-      {item.russian && !compact && (
-        <p className={`mt-1 text-sm leading-5 ${
-          theme === 'dark' ? 'text-slate-400' : 'text-slate-500'
-        }`}>
-          {item.russian}
-        </p>
-      )}
     </section>
   );
 }
@@ -447,10 +449,10 @@ const getMarkdownComponents = ({ theme, activeAudioPath, onPlayAudio }) => ({
   ol: ({ children }) => <ol className="mb-5 list-decimal space-y-2.5 pl-6 text-base leading-[1.65] sm:text-[17px]">{children}</ol>,
   li: ({ children }) => <li className="pl-1">{children}</li>,
   table: ({ children }) => (
-    <div className={`mb-6 w-full overflow-x-auto border ${
+    <div className={`mb-6 w-full overflow-hidden border ${
       theme === 'dark' ? 'border-slate-700' : 'border-slate-200'
     }`}>
-      <table className="min-w-[560px] border-collapse text-left text-[15px] leading-6">
+      <table className="w-full table-fixed border-collapse text-left text-[13px] leading-5 sm:text-[15px] sm:leading-6">
         {children}
       </table>
     </div>
@@ -459,14 +461,14 @@ const getMarkdownComponents = ({ theme, activeAudioPath, onPlayAudio }) => ({
     <thead className={theme === 'dark' ? 'bg-slate-800' : 'bg-slate-100'}>{children}</thead>
   ),
   th: ({ children }) => (
-    <th className={`border-b px-3 py-2.5 font-bold ${
+    <th className={`break-words border-b px-2 py-2.5 font-bold sm:px-3 ${
       theme === 'dark' ? 'border-slate-700' : 'border-slate-200'
     }`}>
       {children}
     </th>
   ),
   td: ({ children }) => (
-    <td className={`border-b px-3 py-2.5 align-top ${
+    <td className={`break-words border-b px-2 py-2.5 align-top sm:px-3 ${
       theme === 'dark' ? 'border-slate-800' : 'border-slate-100'
     }`}>
       {children}

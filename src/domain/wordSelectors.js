@@ -49,13 +49,15 @@ export const filterWords = (words, filters = {}) => {
     const matchesType = selectedTypes.length === 0
       ? true
       : selectedTypes.includes(word.type);
+    const wordLessonIds = word.lessonIds ?? [word.lessonId];
     const matchesLesson = selectedLessonIds.length === 0
       ? true
-      : selectedLessonIds.includes(word.lessonId);
+      : wordLessonIds.some((wordLessonId) => selectedLessonIds.includes(wordLessonId));
     const searchableText = normalizeSearchValue([
       word.arabic,
       word.transcription,
-      ...word.translations
+      ...word.translations,
+      ...(word.groups ?? [word.group]).filter(Boolean)
     ].join(' '));
     const matchesQuery = normalizedQuery
       ? searchableText.includes(normalizedQuery)

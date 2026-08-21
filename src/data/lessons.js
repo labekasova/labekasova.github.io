@@ -8,7 +8,9 @@ export const LESSON_IDS = {
   partsOfSpeech: 'parts-of-speech-2026-08-19',
   particlesFromRules: 'particles-from-rules-2026-08-19',
   familiarSoundingWords: 'familiar-sounding-words-2026-08-21',
-  personalPronouns: 'personal-pronouns-2026-08-21'
+  personalPronouns: 'personal-pronouns-2026-08-21',
+  demonstrativePronouns: 'demonstrative-pronouns-2026-08-21',
+  questionWords: 'question-words-2026-08-21'
 };
 
 export const LESSONS = [
@@ -71,6 +73,18 @@ export const LESSONS = [
     label: 'Личные местоимения',
     date: '2026-08-21',
     order: 10
+  },
+  {
+    id: LESSON_IDS.demonstrativePronouns,
+    label: 'Указательные местоимения',
+    date: '2026-08-21',
+    order: 11
+  },
+  {
+    id: LESSON_IDS.questionWords,
+    label: 'Вопросительные слова',
+    date: '2026-08-21',
+    order: 12
   }
 ];
 

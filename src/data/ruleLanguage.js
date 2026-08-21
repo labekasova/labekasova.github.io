@@ -113,6 +113,12 @@ export const RULE_TITLE_LANGUAGE = {
     russian: 'личные местоимения',
     audio: ruleAudioPath('aD-Damaa2ir ash-shakhsiyyah')
   },
+  'interrogative-words': {
+    arabic: 'أَدَوَاتُ الِاسْتِفْهَامِ',
+    transcription: 'adawaat al-istifhaam',
+    russian: 'вопросительные слова',
+    audio: null
+  },
   hamza: {
     arabic: 'الهَمْزَة',
     transcription: 'al-hamzah',

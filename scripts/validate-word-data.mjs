@@ -7,7 +7,7 @@ import {
   sortWordsByRussian
 } from '../src/domain/wordSelectors.js';
 
-const EXPECTED_WORD_COUNT = 153;
+const EXPECTED_WORD_COUNT = 170;
 
 const fail = (message) => {
   throw new Error(message);
@@ -21,9 +21,18 @@ const ids = new Set();
 const arabicForms = new Set();
 
 WORDS_BASE.forEach((word) => {
+  const lessonIds = word.lessonIds ?? [word.lessonId];
+
   if (ids.has(word.id)) fail(`Повторяется id ${word.id}.`);
   if (arabicForms.has(word.arabic)) fail(`Повторяется слово ${word.arabic}.`);
   if (!LESSON_BY_ID[word.lessonId]) fail(`У слова ${word.arabic} неизвестный lessonId.`);
+  if (!lessonIds.includes(word.lessonId)) fail(`Основной lessonId слова ${word.arabic} отсутствует в lessonIds.`);
+  if (lessonIds.some((lessonId) => !LESSON_BY_ID[lessonId])) {
+    fail(`У слова ${word.arabic} в lessonIds есть неизвестная группа.`);
+  }
+  if (new Set(lessonIds).size !== lessonIds.length) {
+    fail(`У слова ${word.arabic} повторяется группа в lessonIds.`);
+  }
   if (!word.translations?.length) fail(`У слова ${word.arabic} нет массива переводов.`);
   if (word.translations.some((translation) => !word.russian.includes(translation))) {
     fail(`У слова ${word.arabic} russian не содержит все translations.`);
@@ -33,8 +42,8 @@ WORDS_BASE.forEach((word) => {
   arabicForms.add(word.arabic);
 });
 
-if (WORDS_DATA.some((word) => !word.group)) {
-  fail('Не для всех слов вычислена подпись урока.');
+if (WORDS_DATA.some((word) => !word.group || word.groups.length !== word.lessonIds.length)) {
+  fail('Не для всех слов вычислены подписи учебных групп.');
 }
 const lessonsWithRequiredAudio = new Set([
   LESSON_IDS.module1,
@@ -63,11 +72,11 @@ if (nounWords.some((word) => word.arabic.endsWith('ة') && !word.transcription.e
 if (WORDS_DATA.some((word) => word.type !== WORD_TYPES.noun && word.gender !== null)) {
   fail('Род должен быть указан только у слов категории «имя».');
 }
-if (nounWords.filter((word) => word.gender === WORD_GENDERS.feminine).length !== 36) {
-  fail('Ожидалось 36 имён и местоимений женского рода.');
+if (nounWords.filter((word) => word.gender === WORD_GENDERS.feminine).length !== 37) {
+  fail('Ожидалось 37 имён и местоимений женского рода.');
 }
-if (nounWords.filter((word) => word.gender === WORD_GENDERS.common).length !== 4) {
-  fail('Ожидалось 4 местоимения общего рода.');
+if (nounWords.filter((word) => word.gender === WORD_GENDERS.common).length !== 17) {
+  fail('Ожидалось 17 служебных имён и местоимений общего рода.');
 }
 
 const expectedFeminineNounIds = new Set([
@@ -76,7 +85,8 @@ const expectedFeminineNounIds = new Set([
   509,
   601, 606, 608, 609, 612, 614, 616, 619, 622, 625,
   803, 811, 812, 815, 816, 821, 822,
-  904, 907, 909, 912
+  904, 907, 909, 912,
+  1002
 ]);
 const actualFeminineNounIds = new Set(
   nounWords
@@ -91,7 +101,11 @@ if (
   fail('Набор имён женского рода не соответствует проверенной словарной разметке.');
 }
 
-const expectedCommonGenderIds = new Set([901, 902, 905, 910]);
+const expectedCommonGenderIds = new Set([
+  901, 902, 905, 910,
+  1003, 1004, 1005,
+  1101, 1102, 1103, 1104, 1105, 1106, 1107, 1108, 1109, 1110
+]);
 const actualCommonGenderIds = new Set(
   nounWords
     .filter((word) => word.gender === WORD_GENDERS.common)
@@ -155,8 +169,8 @@ Object.entries(expectedRepeatedRootCounts).forEach(([root, expectedCount]) => {
 
 const expectedFilterCounts = [
   [{ type: WORD_TYPES.verb }, 47],
-  [{ type: WORD_TYPES.noun }, 97],
-  [{ type: WORD_TYPES.particle }, 9],
+  [{ type: WORD_TYPES.noun }, 112],
+  [{ type: WORD_TYPES.particle }, 11],
   [{ lessonId: LESSON_IDS.module1 }, 42],
   [{ lessonId: LESSON_IDS.sukun }, 6],
   [{ lessonId: LESSON_IDS.shadda }, 6],
@@ -167,12 +181,17 @@ const expectedFilterCounts = [
   [{ lessonId: LESSON_IDS.particlesFromRules }, 9],
   [{ lessonId: LESSON_IDS.familiarSoundingWords }, 22],
   [{ lessonId: LESSON_IDS.personalPronouns }, 12],
+  [{ lessonId: LESSON_IDS.demonstrativePronouns }, 5],
+  [{ lessonId: LESSON_IDS.questionWords }, 15],
   [{ type: WORD_TYPES.noun, lessonId: LESSON_IDS.shadda }, 3],
   [{ type: WORD_TYPES.noun, lessonId: LESSON_IDS.stress }, 7],
   [{ type: WORD_TYPES.noun, lessonId: LESSON_IDS.solarLunar }, 9],
   [{ type: WORD_TYPES.noun, lessonId: LESSON_IDS.partsOfSpeech }, 28],
   [{ type: WORD_TYPES.noun, lessonId: LESSON_IDS.familiarSoundingWords }, 22],
   [{ type: WORD_TYPES.noun, lessonId: LESSON_IDS.personalPronouns }, 12],
+  [{ type: WORD_TYPES.noun, lessonId: LESSON_IDS.demonstrativePronouns }, 5],
+  [{ type: WORD_TYPES.noun, lessonId: LESSON_IDS.questionWords }, 10],
+  [{ type: WORD_TYPES.particle, lessonId: LESSON_IDS.questionWords }, 5],
   [{ type: WORD_TYPES.particle, lessonId: LESSON_IDS.particlesFromRules }, 9],
   [{ type: WORD_TYPES.verb, lessonId: LESSON_IDS.taMarbuta }, 2]
 ];
@@ -185,8 +204,8 @@ expectedFilterCounts.forEach(([filters, expectedCount]) => {
 });
 
 const multiSelectFilterCases = [
-  [{ types: [WORD_TYPES.verb, WORD_TYPES.noun] }, 144],
-  [{ types: [WORD_TYPES.verb, WORD_TYPES.noun, WORD_TYPES.particle] }, 153],
+  [{ types: [WORD_TYPES.verb, WORD_TYPES.noun] }, 159],
+  [{ types: [WORD_TYPES.verb, WORD_TYPES.noun, WORD_TYPES.particle] }, 170],
   [{ lessonIds: [LESSON_IDS.sukun, LESSON_IDS.shadda] }, 12],
   [{
     types: [WORD_TYPES.verb, WORD_TYPES.noun],
@@ -214,7 +233,17 @@ const multiSelectFilterCases = [
   [{
     types: [WORD_TYPES.noun],
     lessonIds: [LESSON_IDS.familiarSoundingWords, LESSON_IDS.personalPronouns]
-  }, 34]
+  }, 34],
+  [{
+    lessonIds: [LESSON_IDS.particlesFromRules, LESSON_IDS.questionWords]
+  }, 21],
+  [{
+    types: [WORD_TYPES.particle],
+    lessonIds: [LESSON_IDS.particlesFromRules, LESSON_IDS.questionWords]
+  }, 11],
+  [{
+    lessonIds: [LESSON_IDS.demonstrativePronouns, LESSON_IDS.questionWords]
+  }, 20]
 ];
 
 multiSelectFilterCases.forEach(([filters, expectedCount]) => {
@@ -247,6 +276,13 @@ const dictionarySearchCases = [
   ['вы две', 905],
   ['أنتما', 905],
   ['antumaa', 905]
+  ,['здесь', 1004]
+  ,['هنا', 1004]
+  ,['hunaaka', 1005]
+  ,['кто?', 1101]
+  ,['أين', 1104]
+  ,['limaadhaa', 1107]
+  ,['общий вопрос', 1111]
 ];
 
 dictionarySearchCases.forEach(([query, expectedId]) => {
@@ -255,6 +291,17 @@ dictionarySearchCases.forEach(([query, expectedId]) => {
     fail(`Поиск «${query}» не нашёл ожидаемое слово id ${expectedId}.`);
   }
 });
+
+for (const id of [701, 702, 708]) {
+  const word = WORDS_DATA.find((item) => item.id === id);
+  if (
+    !word?.lessonIds.includes(LESSON_IDS.particlesFromRules)
+    || !word.lessonIds.includes(LESSON_IDS.questionWords)
+    || word.groups.length !== 2
+  ) {
+    fail(`Существующее слово id ${id} должно принадлежать группам «Частицы» и «Вопросительные слова».`);
+  }
+}
 
 console.log(`Проверено слов: ${WORDS_DATA.length}.`);
 console.log(`Уроков: ${Object.keys(LESSON_BY_ID).length}.`);
