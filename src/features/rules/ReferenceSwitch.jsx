@@ -1,14 +1,15 @@
-import { BookOpenText, Languages } from 'lucide-react';
+import { BookOpenText, Languages, Repeat2 } from 'lucide-react';
 
 export default function ReferenceSwitch({ activeView, onChange, theme }) {
   const items = [
     { id: 'dictionary', label: 'Словарь', icon: Languages },
-    { id: 'rules', label: 'Правила', icon: BookOpenText }
+    { id: 'rules', label: 'Правила', icon: BookOpenText },
+    { id: 'verbs', label: 'Глаголы', icon: Repeat2 }
   ];
 
   return (
     <div
-      className={`grid min-h-11 grid-cols-2 gap-1 rounded-xl p-1 ${
+      className={`grid min-h-11 grid-cols-3 gap-1 rounded-xl p-1 ${
         theme === 'dark' ? 'bg-slate-800' : 'bg-slate-100'
       }`}
       aria-label="Разделы справочника"

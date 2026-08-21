@@ -78,6 +78,35 @@ body {
   grid-template-columns: minmax(0, 1fr);
 }
 
+.arabic-readable,
+.arabic-study,
+.arabic-dialogue,
+.arabic-token {
+  font-family: "Scheherazade New", "Amiri", "Noto Naskh Arabic", Arial, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.arabic-readable {
+  font-size: 1.75rem;
+  line-height: 1.8;
+}
+
+.arabic-study {
+  font-size: 2.35rem;
+  line-height: 1.8;
+}
+
+.arabic-dialogue {
+  font-size: 2rem;
+  line-height: 1.8;
+}
+
+.arabic-token {
+  font-size: 1.5rem;
+  line-height: 1.7;
+}
+
 .letters-grid {
   direction: rtl;
   display: grid;
@@ -160,6 +189,18 @@ body {
   .reference-toolbar {
     margin: -2rem -1.5rem 2rem;
     padding: 2rem 1.5rem 1.25rem;
+  }
+
+  .arabic-readable {
+    font-size: 1.95rem;
+  }
+
+  .arabic-study {
+    font-size: 2.75rem;
+  }
+
+  .arabic-dialogue {
+    font-size: 2.25rem;
   }
 }
 
@@ -285,6 +326,10 @@ html[data-theme="dark"] .bg-emerald-100 {
 
 html[data-theme="dark"] .text-slate-800 {
   color: #e5eefb !important;
+}
+
+html[data-theme="dark"] .text-slate-900 {
+  color: #eef2ff !important;
 }
 
 html[data-theme="dark"] .text-slate-700 {

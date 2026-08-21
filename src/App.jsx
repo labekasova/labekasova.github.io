@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { MessageSquare, Repeat2 } from 'lucide-react';
+import { DIALOGUES_DATA } from './data/dialogues.js';
 import { LESSON_FILTERS } from './data/lessons.js';
+import { PHRASES_DATA } from './data/phrases.js';
 import { RULES } from './data/rulesIndex.js';
+import { VERB_CONJUGATIONS } from './data/verbConjugations.js';
 import { WORD_GENDERS, WORDS_DATA, WORD_TYPES } from './data/words.js';
 import {
   buildRepeatedRootIndex,
@@ -10,6 +14,9 @@ import {
 } from './domain/wordSelectors.js';
 import ReferenceSwitch from './features/rules/ReferenceSwitch.jsx';
 import RulesLibrary from './features/rules/RulesLibrary.jsx';
+import PhrasesHub from './features/phrases/PhrasesHub.jsx';
+import VerbFormsPractice from './features/verbs/VerbFormsPractice.jsx';
+import VerbLibrary from './features/verbs/VerbLibrary.jsx';
 
 const WORD_FILTERS = [
   { id: 'all', label: 'Все слова', title: 'Все слова', type: null },
@@ -135,9 +142,15 @@ export default function App() {
   const audioRequestRef = useRef(0);
   const audioSourceRef = useRef('');
   const rulesPathMatch = location.pathname.match(/^\/rules(?:\/([^/]+))?\/?$/);
+  const verbsPathMatch = location.pathname.match(/^\/verbs(?:\/([^/]+))?\/?$/);
   const isRulesView = location.pathname.startsWith('/rules');
+  const isVerbsView = location.pathname.startsWith('/verbs');
+  const isPhrasesView = location.pathname.startsWith('/phrases');
   const selectedRuleId = rulesPathMatch?.[1] ?? null;
+  const selectedVerbId = verbsPathMatch?.[1] ?? null;
   const [activeTab, setActiveTab] = useState('reference');
+  const isWordSection = ['learn', 'quiz', 'write', 'verb-forms'].includes(activeTab);
+  const isWordFilterable = ['learn', 'quiz', 'write'].includes(activeTab);
   const [activeFilters, setActiveFilters] = useState([]);
   const [activeLessonGroups, setActiveLessonGroups] = useState([]);
   const [draftFilters, setDraftFilters] = useState([]);
@@ -433,10 +446,19 @@ export default function App() {
   }, [activeTab]);
 
   useEffect(() => {
-    if (isRulesView) {
-      setActiveTab('reference');
+    if (isPhrasesView) {
+      setActiveTab('phrases');
+      return;
     }
-  }, [isRulesView]);
+    if (isRulesView || isVerbsView) {
+      setActiveTab('reference');
+      return;
+    }
+    const wordMode = location.pathname.match(/^\/words\/(learn|test|write|verb-forms)\/?$/)?.[1];
+    if (wordMode) {
+      setActiveTab(wordMode === 'test' ? 'quiz' : wordMode);
+    }
+  }, [isPhrasesView, isRulesView, isVerbsView, location.pathname]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
@@ -444,7 +466,7 @@ export default function App() {
   }, [location.pathname]);
 
   useEffect(() => {
-    if (activeTab !== 'reference' || isRulesView) {
+    if (activeTab !== 'reference' || isRulesView || isVerbsView) {
       setIsDictionaryScrollTopVisible(false);
       return undefined;
     }
@@ -466,7 +488,7 @@ export default function App() {
       window.removeEventListener('scroll', updateVisibility);
       mainRef.current?.removeEventListener('scroll', updateVisibility);
     };
-  }, [activeTab, isRulesView]);
+  }, [activeTab, isRulesView, isVerbsView]);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -722,13 +744,55 @@ export default function App() {
     setActiveTab('reference');
     setIsFilterMenuOpen(false);
     setIsDictionaryFilterOpen(false);
-    navigate(view === 'rules' ? '/rules' : '/');
+    if (view === 'rules') navigate('/rules');
+    else if (view === 'verbs') navigate('/verbs');
+    else navigate('/');
   };
 
   const openStudyTab = (tab) => {
-    navigate('/');
+    const pathByTab = {
+      learn: '/words/learn',
+      quiz: '/words/test',
+      write: '/words/write',
+      'verb-forms': '/words/verb-forms'
+    };
+    navigate(pathByTab[tab] || '/words/learn');
     setActiveTab(tab);
   };
+
+  const openPrimarySection = (section) => {
+    if (section === 'reference') {
+      openReferenceView('dictionary');
+      return;
+    }
+    if (section === 'phrases') {
+      setActiveTab('phrases');
+      navigate('/phrases/library');
+      return;
+    }
+    openStudyTab(isWordSection ? activeTab : 'learn');
+  };
+
+  const headerTitle = activeTab === 'phrases'
+    ? 'Фразы'
+    : activeTab === 'reference'
+      ? 'Справочник'
+      : activeTab === 'verb-forms'
+        ? 'Формы глаголов'
+        : activeFilterTitle;
+  const headerSubtitle = activeTab === 'phrases'
+    ? isPhrasesView && location.pathname.startsWith('/phrases/dialogues')
+      ? `Диалоги · ${DIALOGUES_DATA.length}`
+      : `Фразы · ${PHRASES_DATA.length}`
+    : activeTab === 'reference'
+      ? isRulesView
+        ? `Правила · ${formatArticleCount(RULES.length)}`
+        : isVerbsView
+          ? `Глаголы · ${VERB_CONJUGATIONS.length}`
+          : `Словарь · ${formatWordCount(dictionaryWords.length)} из ${WORDS_DATA.length}`
+      : activeTab === 'verb-forms'
+        ? `Тренировка · ${VERB_CONJUGATIONS.length} глаголов`
+        : `${activeLessonTitle} · ${formatWordCount(filteredWords.length)}`;
 
   return (
     <div className={`app-viewport min-h-dvh overflow-x-hidden font-sans selection:bg-indigo-100 ${theme === 'dark' ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-800'}`}>
@@ -761,33 +825,29 @@ export default function App() {
             <div className="relative flex w-full items-center justify-center">
               <button
                 type="button"
-                onClick={activeTab === 'reference' ? undefined : openFilterMenu}
-                disabled={activeTab === 'reference'}
+                onClick={isWordFilterable ? openFilterMenu : undefined}
+                disabled={!isWordFilterable}
                 className="inline-grid max-w-[calc(100%-4.5rem)] grid-cols-[18px_minmax(0,auto)_18px] items-center gap-2 px-1 py-1 text-center text-lg font-bold leading-tight text-white sm:text-xl"
-                aria-haspopup={activeTab === 'reference' ? undefined : 'dialog'}
-                aria-expanded={activeTab === 'reference' ? undefined : isFilterMenuOpen}
+                aria-haspopup={isWordFilterable ? 'dialog' : undefined}
+                aria-expanded={isWordFilterable ? isFilterMenuOpen : undefined}
               >
                 <span aria-hidden="true" className="flex h-[18px] w-[18px] items-center justify-center opacity-0">
                   <IconChevronDown />
                 </span>
-                <span className="min-w-0 break-words">{activeTab === 'reference' ? 'Справочник' : activeFilterTitle}</span>
+                <span className="min-w-0 break-words">{headerTitle}</span>
                 <span
                   aria-hidden="true"
-                  className={`flex h-[18px] w-[18px] items-center justify-center text-white/85 transition-transform duration-200 ${activeTab === 'reference' ? 'opacity-0' : ''} ${isFilterMenuOpen ? 'rotate-180' : ''}`}
+                  className={`flex h-[18px] w-[18px] items-center justify-center text-white/85 transition-transform duration-200 ${isWordFilterable ? '' : 'opacity-0'} ${isFilterMenuOpen ? 'rotate-180' : ''}`}
                 >
                   <IconChevronDown />
                 </span>
               </button>
             </div>
             <p className="mt-1 max-w-2xl px-10 text-center text-xs leading-5 text-white/75 sm:px-12">
-              {activeTab === 'reference'
-                ? isRulesView
-                  ? `Правила · ${formatArticleCount(RULES.length)}`
-                  : `Словарь · ${formatWordCount(dictionaryWords.length)} из ${WORDS_DATA.length}`
-                : `${activeLessonTitle} · ${formatWordCount(filteredWords.length)}`}
+              {headerSubtitle}
             </p>
 
-            {isFilterMenuOpen && activeTab !== 'reference' && (
+            {isFilterMenuOpen && isWordFilterable && (
               <>
                 <button
                   type="button"
@@ -923,44 +983,76 @@ export default function App() {
             )}
           </div>
 
-          <div className="app-primary-nav relative grid min-h-12 w-full min-w-0 grid-cols-4 overflow-hidden rounded-xl bg-indigo-700/50 p-1 text-[10px] min-[430px]:text-xs">
-
+          <div className="app-primary-nav relative grid min-h-12 w-full min-w-0 grid-cols-3 overflow-hidden rounded-xl bg-indigo-700/50 p-1 text-xs">
             <button
-              onClick={() => openReferenceView(isRulesView ? 'rules' : 'dictionary')}
-              className={`flex min-w-0 flex-col items-center justify-center gap-0.5 rounded-lg py-1.5 font-medium transition-all duration-300 min-[430px]:flex-row min-[430px]:gap-1.5 ${activeTab === 'reference' ? 'bg-white text-indigo-600 shadow' : 'text-indigo-100 hover:text-white'}`}
+              type="button"
+              onClick={() => openPrimarySection('words')}
+              className={`flex min-w-0 items-center justify-center gap-1.5 rounded-lg py-2 font-medium transition-all ${isWordSection ? 'bg-white text-indigo-600 shadow' : 'text-indigo-100 hover:text-white'}`}
+            >
+              <IconBook /> <span>Слова</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => openPrimarySection('phrases')}
+              className={`flex min-w-0 items-center justify-center gap-1.5 rounded-lg py-2 font-medium transition-all ${activeTab === 'phrases' ? 'bg-white text-indigo-600 shadow' : 'text-indigo-100 hover:text-white'}`}
+            >
+              <MessageSquare size={18} /> <span>Фразы</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => openPrimarySection('reference')}
+              className={`flex min-w-0 items-center justify-center gap-1.5 rounded-lg py-2 font-medium transition-all ${activeTab === 'reference' ? 'bg-white text-indigo-600 shadow' : 'text-indigo-100 hover:text-white'}`}
             >
               <IconDictionary /> <span>Справочник</span>
-            </button>
-            <button 
-              onClick={() => openStudyTab('learn')}
-              className={`flex min-w-0 flex-col items-center justify-center gap-0.5 rounded-lg py-1.5 font-medium transition-all duration-300 min-[430px]:flex-row min-[430px]:gap-1.5 ${activeTab === 'learn' ? 'bg-white text-indigo-600 shadow' : 'text-indigo-100 hover:text-white'}`}
-            >
-              <IconBook /> <span>Учить</span>
-            </button>
-            <button 
-              onClick={() => {
-                openStudyTab('quiz');
-                if (quizCompleted || !quizQuestion) startQuizFromScratch();
-              }}
-              className={`flex min-w-0 flex-col items-center justify-center gap-0.5 rounded-lg py-1.5 font-medium transition-all duration-300 min-[430px]:flex-row min-[430px]:gap-1.5 ${activeTab === 'quiz' ? 'bg-white text-indigo-600 shadow' : 'text-indigo-100 hover:text-white'}`}
-            >
-              <IconBrain /> <span>Тест</span>
-            </button>
-            <button 
-              onClick={() => {
-                openStudyTab('write');
-                if (writeCompleted || !writeQuestion) startWriteFromScratch();
-              }}
-              className={`flex min-w-0 flex-col items-center justify-center gap-0.5 rounded-lg py-1.5 font-medium transition-all duration-300 min-[430px]:flex-row min-[430px]:gap-1.5 ${activeTab === 'write' ? 'bg-white text-indigo-600 shadow' : 'text-indigo-100 hover:text-white'}`}
-            >
-              <IconPen /> <span>Письмо</span>
             </button>
           </div>
         </header>
 
         {/* Контент */}
         <main ref={mainRef} className={`app-main flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-y-auto overflow-x-hidden ${theme === 'dark' ? 'text-slate-100' : 'text-slate-800'}`}>
-          {activeTab !== 'reference' && filteredWords.length === 0 && (
+          {isWordSection && (
+            <nav
+              className={`content-standard mb-5 grid w-full grid-cols-4 gap-1 rounded-lg p-1 ${theme === 'dark' ? 'bg-slate-800' : 'bg-slate-100'}`}
+              aria-label="Режим изучения слов"
+            >
+              <button
+                type="button"
+                onClick={() => openStudyTab('learn')}
+                className={`flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-md px-1 text-[11px] font-semibold sm:min-h-11 sm:flex-row sm:text-sm ${activeTab === 'learn' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500'}`}
+              >
+                <IconBook /> <span>Учить</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  openStudyTab('quiz');
+                  if (quizCompleted || !quizQuestion) startQuizFromScratch();
+                }}
+                className={`flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-md px-1 text-[11px] font-semibold sm:min-h-11 sm:flex-row sm:text-sm ${activeTab === 'quiz' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500'}`}
+              >
+                <IconBrain /> <span>Тест</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  openStudyTab('write');
+                  if (writeCompleted || !writeQuestion) startWriteFromScratch();
+                }}
+                className={`flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-md px-1 text-[11px] font-semibold sm:min-h-11 sm:flex-row sm:text-sm ${activeTab === 'write' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500'}`}
+              >
+                <IconPen /> <span>Письмо</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => openStudyTab('verb-forms')}
+                className={`flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-md px-1 text-[11px] font-semibold sm:min-h-11 sm:flex-row sm:text-sm ${activeTab === 'verb-forms' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500'}`}
+              >
+                <Repeat2 size={18} /> <span>Формы</span>
+              </button>
+            </nav>
+          )}
+
+          {isWordFilterable && filteredWords.length === 0 && (
             <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
               <h2 className="mb-2 text-xl font-bold">Для этого выбора пока нет слов</h2>
               <p className="text-sm text-slate-500">
@@ -1317,8 +1409,20 @@ export default function App() {
             </div>
           )}
 
+          {activeTab === 'verb-forms' && (
+            <VerbFormsPractice theme={theme} />
+          )}
+
+          {activeTab === 'phrases' && (
+            <PhrasesHub
+              theme={theme}
+              pathname={location.pathname}
+              navigate={navigate}
+            />
+          )}
+
           {/* ================= СЛОВАРЬ ================= */}
-          {activeTab === 'reference' && !isRulesView && (
+          {activeTab === 'reference' && !isRulesView && !isVerbsView && (
             <section className="reference-layout flex w-full flex-col">
               <div className={`reference-toolbar sticky top-0 z-[5] border-b ${
                 theme === 'dark'
@@ -1728,6 +1832,21 @@ export default function App() {
               >
                 <IconChevronsUp size={21} strokeWidth={2.4} />
               </button>
+            </section>
+          )}
+
+          {/* ================= ГЛАГОЛЫ ================= */}
+          {activeTab === 'reference' && isVerbsView && (
+            <section className="reference-layout flex w-full flex-col">
+              <div className={`reference-toolbar sticky top-0 z-[5] border-b ${theme === 'dark' ? 'border-slate-800 bg-slate-900' : 'border-slate-100 bg-white'}`}>
+                <ReferenceSwitch activeView="verbs" onChange={openReferenceView} theme={theme} />
+              </div>
+              <VerbLibrary
+                theme={theme}
+                selectedVerbId={selectedVerbId}
+                onOpen={(verbId) => navigate(`/verbs/${verbId}`)}
+                onBack={() => navigate('/verbs')}
+              />
             </section>
           )}
 
