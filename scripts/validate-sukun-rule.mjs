@@ -34,6 +34,7 @@ const readingTimes = new Map([
   ['ta-marbuta', 2],
   ['madd', 2],
   ['solar-lunar', 3],
+  ['pronouns', 7],
   ['demonstrative-pronouns', 5],
   ['personal-pronouns', 5],
   ['hamza', 6],

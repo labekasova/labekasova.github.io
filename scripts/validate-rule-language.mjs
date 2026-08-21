@@ -12,6 +12,7 @@ const expectedRuleIds = [
   'ta-marbuta',
   'madd',
   'solar-lunar',
+  'pronouns',
   'demonstrative-pronouns',
   'personal-pronouns',
   'hamza',
@@ -28,13 +29,17 @@ for (const ruleId of expectedRuleIds) {
     throw new Error(`Для заголовка правила ${ruleId} нет отдельной языковой записи.`);
   }
 
-  for (const field of ['arabic', 'transcription', 'russian', 'audio']) {
+  for (const field of ['arabic', 'transcription', 'russian']) {
     if (!item[field]) {
       throw new Error(`В записи ${ruleId} не заполнено поле ${field}.`);
     }
   }
 
-  if (!item.audio.startsWith('/audio/rules/')) {
+  if (ruleId === 'pronouns') {
+    if (item.audio !== null) {
+      throw new Error('До записи новой озвучки заголовок «Местоимения» не должен показывать аудиокнопку.');
+    }
+  } else if (!item.audio?.startsWith('/audio/rules/')) {
     throw new Error(`Аудио заголовка ${ruleId} должно храниться отдельно от словаря.`);
   }
 }

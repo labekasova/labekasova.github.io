@@ -8,7 +8,8 @@ export const WORD_TYPES = {
 
 export const WORD_GENDERS = {
   masculine: 'masculine',
-  feminine: 'feminine'
+  feminine: 'feminine',
+  common: 'common'
 };
 
 const MODULE_1 = LESSON_IDS.module1;
@@ -19,11 +20,13 @@ const TA_MARBUTA = LESSON_IDS.taMarbuta;
 const SOLAR_LUNAR = LESSON_IDS.solarLunar;
 const PARTS_OF_SPEECH = LESSON_IDS.partsOfSpeech;
 const PARTICLES_FROM_RULES = LESSON_IDS.particlesFromRules;
+const FAMILIAR_SOUNDING_WORDS = LESSON_IDS.familiarSoundingWords;
+const PERSONAL_PRONOUNS = LESSON_IDS.personalPronouns;
 
 export const WORDS_BASE = [
   { id: 101, arabic: 'دَخَلَ', transcription: 'dakhala', russian: 'вошёл', translations: ['вошёл'], semanticGroup: 'Помещение и движение', type: WORD_TYPES.verb, lessonId: MODULE_1 },
   { id: 102, arabic: 'خَرَجَ', transcription: 'kharaja', russian: 'вышел', translations: ['вышел'], semanticGroup: 'Помещение и движение', type: WORD_TYPES.verb, lessonId: MODULE_1 },
-  { id: 19, arabic: 'وَقَفَ', transcription: 'waqafa', russian: 'стоял', translations: ['стоял'], semanticGroup: 'Помещение и движение', type: WORD_TYPES.verb, lessonId: MODULE_1 },
+  { id: 19, arabic: 'وَقَفَ', transcription: 'waqafa', russian: 'стоял', translations: ['стоял'], semanticGroup: 'Помещение и движение', type: WORD_TYPES.verb, lessonId: MODULE_1, root: 'و ق ف' },
   { id: 2, arabic: 'جَلَسَ', transcription: 'jalasa', russian: 'сидел', translations: ['сидел'], semanticGroup: 'Помещение и движение', type: WORD_TYPES.verb, lessonId: MODULE_1 },
   { id: 16, arabic: 'نَزَلَ', transcription: 'nazala', russian: 'спускался', translations: ['спускался'], semanticGroup: 'Помещение и движение', type: WORD_TYPES.verb, lessonId: MODULE_1 },
   { id: 103, arabic: 'سَكَنَ', transcription: 'sakana', russian: 'жил / проживал', translations: ['жил', 'проживал'], semanticGroup: 'Помещение и движение', type: WORD_TYPES.verb, lessonId: MODULE_1 },
@@ -47,7 +50,7 @@ export const WORDS_BASE = [
   { id: 20, arabic: 'أَخَذَ', transcription: '2akhadha', russian: 'взял / забрал', translations: ['взял', 'забрал'], semanticGroup: 'Действия руками', type: WORD_TYPES.verb, lessonId: MODULE_1 },
   { id: 115, arabic: 'وَضَعَ', transcription: 'waDa3a', russian: 'положил', translations: ['положил'], semanticGroup: 'Действия руками', type: WORD_TYPES.verb, lessonId: MODULE_1 },
   { id: 116, arabic: 'مَسَكَ', transcription: 'masaka', russian: 'держал', translations: ['держал'], semanticGroup: 'Действия руками', type: WORD_TYPES.verb, lessonId: MODULE_1 },
-  { id: 17, arabic: 'حَمَلَ', transcription: 'Hamala', russian: 'нёс', translations: ['нёс'], semanticGroup: 'Действия руками', type: WORD_TYPES.verb, lessonId: MODULE_1 },
+  { id: 17, arabic: 'حَمَلَ', transcription: 'Hamala', russian: 'нёс', translations: ['нёс'], semanticGroup: 'Действия руками', type: WORD_TYPES.verb, lessonId: MODULE_1, root: 'ح م ل' },
   { id: 15, arabic: 'دَفَعَ', transcription: 'dafa3a', russian: 'толкал', translations: ['толкал'], semanticGroup: 'Действия руками', type: WORD_TYPES.verb, lessonId: MODULE_1 },
   { id: 14, arabic: 'رَبَطَ', transcription: 'rabaTa', russian: 'завязал', translations: ['завязал'], semanticGroup: 'Действия руками', type: WORD_TYPES.verb, lessonId: MODULE_1 },
   { id: 4, arabic: 'هَدَمَ', transcription: 'hadama', russian: 'разрушил', translations: ['разрушил'], semanticGroup: 'Действия руками', type: WORD_TYPES.verb, lessonId: MODULE_1 },
@@ -87,7 +90,7 @@ export const WORDS_BASE = [
   { id: 403, arabic: 'كَبِيرَة', transcription: 'kabiirah', russian: 'большая', translations: ['большая'], semanticGroup: 'Признаки', type: WORD_TYPES.noun, lessonId: TA_MARBUTA },
   { id: 404, arabic: 'فَرَاشَة', transcription: 'faraashah', russian: 'бабочка', translations: ['бабочка'], semanticGroup: 'Животные', type: WORD_TYPES.noun, lessonId: TA_MARBUTA },
   { id: 405, arabic: 'عَائِشَة', transcription: '3aa2ishah', russian: 'Аиша', translations: ['Аиша'], semanticGroup: 'Люди', type: WORD_TYPES.noun, lessonId: TA_MARBUTA },
-  { id: 406, arabic: 'مُثْمِرَات', transcription: 'muthmiraat', russian: 'плодоносящие / плодотворные, жен. мн. ч.', translations: ['плодоносящие', 'плодотворные'], semanticGroup: 'Признаки', type: WORD_TYPES.noun, lessonId: TA_MARBUTA },
+  { id: 406, arabic: 'مُثْمِرَات', transcription: 'muthmiraat', russian: 'плодоносящие / плодотворные, жен. мн. ч.', translations: ['плодоносящие', 'плодотворные'], semanticGroup: 'Признаки', type: WORD_TYPES.noun, lessonId: TA_MARBUTA, root: 'ث م ر' },
   { id: 407, arabic: 'سَفِينَة', transcription: 'safiinah', russian: 'корабль / судно', translations: ['корабль', 'судно'], semanticGroup: 'Транспорт', type: WORD_TYPES.noun, lessonId: TA_MARBUTA },
   { id: 408, arabic: 'جَمْعِيَّة', transcription: 'jam3iyyah', russian: 'общество / ассоциация / организация', translations: ['общество', 'ассоциация', 'организация'], semanticGroup: 'Общество', type: WORD_TYPES.noun, lessonId: TA_MARBUTA },
   { id: 409, arabic: 'مَدْرَسَة', transcription: 'madrasah', russian: 'школа', translations: ['школа'], semanticGroup: 'Учёба и знания', type: WORD_TYPES.noun, lessonId: TA_MARBUTA, root: 'د ر س' },
@@ -115,7 +118,7 @@ export const WORDS_BASE = [
   { id: 610, arabic: 'رُمَّان', transcription: 'rummaan', russian: 'гранат', translations: ['гранат'], semanticGroup: 'Еда и продукты', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH },
   { id: 611, arabic: 'زَيْتُون', transcription: 'zaytuun', russian: 'оливки / маслины', translations: ['оливки', 'маслины'], semanticGroup: 'Еда и продукты', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH },
   { id: 612, arabic: 'سَيَّارَة', transcription: 'sayyaarah', russian: 'машина / автомобиль', translations: ['машина', 'автомобиль'], semanticGroup: 'Транспорт', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH },
-  { id: 613, arabic: 'شَارِع', transcription: 'shaari3', russian: 'улица', translations: ['улица'], semanticGroup: 'Город и места', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH },
+  { id: 613, arabic: 'شَارِع', transcription: 'shaari3', russian: 'улица', translations: ['улица'], semanticGroup: 'Город и места', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH, root: 'ش ر ع' },
   { id: 614, arabic: 'صَلَاة', transcription: 'Salaah', russian: 'молитва / намаз', translations: ['молитва', 'намаз'], semanticGroup: 'Вера и поклонение', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH },
   { id: 615, arabic: 'ضَابِط', transcription: 'DaabiT', russian: 'офицер', translations: ['офицер'], semanticGroup: 'Люди', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH },
   { id: 616, arabic: 'طَائِرَة', transcription: 'Taa2irah', russian: 'самолёт', translations: ['самолёт'], semanticGroup: 'Транспорт', type: WORD_TYPES.noun, lessonId: PARTS_OF_SPEECH, root: 'ط ي ر' },
@@ -140,15 +143,55 @@ export const WORDS_BASE = [
   { id: 706, arabic: 'لَا', transcription: 'laa', russian: 'не', translations: ['не'], semanticGroup: 'Служебные слова', type: WORD_TYPES.particle, lessonId: PARTICLES_FROM_RULES },
   { id: 707, arabic: 'لَمْ', transcription: 'lam', russian: 'не (прошедшее отрицание)', translations: ['не (прошедшее отрицание)'], semanticGroup: 'Служебные слова', type: WORD_TYPES.particle, lessonId: PARTICLES_FROM_RULES },
   { id: 708, arabic: 'لِ', transcription: 'li', russian: 'для / кому-либо / принадлежность', translations: ['для', 'кому-либо', 'принадлежность'], semanticGroup: 'Служебные слова', type: WORD_TYPES.particle, lessonId: PARTICLES_FROM_RULES },
-  { id: 709, arabic: 'الْ', transcription: 'al-', russian: 'определённый артикль', translations: ['определённый артикль'], semanticGroup: 'Служебные слова', type: WORD_TYPES.particle, lessonId: PARTICLES_FROM_RULES }
+  { id: 709, arabic: 'الْ', transcription: 'al-', russian: 'определённый артикль', translations: ['определённый артикль'], semanticGroup: 'Служебные слова', type: WORD_TYPES.particle, lessonId: PARTICLES_FROM_RULES },
+
+  { id: 801, arabic: 'تَدْرِيب', transcription: 'tadriib', russian: 'тренировка', translations: ['тренировка'], semanticGroup: 'Учёба и навыки', type: WORD_TYPES.noun, lessonId: FAMILIAR_SOUNDING_WORDS, root: 'د ر ب' },
+  { id: 802, arabic: 'خَطَر', transcription: 'khatar', russian: 'риск', translations: ['риск'], semanticGroup: 'Общество', type: WORD_TYPES.noun, lessonId: FAMILIAR_SOUNDING_WORDS, root: 'خ ط ر' },
+  { id: 803, arabic: 'رِيَاضَة', transcription: 'riyaaDah', russian: 'спорт', translations: ['спорт'], semanticGroup: 'Спорт и здоровье', type: WORD_TYPES.noun, lessonId: FAMILIAR_SOUNDING_WORDS, root: 'ر و ض' },
+  { id: 804, arabic: 'بَيْرَق', transcription: 'bayraq', russian: 'флаг', translations: ['флаг'], semanticGroup: 'Общество', type: WORD_TYPES.noun, lessonId: FAMILIAR_SOUNDING_WORDS },
+  { id: 805, arabic: 'رَادِيُو', transcription: 'raadiyuu', russian: 'радио', translations: ['радио'], semanticGroup: 'Техника и медиа', type: WORD_TYPES.noun, lessonId: FAMILIAR_SOUNDING_WORDS },
+  { id: 806, arabic: 'بَنْك', transcription: 'bank', russian: 'банк', translations: ['банк'], semanticGroup: 'Экономика', type: WORD_TYPES.noun, lessonId: FAMILIAR_SOUNDING_WORDS },
+  { id: 807, arabic: 'كُمْبِيُوتَر', transcription: 'kumbiyuutar', russian: 'компьютер', translations: ['компьютер'], semanticGroup: 'Техника и медиа', type: WORD_TYPES.noun, lessonId: FAMILIAR_SOUNDING_WORDS },
+  { id: 808, arabic: 'دُكْتُور', transcription: 'duktuur', russian: 'доктор', translations: ['доктор'], semanticGroup: 'Люди и профессии', type: WORD_TYPES.noun, lessonId: FAMILIAR_SOUNDING_WORDS },
+  { id: 809, arabic: 'مَشْرُوع', transcription: 'mashruu3', russian: 'проект', translations: ['проект'], semanticGroup: 'Работа и идеи', type: WORD_TYPES.noun, lessonId: FAMILIAR_SOUNDING_WORDS, root: 'ش ر ع' },
+  { id: 810, arabic: 'مَحْمُول', transcription: 'maHmuul', russian: 'мобильный телефон', translations: ['мобильный телефон'], semanticGroup: 'Техника и медиа', type: WORD_TYPES.noun, lessonId: FAMILIAR_SOUNDING_WORDS, root: 'ح م ل' },
+  { id: 811, arabic: 'مُوَاصَلَات', transcription: 'muwaasalaat', russian: 'транспорт', translations: ['транспорт'], semanticGroup: 'Транспорт', type: WORD_TYPES.noun, lessonId: FAMILIAR_SOUNDING_WORDS, root: 'و ص ل' },
+  { id: 812, arabic: 'فِكْرَة', transcription: 'fikrah', russian: 'идея', translations: ['идея'], semanticGroup: 'Работа и идеи', type: WORD_TYPES.noun, lessonId: FAMILIAR_SOUNDING_WORDS, root: 'ف ك ر' },
+  { id: 813, arabic: 'فُنْدُق', transcription: 'funduq', russian: 'отель', translations: ['отель'], semanticGroup: 'Город и места', type: WORD_TYPES.noun, lessonId: FAMILIAR_SOUNDING_WORDS },
+  { id: 814, arabic: 'مُسْتَثْمِر', transcription: 'mustathmir', russian: 'инвестор', translations: ['инвестор'], semanticGroup: 'Люди и профессии', type: WORD_TYPES.noun, lessonId: FAMILIAR_SOUNDING_WORDS, root: 'ث م ر' },
+  { id: 815, arabic: 'عَادَات', transcription: '3aadaat', russian: 'традиции', translations: ['традиции'], semanticGroup: 'Культура и общество', type: WORD_TYPES.noun, lessonId: FAMILIAR_SOUNDING_WORDS, root: 'ع و د' },
+  { id: 816, arabic: 'عُقُوبَات', transcription: '3uquubaat', russian: 'санкции', translations: ['санкции'], semanticGroup: 'Политика и общество', type: WORD_TYPES.noun, lessonId: FAMILIAR_SOUNDING_WORDS, root: 'ع ق ب' },
+  { id: 817, arabic: 'تَحَالُف', transcription: 'taHaaluf', russian: 'коалиция', translations: ['коалиция'], semanticGroup: 'Политика и общество', type: WORD_TYPES.noun, lessonId: FAMILIAR_SOUNDING_WORDS, root: 'ح ل ف' },
+  { id: 818, arabic: 'نَبْض', transcription: 'nabD', russian: 'пульс', translations: ['пульс'], semanticGroup: 'Спорт и здоровье', type: WORD_TYPES.noun, lessonId: FAMILIAR_SOUNDING_WORDS, root: 'ن ب ض' },
+  { id: 819, arabic: 'أَخْبَار', transcription: '2akhbaar', russian: 'новости', translations: ['новости'], semanticGroup: 'Техника и медиа', type: WORD_TYPES.noun, lessonId: FAMILIAR_SOUNDING_WORDS, root: 'خ ب ر' },
+  { id: 820, arabic: 'مَوْقِف', transcription: 'mawqif', russian: 'позиция', translations: ['позиция'], semanticGroup: 'Политика и общество', type: WORD_TYPES.noun, lessonId: FAMILIAR_SOUNDING_WORDS, root: 'و ق ف' },
+  { id: 821, arabic: 'مَحَطَّة', transcription: 'maHaTTah', russian: 'станция', translations: ['станция'], semanticGroup: 'Транспорт', type: WORD_TYPES.noun, lessonId: FAMILIAR_SOUNDING_WORDS, root: 'ح ط ط' },
+  { id: 822, arabic: 'هِجْرَة', transcription: 'hijrah', russian: 'миграция', translations: ['миграция'], semanticGroup: 'Культура и общество', type: WORD_TYPES.noun, lessonId: FAMILIAR_SOUNDING_WORDS, root: 'ه ج ر' },
+
+  { id: 901, arabic: 'أَنَا', transcription: '2anaa', russian: 'я', translations: ['я'], semanticGroup: 'Личные местоимения', type: WORD_TYPES.noun, lessonId: PERSONAL_PRONOUNS },
+  { id: 902, arabic: 'نَحْنُ', transcription: 'naHnu', russian: 'мы', translations: ['мы'], semanticGroup: 'Личные местоимения', type: WORD_TYPES.noun, lessonId: PERSONAL_PRONOUNS },
+  { id: 903, arabic: 'أَنْتَ', transcription: 'anta', russian: 'ты, мужчина', translations: ['ты', 'мужчина'], semanticGroup: 'Личные местоимения', type: WORD_TYPES.noun, lessonId: PERSONAL_PRONOUNS },
+  { id: 904, arabic: 'أَنْتِ', transcription: 'anti', russian: 'ты, женщина', translations: ['ты', 'женщина'], semanticGroup: 'Личные местоимения', type: WORD_TYPES.noun, lessonId: PERSONAL_PRONOUNS },
+  { id: 905, arabic: 'أَنْتُمَا', transcription: 'antumaa', russian: 'вы двое / вы две', translations: ['вы двое', 'вы две'], semanticGroup: 'Личные местоимения', type: WORD_TYPES.noun, lessonId: PERSONAL_PRONOUNS },
+  { id: 906, arabic: 'أَنْتُمْ', transcription: 'antum', russian: 'вы, мужчины или смешанная группа', translations: ['вы', 'мужчины или смешанная группа'], semanticGroup: 'Личные местоимения', type: WORD_TYPES.noun, lessonId: PERSONAL_PRONOUNS },
+  { id: 907, arabic: 'أَنْتُنَّ', transcription: 'antunna', russian: 'вы, женщины', translations: ['вы', 'женщины'], semanticGroup: 'Личные местоимения', type: WORD_TYPES.noun, lessonId: PERSONAL_PRONOUNS },
+  { id: 908, arabic: 'هُوَ', transcription: 'huwa', russian: 'он', translations: ['он'], semanticGroup: 'Личные местоимения', type: WORD_TYPES.noun, lessonId: PERSONAL_PRONOUNS },
+  { id: 909, arabic: 'هِيَ', transcription: 'hiya', russian: 'она', translations: ['она'], semanticGroup: 'Личные местоимения', type: WORD_TYPES.noun, lessonId: PERSONAL_PRONOUNS },
+  { id: 910, arabic: 'هُمَا', transcription: 'humaa', russian: 'они двое / они две', translations: ['они двое', 'они две'], semanticGroup: 'Личные местоимения', type: WORD_TYPES.noun, lessonId: PERSONAL_PRONOUNS },
+  { id: 911, arabic: 'هُمْ', transcription: 'hum', russian: 'они, мужчины или смешанная группа', translations: ['они', 'мужчины или смешанная группа'], semanticGroup: 'Личные местоимения', type: WORD_TYPES.noun, lessonId: PERSONAL_PRONOUNS },
+  { id: 912, arabic: 'هُنَّ', transcription: 'hunna', russian: 'они, женщины', translations: ['они', 'женщины'], semanticGroup: 'Личные местоимения', type: WORD_TYPES.noun, lessonId: PERSONAL_PRONOUNS }
 ];
 
 const FEMININE_NOUN_IDS = new Set([
   204, 206, 209, 211,
   402, 403, 404, 405, 406, 407, 408, 409, 410, 411,
   509,
-  601, 606, 608, 609, 612, 614, 616, 619, 622, 625
+  601, 606, 608, 609, 612, 614, 616, 619, 622, 625,
+  803, 811, 812, 815, 816, 821, 822,
+  904, 907, 909, 912
 ]);
+
+const COMMON_GENDER_NOUN_IDS = new Set([901, 902, 905, 910]);
 
 const AUDIO_READY_TRANSCRIPTIONS = new Set([
   'dakhala', 'kharaja', 'waqafa', 'jalasa', 'nazala', 'sakana', 'Hajaza',
@@ -176,7 +219,9 @@ export const WORDS_DATA = WORDS_BASE.map((word) => ({
   gender: word.type === WORD_TYPES.noun
     ? FEMININE_NOUN_IDS.has(word.id)
       ? WORD_GENDERS.feminine
-      : WORD_GENDERS.masculine
+      : COMMON_GENDER_NOUN_IDS.has(word.id)
+        ? WORD_GENDERS.common
+        : WORD_GENDERS.masculine
     : null,
   audio: AUDIO_READY_TRANSCRIPTIONS.has(word.transcription)
     ? `/audio/${word.transcription}.mp3`

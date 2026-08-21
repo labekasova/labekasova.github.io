@@ -68,7 +68,9 @@ const getWordTypeLabel = (type) => {
 
 const getWordGenderLabel = (word) => {
   if (word.type !== WORD_TYPES.noun) return null;
-  return word.gender === WORD_GENDERS.feminine ? 'ж.р.' : 'м.р.';
+  if (word.gender === WORD_GENDERS.feminine) return 'ж.р.';
+  if (word.gender === WORD_GENDERS.common) return 'общ.р.';
+  return 'м.р.';
 };
 
 const formatWordCount = (count) => {
@@ -1444,7 +1446,7 @@ export default function App() {
                     const rootWords = word.root ? repeatedRootIndex[word.root] ?? [] : [];
                     const relatedWords = rootWords.filter((rootWord) => rootWord.id !== word.id);
                     const isRootExpanded = expandedRoot === word.root && relatedWords.length > 0;
-                    const isDictionaryAudioActive = activeAudioPath === word.audio;
+                    const isDictionaryAudioActive = Boolean(word.audio) && activeAudioPath === word.audio;
 
                     return (
                       <li key={word.id} className={`border-b py-4 sm:py-5 ${theme === 'dark' ? 'border-slate-800' : 'border-slate-200'}`}>
@@ -1454,24 +1456,34 @@ export default function App() {
                               {word.russian}
                             </p>
                             <div className="mt-0.5 min-w-0">
-                              <button
-                                type="button"
-                                onClick={() => playWordAudio(word)}
-                                aria-label={`Прослушать произношение: ${word.arabic}`}
-                                aria-pressed={activeAudioPath === word.audio && isAudioPlaying}
-                                data-playing={isDictionaryAudioActive}
-                                className={`dictionary-audio-trigger -my-1 inline-flex min-h-8 max-w-full items-center gap-1 rounded-md py-1 pr-1 text-left text-sm transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 active:text-indigo-700 ${
-                                  isDictionaryAudioActive
-                                    ? 'text-indigo-600'
-                                    : theme === 'dark'
-                                      ? 'text-slate-400 hover:text-indigo-300'
-                                      : 'text-slate-500 hover:text-indigo-600'
-                                }`}
-                              >
-                                <span>[{word.transcription}]</span>
-                                <IconVolume className="relative top-px h-3.5 w-3.5" />
-                                <span className="sr-only">Прослушать</span>
-                              </button>
+                              {word.audio ? (
+                                <button
+                                  type="button"
+                                  onClick={() => playWordAudio(word)}
+                                  aria-label={`Прослушать произношение: ${word.arabic}`}
+                                  aria-pressed={activeAudioPath === word.audio && isAudioPlaying}
+                                  data-playing={isDictionaryAudioActive}
+                                  className={`dictionary-audio-trigger -my-1 inline-flex min-h-8 max-w-full items-center gap-1 rounded-md py-1 pr-1 text-left text-sm transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 active:text-indigo-700 ${
+                                    isDictionaryAudioActive
+                                      ? 'text-indigo-600'
+                                      : theme === 'dark'
+                                        ? 'text-slate-400 hover:text-indigo-300'
+                                        : 'text-slate-500 hover:text-indigo-600'
+                                  }`}
+                                >
+                                  <span>[{word.transcription}]</span>
+                                  <IconVolume className="relative top-px h-3.5 w-3.5" />
+                                  <span className="sr-only">Прослушать</span>
+                                </button>
+                              ) : (
+                                <span
+                                  className={`inline-flex min-h-8 items-center py-1 text-sm ${
+                                    theme === 'dark' ? 'text-slate-500' : 'text-slate-400'
+                                  }`}
+                                >
+                                  [{word.transcription}]
+                                </span>
+                              )}
                             </div>
                             <p className={`mt-2 break-words text-xs leading-5 ${theme === 'dark' ? 'text-slate-500' : 'text-slate-400'}`}>
                               {getWordTypeLabel(word.type)}

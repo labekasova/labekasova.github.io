@@ -6,7 +6,9 @@ export const LESSON_IDS = {
   taMarbuta: 'ta-marbuta-ta-maftuha-2026-08-08',
   solarLunar: 'solar-lunar-letters-2026-08-11',
   partsOfSpeech: 'parts-of-speech-2026-08-19',
-  particlesFromRules: 'particles-from-rules-2026-08-19'
+  particlesFromRules: 'particles-from-rules-2026-08-19',
+  familiarSoundingWords: 'familiar-sounding-words-2026-08-21',
+  personalPronouns: 'personal-pronouns-2026-08-21'
 };
 
 export const LESSONS = [
@@ -54,9 +56,21 @@ export const LESSONS = [
   },
   {
     id: LESSON_IDS.particlesFromRules,
-    label: 'Частицы из статей справочника',
+    label: 'Частицы',
     date: '2026-08-19',
     order: 8
+  },
+  {
+    id: LESSON_IDS.familiarSoundingWords,
+    label: 'Англ слова которые звучат как русские',
+    date: '2026-08-21',
+    order: 9
+  },
+  {
+    id: LESSON_IDS.personalPronouns,
+    label: 'Личные местоимения',
+    date: '2026-08-21',
+    order: 10
   }
 ];
 

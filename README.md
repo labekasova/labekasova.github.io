@@ -1,8 +1,17 @@
-# Arabic Words Learning v5.0
+# Arabic Words Learning v5.1
 
 Mobile-first Arabic vocabulary trainer published at `labekasova.github.io`. Authors: Larisa, Igor.
 
-Release 5.0 introduces responsive layouts for phones, tablets, laptops, and wide desktop screens. It adds adaptive spacing, a wider desktop workspace, two-column reference lists, responsive learning modes, and desktop filter dialogs.
+Release 5.1 keeps the dictionary and rule audio work introduced after v5.0 and adds:
+
+- the formatted article "Местоимения" with internal links to related rules;
+- 22 words in the group "Англ слова которые звучат как русские";
+- all 12 unique detached personal-pronoun forms;
+- common-gender labels for pronouns used for both genders;
+- four new repeated-root families connected to existing vocabulary;
+- the shorter lesson label "Частицы".
+
+The 119 existing dictionary recordings remain enabled. New entries display their transcription without a playback button until matching MP3 files are added.
 
 ## Stack
 

@@ -152,6 +152,18 @@ function RuleSymbol({ rule, theme, compact = false }) {
 }
 
 function RuleAudioTrigger({ item, activeAudioPath, onPlayAudio, theme }) {
+  if (!item) return null;
+
+  if (!item.audio) {
+    return (
+      <span className={`inline-flex min-h-8 items-center px-2 text-sm font-medium ${
+        theme === 'dark' ? 'text-slate-400' : 'text-slate-500'
+      }`}>
+        [{item.transcription}]
+      </span>
+    );
+  }
+
   const isActive = activeAudioPath === item.audio;
 
   return (
@@ -419,6 +431,18 @@ const getMarkdownComponents = ({ theme, activeAudioPath, onPlayAudio }) => ({
     );
   },
   em: ({ children }) => <em className="font-medium not-italic text-indigo-600">{children}</em>,
+  a: ({ href, children }) => (
+    <a
+      href={href}
+      className={`font-semibold underline decoration-2 underline-offset-2 transition-colors ${
+        theme === 'dark'
+          ? 'text-indigo-300 decoration-indigo-500/60 hover:text-indigo-200'
+          : 'text-indigo-700 decoration-indigo-300 hover:text-indigo-900'
+      }`}
+    >
+      {children}
+    </a>
+  ),
   ul: ({ children }) => <ul className="mb-5 list-disc space-y-2.5 pl-6 text-base leading-[1.65] sm:text-[17px]">{children}</ul>,
   ol: ({ children }) => <ol className="mb-5 list-decimal space-y-2.5 pl-6 text-base leading-[1.65] sm:text-[17px]">{children}</ol>,
   li: ({ children }) => <li className="pl-1">{children}</li>,

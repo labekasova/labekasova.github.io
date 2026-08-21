@@ -3,6 +3,7 @@ import hamzaContent from '../content/rules/hamza.md?raw';
 import maddContent from '../content/rules/madd.md?raw';
 import partsOfSpeechContent from '../content/rules/parts-of-speech.md?raw';
 import personalPronounsContent from '../content/rules/personal-pronouns.md?raw';
+import pronounsContent from '../content/rules/pronouns.md?raw';
 import shaddaContent from '../content/rules/shadda.md?raw';
 import solarLunarContent from '../content/rules/solar-lunar.md?raw';
 import sukunContent from '../content/rules/sukun.md?raw';
@@ -90,8 +91,20 @@ export const RULES = [
     content: solarLunarContent
   },
   {
-    id: 'demonstrative-pronouns',
+    id: 'pronouns',
     order: 6,
+    title: 'Местоимения',
+    arabicTitle: 'الضَّمَائِر',
+    symbol: 'هُوَ',
+    readMinutes: 7,
+    category: RULE_CATEGORIES.grammar,
+    summary: 'Общая карта указательных, личных и слитных местоимений.',
+    keywords: ['местоимения', 'личные местоимения', 'указательные местоимения', 'слитные местоимения', 'ضمائر', 'هُوَ', 'هِيَ', 'أَنَا'],
+    content: pronounsContent
+  },
+  {
+    id: 'demonstrative-pronouns',
+    order: 7,
     title: 'Указательные местоимения',
     arabicTitle: 'أَسْمَاء الإِشَارَة',
     symbol: 'هٰذَا',
@@ -103,7 +116,7 @@ export const RULES = [
   },
   {
     id: 'personal-pronouns',
-    order: 7,
+    order: 8,
     title: 'Личные местоимения',
     arabicTitle: 'الضَّمَائِر الشَّخْصِيَّة',
     symbol: 'أَنَا',
@@ -115,7 +128,7 @@ export const RULES = [
   },
   {
     id: 'hamza',
-    order: 8,
+    order: 9,
     title: 'Хамза',
     arabicTitle: 'الهَمْزَة',
     symbol: 'ء',
@@ -127,7 +140,7 @@ export const RULES = [
   },
   {
     id: 'parts-of-speech',
-    order: 9,
+    order: 10,
     title: 'Части речи в арабском',
     arabicTitle: 'أَقْسَام الكَلَام',
     symbol: 'ا ف ح',

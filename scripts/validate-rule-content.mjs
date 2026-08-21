@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 const rulesDirectory = new URL('../src/content/rules/', import.meta.url);
 const indexPath = new URL('../src/data/rulesIndex.js', import.meta.url);
 const expectedNewRules = [
+  ['pronouns', 'pronouns.md'],
   ['demonstrative-pronouns', 'demonstrative-pronouns.md'],
   ['personal-pronouns', 'personal-pronouns.md'],
   ['hamza', 'hamza.md'],
@@ -33,6 +34,22 @@ for (const [ruleId, fileName] of expectedNewRules) {
   }
 
   previousPosition = position;
+}
+
+const pronounsContent = await readFile(new URL('pronouns.md', rulesDirectory), 'utf8');
+const requiredPronounsFragments = [
+  '[«Указательные местоимения»](#/rules/demonstrative-pronouns)',
+  '[«Личные местоимения»](#/rules/personal-pronouns)',
+  '| أَنْتُمَا — *antumaa* | أَنْتُمَا — *antumaa* |',
+  '| هُمَا — *humaa* | هُمَا — *humaa* |',
+  '**رَأَيْتُهُ**',
+  '*ra2aytuhu*'
+];
+
+for (const fragment of requiredPronounsFragments) {
+  if (!pronounsContent.includes(fragment)) {
+    throw new Error(`В статье «Местоимения» отсутствует обязательный фрагмент: ${fragment}`);
+  }
 }
 
 const examplesWithRequiredAudio = [

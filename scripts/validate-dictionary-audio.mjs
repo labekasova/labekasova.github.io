@@ -7,7 +7,8 @@ const requiredFragments = [
   'className={`dictionary-audio-trigger',
   'onClick={() => playWordAudio(word)}',
   'aria-label={`Прослушать произношение: ${word.arabic}`}',
-  'const isDictionaryAudioActive = activeAudioPath === word.audio;',
+  'const isDictionaryAudioActive = Boolean(word.audio) && activeAudioPath === word.audio;',
+  '{word.audio ? (',
   '<span>[{word.transcription}]</span>',
   '<IconVolume className="relative top-px h-3.5 w-3.5" />'
 ];

@@ -95,6 +95,12 @@ export const RULE_TITLE_LANGUAGE = {
     russian: 'солнечные и лунные буквы',
     audio: ruleAudioPath('al-Huruuf ash-shamsiyyah wa-l-qamariyyah')
   },
+  pronouns: {
+    arabic: 'الضَّمَائِر',
+    transcription: 'aD-Damaa2ir',
+    russian: 'местоимения',
+    audio: null
+  },
   'demonstrative-pronouns': {
     arabic: 'أَسْمَاء الإِشَارَة',
     transcription: 'asmaa2 al-ishaara',
