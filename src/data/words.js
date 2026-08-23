@@ -236,7 +236,13 @@ const AUDIO_READY_TRANSCRIPTIONS = new Set([
   'darraajah', 'dhurah', 'rummaan', 'zaytuun', 'sayyaarah', 'shaari3',
   'Salaah', 'DaabiT', 'Taa2irah', 'DHarf', '3inab', 'ghassaalah', 'fariiz',
   'qiTaar', 'ka3bah', 'laymuun', 'masjid', 'nakhlah', 'haatif', 'wuDuu2',
-  'yaqTiin', 'min', '2ilaa', '3alaa', 'fii', 'wa', 'laa', 'lam', 'li', 'al-'
+  'yaqTiin', 'min', '2ilaa', '3alaa', 'fii', 'wa', 'laa', 'lam', 'li', 'al-',
+  'tadriib', 'khatar', 'riyaaDah', 'bayraq', 'raadiyuu', 'bank', 'kumbiyuutar', 'duktuur',
+  'mashruu3', 'maHmuul', 'muwaasalaat', 'fikrah', 'funduq', 'mustathmir', '3aadaat',
+  '3uquubaat', 'taHaaluf', 'nabD', '2akhbaar', 'mawqif', 'maHaTTah', 'hijrah',
+  '2anaa', 'naHnu', 'anta', 'anti', 'antumaa', 'antum', 'antunna', 'huwa', 'hiya',
+  'humaa', 'hum', 'hunna', 'haadhaa', 'haadhihi', 'haa2ulaa2i', 'hunaa', 'hunaaka',
+  'man', 'maa', 'maadhaa', '2ayna', 'mataa', 'kayfa', 'limaadhaa', 'kam', 'ayy', 'liman', 'hal', '2a'
 ]);
 
 export const WORDS_DATA = WORDS_BASE.map((word) => {
