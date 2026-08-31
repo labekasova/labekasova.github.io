@@ -3,3 +3,6 @@ dist/
 Saved/
 *.log
 .DS_Store
+TODO.txt
+.desloppify/
+scorecard.png

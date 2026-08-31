@@ -1,6 +1,25 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { MessageSquare, Repeat2 } from 'lucide-react';
+import {
+  ArrowLeft,
+  ArrowRight,
+  Book,
+  BookOpenText,
+  Brain,
+  ChevronDown,
+  ChevronsUp,
+  Eye,
+  MessageSquare,
+  Moon,
+  PenLine,
+  Repeat2,
+  RotateCcw,
+  Search,
+  Shuffle,
+  SlidersHorizontal,
+  Volume2,
+  Sun
+} from 'lucide-react';
 import { DIALOGUES_DATA } from './data/dialogues.js';
 import { LESSON_FILTERS } from './data/lessons.js';
 import { PHRASES_DATA } from './data/phrases.js';
@@ -48,24 +67,6 @@ const ARABIC_LETTER_KEYS = [
 ];
 
 const ARABIC_DIACRITIC_KEYS = ["َ", "ِ", "ُ", "ْ", "ّ"];
-
-// SVG Иконки
-const IconBook = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>;
-const IconBrain = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg>;
-const IconPen = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>;
-const IconArrowLeft = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>;
-const IconArrowRight = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>;
-const IconShuffle = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22"/><path d="m18 2 4 4-4 4"/><path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2"/><path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8"/><path d="m18 14 4 4-4 4"/></svg>;
-const IconRotateCcw = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>;
-const IconEye = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>;
-const IconVolume = ({ className = '' }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>;
-const IconMoon = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3a6 6 0 1 0 9 9 9 9 0 1 1-9-9Z"/></svg>;
-const IconSun = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>;
-const IconChevronDown = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>;
-const IconDictionary = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 5.5A2.5 2.5 0 0 1 5.5 3H11v17H5.5A2.5 2.5 0 0 0 3 22Z"/><path d="M21 5.5A2.5 2.5 0 0 0 18.5 3H13v17h5.5A2.5 2.5 0 0 1 21 22Z"/></svg>;
-const IconSearch = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>;
-const IconSliders = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 21v-7"/><path d="M4 10V3"/><path d="M12 21v-9"/><path d="M12 8V3"/><path d="M20 21v-5"/><path d="M20 12V3"/><path d="M1 14h6"/><path d="M9 8h6"/><path d="M17 16h6"/></svg>;
-const IconChevronsUp = ({ size = 20, strokeWidth = 2.5 }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="m17 11-5-5-5 5"/><path d="m17 18-5-5-5 5"/></svg>;
 
 const getWordTypeLabel = (type) => {
   if (type === WORD_TYPES.verb) return 'Глагол';
@@ -819,7 +820,7 @@ export default function App() {
             onClick={() => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))}
             className="theme-toggle absolute right-4 top-4 z-30 flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-white transition-colors hover:bg-white/25"
           >
-            {theme === 'dark' ? <IconSun /> : <IconMoon />}
+            {theme === 'dark' ? <Sun size={18} strokeWidth={2} /> : <Moon size={18} strokeWidth={2} />}
           </button>
           <div className="relative z-20 mb-4 flex w-full flex-col items-center sm:mb-5">
             <div className="relative flex w-full items-center justify-center">
@@ -832,14 +833,14 @@ export default function App() {
                 aria-expanded={isWordFilterable ? isFilterMenuOpen : undefined}
               >
                 <span aria-hidden="true" className="flex h-[18px] w-[18px] items-center justify-center opacity-0">
-                  <IconChevronDown />
+                  <ChevronDown size={18} strokeWidth={2.4} />
                 </span>
                 <span className="min-w-0 break-words">{headerTitle}</span>
                 <span
                   aria-hidden="true"
                   className={`flex h-[18px] w-[18px] items-center justify-center text-white/85 transition-transform duration-200 ${isWordFilterable ? '' : 'opacity-0'} ${isFilterMenuOpen ? 'rotate-180' : ''}`}
                 >
-                  <IconChevronDown />
+                  <ChevronDown size={18} strokeWidth={2.4} />
                 </span>
               </button>
             </div>
@@ -989,7 +990,7 @@ export default function App() {
               onClick={() => openPrimarySection('words')}
               className={`flex min-w-0 items-center justify-center gap-1.5 rounded-lg py-2 font-medium transition-all ${isWordSection ? 'bg-white text-indigo-600 shadow' : 'text-indigo-100 hover:text-white'}`}
             >
-              <IconBook /> <span>Слова</span>
+              <Book size={18} strokeWidth={2} /> <span>Слова</span>
             </button>
             <button
               type="button"
@@ -1003,7 +1004,7 @@ export default function App() {
               onClick={() => openPrimarySection('reference')}
               className={`flex min-w-0 items-center justify-center gap-1.5 rounded-lg py-2 font-medium transition-all ${activeTab === 'reference' ? 'bg-white text-indigo-600 shadow' : 'text-indigo-100 hover:text-white'}`}
             >
-              <IconDictionary /> <span>Справочник</span>
+              <BookOpenText size={18} strokeWidth={2} /> <span>Справочник</span>
             </button>
           </div>
         </header>
@@ -1020,7 +1021,7 @@ export default function App() {
                 onClick={() => openStudyTab('learn')}
                 className={`flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-md px-1 text-[11px] font-semibold sm:min-h-11 sm:flex-row sm:text-sm ${activeTab === 'learn' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500'}`}
               >
-                <IconBook /> <span>Учить</span>
+                <Book size={18} strokeWidth={2} /> <span>Учить</span>
               </button>
               <button
                 type="button"
@@ -1030,7 +1031,7 @@ export default function App() {
                 }}
                 className={`flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-md px-1 text-[11px] font-semibold sm:min-h-11 sm:flex-row sm:text-sm ${activeTab === 'quiz' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500'}`}
               >
-                <IconBrain /> <span>Тест</span>
+                <Brain size={18} strokeWidth={2} /> <span>Тест</span>
               </button>
               <button
                 type="button"
@@ -1040,7 +1041,7 @@ export default function App() {
                 }}
                 className={`flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-md px-1 text-[11px] font-semibold sm:min-h-11 sm:flex-row sm:text-sm ${activeTab === 'write' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500'}`}
               >
-                <IconPen /> <span>Письмо</span>
+                <PenLine size={18} strokeWidth={2} /> <span>Письмо</span>
               </button>
               <button
                 type="button"
@@ -1089,14 +1090,14 @@ export default function App() {
                       onClick={handleShuffle}
                       className="flex items-center gap-1 text-amber-600 bg-amber-50 px-2 py-1 rounded-lg active:scale-95 transition-all text-xs"
                     >
-                      <IconShuffle /> Перемешать
+                      <Shuffle size={20} strokeWidth={2} /> Перемешать
                     </button>
                   ) : (
                     <button 
                       onClick={handleResetToLogical}
                       className="flex items-center gap-1 text-indigo-600 bg-indigo-50 px-2 py-1 rounded-lg active:scale-95 transition-all text-xs"
                     >
-                      <IconRotateCcw /> Ассоциации
+                      <RotateCcw size={20} strokeWidth={2} /> Ассоциации
                     </button>
                   )}
                 </div>
@@ -1153,7 +1154,7 @@ export default function App() {
                   onClick={prevCard}
                   className="w-12 h-12 flex items-center justify-center bg-white border border-slate-200 text-slate-600 rounded-full shadow-sm active:scale-90 transition-all"
                 >
-                  <IconArrowLeft />
+                  <ArrowLeft size={24} strokeWidth={2} />
                 </button>
                 <div className="relative flex h-10 w-[190px] items-center justify-center">
                   <button
@@ -1163,7 +1164,7 @@ export default function App() {
                     onClick={playCurrentAudio}
                     className={`audio-preview flex h-10 w-[176px] items-center justify-center gap-2 rounded-full border px-4 py-2 text-sm font-medium shadow-sm transition-[transform,background-color,color,border-color,box-shadow] duration-150 ease-out active:scale-95 disabled:cursor-default ${isFlipped ? '' : 'audio-preview-front'} ${currentWord.audio ? '' : 'audio-missing'} ${isAudioPlaying ? 'audio-preview-playing' : ''}`}
                   >
-                    <IconVolume />
+                    <Volume2 size={18} strokeWidth={2} />
                     {audioButtonLabel}
                   </button>
                 </div>
@@ -1171,7 +1172,7 @@ export default function App() {
                   onClick={nextCard}
                   className="w-12 h-12 flex items-center justify-center bg-white border border-slate-200 text-slate-600 rounded-full shadow-sm active:scale-90 transition-all"
                 >
-                  <IconArrowRight />
+                  <ArrowRight size={24} strokeWidth={2} />
                 </button>
               </div>
 
@@ -1301,7 +1302,7 @@ export default function App() {
                             onClick={() => setShowHint(true)}
                             className="text-xs text-slate-400 hover:text-slate-600 flex items-center gap-1 bg-white px-2.5 py-1 rounded-full border border-slate-200"
                           >
-                            <IconEye /> Показать подсказку
+                            <Eye size={16} strokeWidth={2} /> Показать подсказку
                           </button>
                         )}
                       </div>
@@ -1433,7 +1434,7 @@ export default function App() {
                   <ReferenceSwitch activeView="dictionary" onChange={openReferenceView} theme={theme} />
                   <label className="relative mt-3 block lg:mt-0">
                   <span className={`pointer-events-none absolute left-3 top-1/2 flex -translate-y-1/2 ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
-                    <IconSearch />
+                    <Search size={20} strokeWidth={2} />
                   </span>
                   <input
                     type="search"
@@ -1481,7 +1482,7 @@ export default function App() {
                         : 'border-slate-200 bg-white text-slate-700'
                     }`}
                   >
-                    <IconSliders />
+                    <SlidersHorizontal size={18} strokeWidth={2} />
                     <span>Фильтры</span>
                     {dictionaryActiveFilterCount > 0 && (
                       <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-indigo-600 px-1.5 text-xs text-white">
@@ -1576,7 +1577,7 @@ export default function App() {
                                   }`}
                                 >
                                   <span>[{word.transcription}]</span>
-                                  <IconVolume className="relative top-px h-3.5 w-3.5" />
+                                  <Volume2 size={18} strokeWidth={2} className="relative top-px h-3.5 w-3.5" />
                                   <span className="sr-only">Прослушать</span>
                                 </button>
                               ) : (
@@ -1830,7 +1831,7 @@ export default function App() {
                     : 'border-indigo-100 bg-white/95 text-indigo-600 shadow-indigo-950/15 hover:bg-indigo-50'
                 }`}
               >
-                <IconChevronsUp size={21} strokeWidth={2.4} />
+                <ChevronsUp size={21} strokeWidth={2.4} />
               </button>
             </section>
           )}
