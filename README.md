@@ -68,3 +68,9 @@ npm run dev
 ```
 
 The GitHub Pages workflow remains in `.github/workflows/deploy.yml`.
+
+## License
+
+The application source code is licensed under the MIT License; see [LICENSE](./LICENSE).
+
+Course materials, embedded videos, ElevenLabs-generated audio, and third-party assets are not covered by this license and remain subject to their respective rights and terms.
