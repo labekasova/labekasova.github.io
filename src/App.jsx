@@ -1443,7 +1443,7 @@ export default function App() {
                       setDictionaryQuery(event.target.value);
                       setExpandedRoot(null);
                     }}
-                    placeholder="Перевод, арабское слово или транскрипция"
+                    placeholder="Перевод, арабское слово, корень или транскрипция"
                     autoComplete="off"
                     aria-label="Поиск по словарю"
                     className={`min-h-12 w-full rounded-xl border py-2 pl-11 pr-11 text-base outline-none transition-colors ${

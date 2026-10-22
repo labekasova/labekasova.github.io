@@ -57,7 +57,9 @@ export const filterWords = (words, filters = {}) => {
       word.arabic,
       word.transcription,
       ...word.translations,
-      ...(word.groups ?? [word.group]).filter(Boolean)
+      ...(word.groups ?? [word.group]).filter(Boolean),
+      word.root,
+      word.root?.replace(/\s+/g, '')
     ].join(' '));
     const matchesQuery = normalizedQuery
       ? searchableText.includes(normalizedQuery)
