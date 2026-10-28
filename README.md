@@ -27,8 +27,8 @@ No new runtime dependency was added in v6.0.
 
 ## Structure
 
-- `src/App.jsx` - application shell, primary navigation, and existing word modes
-- `src/data/words.js` - vocabulary data
+- `src/App.jsx` - application shell and word modes; in writing mode, hold ordinary alef to choose hamza above or below
+- `src/data/words.js` - vocabulary data; grammar notes in Russian translations use parentheses
 - `src/data/phrases.js` - standalone phrase data
 - `src/data/dialogues.js` - non-exercise dialogue articles
 - `src/data/topics.js` - conversation-topic metadata

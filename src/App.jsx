@@ -62,7 +62,7 @@ const WORD_FILTERS = [
 // Клавиатура для ввода
 const ARABIC_LETTER_KEYS = [
   "ض", "ص", "ث", "ق", "ف", "غ", "ع", "ه", "خ", "ح", "ج", "د",
-  "ش", "س", "ي", "ب", "ل", "أ", "ت", "ن", "م", "ك", "ط", "ذ",
+  "ش", "س", "ي", "ب", "ل", "ا", "ت", "ن", "م", "ك", "ط", "ذ",
   "ئ", "ء", "ؤ", "ر", "لا", "ى", "ة", "و", "ز", "ظ"
 ];
 
@@ -139,6 +139,10 @@ export default function App() {
   const location = useLocation();
   const navigate = useNavigate();
   const mainRef = useRef(null);
+  const alefTimerRef = useRef(null);
+  const alefLongPressRef = useRef(false);
+  const [showAlefVariants, setShowAlefVariants] = useState(false);
+  const [highlightedAlef, setHighlightedAlef] = useState(null);
   const audioRef = useRef(null);
   const audioRequestRef = useRef(0);
   const audioSourceRef = useRef('');
@@ -1346,7 +1350,24 @@ export default function App() {
                                     {/* Виртуальная Клавиатура */}
                   <div className={`mt-auto shrink-0 rounded-2xl p-2.5 sm:p-3 lg:mt-6 ${theme === 'dark' ? 'bg-slate-800/70' : 'bg-slate-100'}`}>
                     <div className="grid grid-cols-6 gap-1.5 min-[390px]:grid-cols-7 sm:grid-cols-8 lg:grid-cols-10 lg:gap-2" dir="rtl">
-                      {ARABIC_LETTER_KEYS.map((char) => (
+                      {ARABIC_LETTER_KEYS.map((char) => char === 'ا' ? (
+                        <div key={char} className="relative min-w-0">
+                          <button type="button" disabled={writeChecked} aria-label="Алиф; удерживайте для выбора хамзы" aria-expanded={showAlefVariants}
+                            className={`arabic-text flex min-h-11 w-full touch-none select-none items-center justify-center rounded-lg border text-xl font-bold leading-none shadow-sm sm:min-h-12 sm:text-2xl ${theme === 'dark' ? 'border-slate-700 bg-slate-900 text-slate-100' : 'border-slate-200 bg-white text-slate-800'}`}
+                            onPointerDown={(event) => { event.currentTarget.setPointerCapture(event.pointerId); alefLongPressRef.current = false; setHighlightedAlef(null); alefTimerRef.current = setTimeout(() => { alefLongPressRef.current = true; setShowAlefVariants(true); }, 500); }}
+                            onPointerMove={(event) => { if (alefLongPressRef.current) setHighlightedAlef(document.elementFromPoint(event.clientX, event.clientY)?.closest('[data-alef-variant]')?.dataset.alefVariant || null); }}
+                            onPointerUp={(event) => { clearTimeout(alefTimerRef.current); if (alefLongPressRef.current) { const variant = document.elementFromPoint(event.clientX, event.clientY)?.closest('[data-alef-variant]')?.dataset.alefVariant; if (variant) { handleVirtualKeyPress(variant); setShowAlefVariants(false); } } setHighlightedAlef(null); }}
+                            onPointerCancel={() => { clearTimeout(alefTimerRef.current); setHighlightedAlef(null); setShowAlefVariants(false); }}
+                            onContextMenu={(event) => event.preventDefault()}
+                            onClick={() => { if (!alefLongPressRef.current) { setShowAlefVariants(false); handleVirtualKeyPress('ا'); } }}
+                            onKeyDown={(event) => { if (event.key === 'ArrowUp') { event.preventDefault(); setShowAlefVariants(true); } }}>
+                            ا
+                          </button>
+                          {showAlefVariants && <div className="absolute bottom-full left-1/2 z-50 mb-1 flex -translate-x-1/2 gap-1 rounded-lg border border-slate-500 bg-slate-800 p-1 shadow-lg" dir="rtl">
+                            {['أ', 'إ'].map((variant) => <button type="button" key={variant} data-alef-variant={variant} className={`arabic-text flex h-11 w-11 items-center justify-center rounded-md text-2xl text-white ${highlightedAlef === variant ? 'bg-indigo-500 ring-2 ring-white' : 'bg-slate-700'}`} onClick={() => { handleVirtualKeyPress(variant); setHighlightedAlef(null); setShowAlefVariants(false); }}>{variant}</button>)}
+                          </div>}
+                        </div>
+                      ) : (
                         <button
                           key={char}
                           onClick={() => handleVirtualKeyPress(char)}
